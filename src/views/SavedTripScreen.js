@@ -27,8 +27,8 @@ export default function SavedTripScreen() {
 
   const [deliveredOrders, setDeliveredOrders] = useState({
     Upcoming: [
-      { id: 1,date: '02/26/24', name: 'Order #7162533', pickUp: 'Down town, new york', dropOff: 'Down town, new york', phone: '13.45', category: 'Local Delivery',button1:'Start',button2:'pending'},
-      { id: 2,date: '02/26/24', name: 'Order #7162533', pickUp: 'Down town, new york', dropOff: 'Down town, new york', phone: '13.45', category: 'Local Delivery',button1:'Start',button2:'pending'},
+      { id: 1,date: '02/26/24', name: 'Order #7162533', pickUp: 'Down town, new york', dropOff: 'Down town, new york', phone: '13.45', category: 'Local Delivery',button1:'Start',button2:'Pending'},
+      { id: 2,date: '02/26/24', name: 'Order #7162533', pickUp: 'Down town, new york', dropOff: 'Down town, new york', phone: '13.45', category: 'Local Delivery',button1:'Start',button2:'Pending'},
     ],
     Active: [
       { id: 3,date: '02/26/24', name: 'Order #7162533', pickUp: 'Down town, new york', dropOff: 'Down town, new york', phone: '10.45', category: 'Local Delivery',button1:'Continue',button2:'En-Route'},
@@ -477,6 +477,8 @@ const styles = StyleSheet.create({
   },
   startButton: {
     backgroundColor: colors.primary,
+    // width:dimensions.widthLevel17,
+    // height:dimensions.heightLevel3,
     padding: 10,
     borderRadius: 5,
   },

@@ -77,6 +77,7 @@ export const dimensions = {
     widthLevel14: width * 30 / 100,
     widthLevel15: width * 26 / 100,
     widthLevel16: width * 23 / 100,
+    widthLevel17: width * 20 / 100,
 
     heightLevel1: height * 2 / 100,
     heightLevel2: height * 3 / 100,

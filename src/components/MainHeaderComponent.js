@@ -8,6 +8,10 @@ const MainHeaderComponent = ({title}) => {
 
   const navigation = useNavigation();
 
+  const handleGoBack = () => {
+    navigation.goBack();
+  };
+
   const handleResolutionCenter = () => {
     navigation.navigate('ResolutionCenterScreen');
     
@@ -35,7 +39,7 @@ const MainHeaderComponent = ({title}) => {
       
      
       
-        <TouchableOpacity>
+        <TouchableOpacity onPress={handleGoBack}>
         <Image
           source={require('../assets/leftArrow.webp')} // Menu icon image
           style={{

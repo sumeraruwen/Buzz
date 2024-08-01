@@ -1,16 +1,20 @@
 import React, { useState } from 'react';
 import { View, Text, Image, TouchableOpacity,Modal } from 'react-native';
 import { colors, dimensions, fontSizes } from '../styles/constants';
-//import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
 const HeaderComponent = ({title }) => {
 
-//   const navigation = useNavigation();
+   const navigation = useNavigation();
 
 //   const handleResolutionCenter = () => {
 //     navigation.navigate('ResolutionCenterScreen');
     
 //   };
+
+const handleGoBack = () => {
+  navigation.goBack();
+};
 
   return (
     <View
@@ -34,7 +38,7 @@ const HeaderComponent = ({title }) => {
       
      
       
-        <TouchableOpacity>
+        <TouchableOpacity onPress={handleGoBack}>
         <Image
           source={require('../assets/leftArrow.webp')} // Menu icon image
           style={{
