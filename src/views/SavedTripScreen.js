@@ -13,6 +13,8 @@ export default function SavedTripScreen() {
     'Filter by': 'Today',
   });
   const [orderStatus, setOrderStatus] = useState('Upcoming');
+  const [settingsModalVisible, setSettingsModalVisible] = useState(false);
+  const [selectedTripId, setSelectedTripId] = useState(null);
 
   const [tripDetails, setTripDetails] = useState({
     '24/04/2024': [
@@ -41,10 +43,10 @@ export default function SavedTripScreen() {
   });
 
   const options = {
-    'Group By': ['Date(Default)', 'Option 1'],
+    'Group By': ['Date(Default)', 'Move Category'],
     'View as': ['Trip', 'Delivered Order'],
-    'Sort By': ['Default', 'Option 1'],
-    'Filter by': ['Today', 'Option 1', 'Option 2', 'Option 3', 'Option 4', 'Option 5'],
+    'Sort By': ['Default', 'Completed'],
+    'Filter by': ['Today', 'Last 1 Week', 'Last 1 Month', 'Last 1 Year', 'All'],
   };
 
   const openModal = (type) => {
@@ -64,6 +66,39 @@ export default function SavedTripScreen() {
     }));
     closeModal();
   };
+
+    const openSettingsModal = (tripId) => {
+    setSelectedTripId(tripId);
+    setSettingsModalVisible(true);
+  };
+
+  const closeSettingsModal = () => {
+    setSettingsModalVisible(false);
+    setSelectedTripId(null);
+  };
+
+  
+
+    const handleSettingsOption = (option) => {
+    switch (option) {
+      case 'Open':
+        // Handle opening the trip or order details
+        break;
+      case 'Edit':
+        // Handle editing the trip or order details
+        break;
+      case 'Rename':
+        // Handle renaming the trip or order
+        break;
+      case 'Delete':
+        // Handle deleting the trip or order
+        break;
+      default:
+        break;
+    }
+    closeSettingsModal();
+  };
+
 
   const renderTripDetails = () => {
     return (
@@ -90,7 +125,7 @@ export default function SavedTripScreen() {
                   <View style={styles.lineVertical} />
                   <View style={styles.tripColumn}>
                     <Text style={styles.tripStatValue}>{trip.uncompleted}</Text>
-                    <Text style={styles.tripStatLabel}>Uncompleted</Text>
+                    <Text style={styles.tripStatLabel}>Uncomplete</Text>
                   </View>
                   <View style={styles.lineVertical} />
                   <View style={styles.tripColumn}>
@@ -102,6 +137,11 @@ export default function SavedTripScreen() {
                     <Text style={styles.tripStatValue}>{trip.percentCompleted}</Text>
                     <Text style={styles.tripStatLabel}>% Completed</Text>
                   </View>
+                 
+                  <TouchableOpacity onPress={() => openSettingsModal(trip.id)}>
+                  <Image style={styles.icon2} source={require('../assets/settingsIcon.webp')} />
+                  </TouchableOpacity>
+                  
                 </View>
   
                 {/* Add horizontal line after each trip card */}
@@ -114,50 +154,131 @@ export default function SavedTripScreen() {
     );
   };
   
+  // const renderDeliveredOrders = () => {
+  //   const orders = deliveredOrders[orderStatus] || [];
+  //   return (
+  //     <View>
+  //       {orders.map((order) => (
+          
+  //         <View key={order.id} style={styles.deliveredOrderContainer}>
+  //            <View style={{flexDirection:'row',paddingTop:20,paddingBottom:10}}>
+  //           <Text style={styles.dateHeader}>Date: </Text>
+  //           <Text style={styles.dateHeader2}>{order.date}</Text>
+  //           </View>
+
+  //         <View style={styles.orderDetails}>
+  //           <View style={styles.orderRow}>
+  //             <Text style={styles.orderName}>{order.name}</Text>
+  //             <Image style={styles.iIcon} source={require('../assets/iIcon.webp')} />
+  //           </View>
+  //             <Text style={styles.orderText}>Pick-Up Address</Text>
+  //             <Text style={styles.orderDetail}>{order.pickUp}</Text>
+            
+  //             <View style={{flexDirection:'row',justifyContent:"space-between"}}>
+  //             <Text style={styles.orderText}>Start Time</Text>
+  //             <Text style={styles.orderText}>Category</Text>
+  //             </View>
+
+  //             <View style={{flexDirection:'row',justifyContent:"space-between"}}>
+  //             <Text style={styles.orderDetail}>{order.phone}</Text>
+  //             <Text style={styles.orderDetail}>{order.category}</Text>
+  //             </View>
+
+  //             <View style={styles.dottedLine} />
+
+  //             <View style={styles.orderActions}>
+  //               <TouchableOpacity style={styles.startButton}>
+  //                 <Text style={styles.startButtonText}>{order.button1}</Text>
+  //               </TouchableOpacity>
+  //               <View style={styles.startButton}>
+  //                 <Text style={styles.startButtonText}>{order.button2}</Text>
+  //               </View>
+  //             </View>
+            
+  //           </View>
+  //         </View>
+  //       ))}
+  //     </View>
+  //   );
+  // };
+
   const renderDeliveredOrders = () => {
     const orders = deliveredOrders[orderStatus] || [];
     return (
       <View>
-        {orders.map((order) => (
-          
-          <View key={order.id} style={styles.deliveredOrderContainer}>
-             <View style={{flexDirection:'row',paddingTop:20,paddingBottom:10}}>
-            <Text style={styles.dateHeader}>Date: </Text>
-            <Text style={styles.dateHeader2}>{order.date}</Text>
+        {orders.map((order) => {
+          // Determine button styles based on the part and button state
+          let button1Style, button2Style, buttonText1Style, buttonText2Style;
+          switch (orderStatus) {
+            case 'Upcoming':
+              button1Style = styles.buttonUpcomingStart;
+              button2Style = styles.buttonUpcomingPending;
+              buttonText1Style = styles.buttonTextUpcomingStart;
+              buttonText2Style = styles.buttonTextUpcomingPending;
+              break;
+            case 'Active':
+              button1Style = order.button1 === 'Continue' ? styles.buttonActiveContinue : styles.buttonActiveEnRoute;
+              button2Style = order.button2 === 'Continue' ? styles.buttonActiveContinue : styles.buttonActiveEnRoute;
+              buttonText1Style = button1Style === styles.buttonActiveContinue ? styles.buttonTextActiveContinue : styles.buttonTextActiveEnRoute;
+              buttonText2Style = button2Style === styles.buttonActiveContinue ? styles.buttonTextActiveContinue : styles.buttonTextActiveEnRoute;
+              break;
+            case 'Completed':
+              button1Style = order.button1 === 'Start' ? styles.buttonCompletedStart : order.button1 === 'Success' ? styles.buttonCompletedSuccess : styles.buttonCompletedFailed;
+              button2Style = order.button2 === 'Start' ? styles.buttonCompletedStart : order.button2 === 'Success' ? styles.buttonCompletedSuccess : styles.buttonCompletedFailed;
+              buttonText1Style = button1Style === styles.buttonCompletedStart ? styles.buttonTextCompletedStart : button1Style === styles.buttonCompletedSuccess ? styles.buttonTextCompletedSuccess : styles.buttonTextCompletedFailed;
+              buttonText2Style = button2Style === styles.buttonCompletedStart ? styles.buttonTextCompletedStart : button2Style === styles.buttonCompletedSuccess ? styles.buttonTextCompletedSuccess : styles.buttonTextCompletedFailed;
+              break;
+            default:
+              button1Style = styles.buttonUpcomingStart; // Default fallback
+              button2Style = styles.buttonUpcomingPending; // Default fallback
+              buttonText1Style = styles.buttonTextUpcomingStart;
+              buttonText2Style = styles.buttonTextUpcomingPending;
+          }
+  
+          return (
+            <View key={order.id} style={styles.deliveredOrderContainer}>
+              <View style={{ flexDirection: 'row', paddingTop: 20, paddingBottom: 10 }}>
+                <Text style={styles.dateHeader}>Date: </Text>
+                <Text style={styles.dateHeader2}>{order.date}</Text>
+              </View>
+  
+              <View style={styles.orderDetails}>
+                <View style={styles.orderRow}>
+                  <Text style={styles.orderName}>{order.name}</Text>
+                  <Image style={styles.iIcon} source={require('../assets/iIcon.webp')} />
+                </View>
+                <Text style={styles.orderText}>Pick-Up Address</Text>
+                <Text style={styles.orderDetail}>{order.pickUp}</Text>
+                <View style={{ flexDirection: 'row', justifyContent: "space-between" }}>
+                  <Text style={styles.orderText}>Start Time</Text>
+                  <Text style={styles.orderText}>Category</Text>
+                </View>
+  
+                <View style={{ flexDirection: 'row', justifyContent: "space-between" }}>
+                  <Text style={styles.orderDetail}>{order.phone}</Text>
+                  <Text style={styles.orderDetail}>{order.category}</Text>
+                </View>
+  
+                <View style={styles.dottedLine} />
+  
+                <View style={styles.orderActions}>
+                  <TouchableOpacity style={button1Style}>
+                    <Text style={[styles.buttonText, buttonText1Style]}>{order.button1}</Text>
+                  </TouchableOpacity>
+                  <View style={button2Style}>
+                    <Text style={[styles.buttonText, buttonText2Style]}>{order.button2}</Text>
+                  </View>
+                </View>
+              </View>
             </View>
-
-          <View style={styles.orderDetails}>
-              <Text style={styles.orderName}>{order.name}</Text>
-              <Text style={styles.orderText}>Pick-Up Address</Text>
-              <Text style={styles.orderDetail}>{order.pickUp}</Text>
-            
-              <View style={{flexDirection:'row',justifyContent:"space-between"}}>
-              <Text style={styles.orderText}>Start Time</Text>
-              <Text style={styles.orderText}>Category</Text>
-              </View>
-
-              <View style={{flexDirection:'row',justifyContent:"space-between"}}>
-              <Text style={styles.orderDetail}>{order.phone}</Text>
-              <Text style={styles.orderDetail}>{order.category}</Text>
-              </View>
-
-              <View style={styles.dottedLine} />
-
-              <View style={styles.orderActions}>
-                <TouchableOpacity style={styles.startButton}>
-                  <Text style={styles.startButtonText}>{order.button1}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.startButton}>
-                  <Text style={styles.startButtonText}>{order.button2}</Text>
-                </TouchableOpacity>
-              </View>
-            
-            </View>
-          </View>
-        ))}
+          );
+        })}
       </View>
     );
   };
+  
+  
+  
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.white }}>
@@ -289,6 +410,58 @@ export default function SavedTripScreen() {
           </View>
         </View>
       </Modal>
+
+       {/* Settings Modal */}
+       <Modal
+        animationType="none"
+        transparent={true}
+        visible={settingsModalVisible}
+        onRequestClose={closeSettingsModal}
+      >
+        <TouchableOpacity
+          style={styles.settingsCenteredView}
+          onPress={closeSettingsModal}
+          activeOpacity={1}
+        >
+          <View style={styles.settingsModalView}>
+            {/* <View style={styles.settingsOptions}>
+              {['Open', 'Edit', 'Rename', 'Delete'].map((option) => (
+                <TouchableOpacity
+                  key={option}
+                  style={styles.settingsOption}
+                  onPress={() => handleSettingsOption(option)}
+                >
+                  <Text style={styles.settingsOptionText}>{option}</Text>
+                </TouchableOpacity>
+                 {index < options[modalType].length - 1 && <View style={styles.dottedLine} />}
+              ))}
+            </View> */}
+
+            <View style={styles.settingsOptions}>
+              {['Open', 'Edit', 'Rename', 'Delete'].map((option, index, array) => (
+                <View key={option}>
+                  <TouchableOpacity
+                    style={styles.settingsOption}
+                    onPress={() => handleSettingsOption(option)}
+                  >
+                    <Text
+                      style={[
+                        styles.settingsOptionText,
+                        option === 'Delete' ? styles.deleteOptionText : styles.otherOptionText,
+                      ]}
+                    >
+                      {option}
+                    </Text>
+                  </TouchableOpacity>
+                  {/* Add dotted line after each option except the last one */}
+                  {index < array.length - 1 && <View style={styles.dottedLine} />}
+                </View>
+              ))}
+            </View>
+                      
+          </View>
+        </TouchableOpacity>
+      </Modal>
     </View>
   );
 }
@@ -328,6 +501,39 @@ const styles = StyleSheet.create({
     alignContent:'center',
     paddingLeft:5,
    
+  },
+
+  settingsCenteredView: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  settingsModalView: {
+    width: '100%',
+    padding: dimensions.paddingLevel3,
+    backgroundColor: colors.white,
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+  },
+  settingsOptions: {
+    marginVertical: 10,
+  },
+  settingsOption: {
+    paddingVertical: 5,
+    justifyContent:'center',
+    alignItems:'center'
+  },
+  settingsOptionText: {
+    fontSize: fontSizes.fontMidMedium,
+    fontWeight:'600'
+
+  },
+  deleteOptionText: {
+    color: 'red', 
+  },
+  otherOptionText: {
+    color:colors.secondary, 
   },
   dateHeader: {
     fontSize:fontSizes.fontMidMedium,
@@ -392,7 +598,7 @@ const styles = StyleSheet.create({
     fontSize:fontSizes.fontMidMedium
   },
   textStyleDefault: {
-    color: colors.black,
+    color: colors.secondary,
     fontWeight:'600' ,
     fontSize:fontSizes.fontMidMedium
   },
@@ -412,8 +618,10 @@ const styles = StyleSheet.create({
   },
   tripCard: {
     flexDirection: 'row',
-    padding: dimensions.paddingLevel2,
+   // padding: dimensions.paddingLevel1,
     backgroundColor: colors.white,
+    paddingVertical:dimensions.paddingLevel2,
+    paddingHorizontal:4,
     alignContent:'center'
   },
   tripColumn: {
@@ -460,11 +668,11 @@ const styles = StyleSheet.create({
   },
   orderAddress: {
     fontSize: fontSizes.fontSmall,
-    color: colors.gray,
+    color: colors.secondary,
   },
   orderTime: {
     fontSize: fontSizes.fontSmall,
-    color: colors.gray,
+    color: colors.secondary,
   },
   orderCategory: {
     fontSize: fontSizes.fontSmall,
@@ -475,13 +683,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  startButton: {
-    backgroundColor: colors.primary,
-    // width:dimensions.widthLevel17,
-    // height:dimensions.heightLevel3,
-    padding: 10,
-    borderRadius: 5,
-  },
+  // startButton: {
+  //   backgroundColor: colors.primary,
+  //   padding: 10,
+  //   borderRadius: 5,
+  // },
+  
   startButtonText: {
     color: colors.white,
   },
@@ -498,11 +705,8 @@ const styles = StyleSheet.create({
   statusButton: {
     paddingVertical: 10,
     paddingHorizontal: 20,
-   // borderBottomWidth: 1,
     borderBottomColor: 'lightgray',
-  //  borderRadius: 5,
-    
-   // borderColor: colors.primary,
+
   },
   statusButtonActive: {
     borderBottomWidth: 3,
@@ -551,8 +755,108 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1.5,
     borderColor: 'lightgray',
     borderStyle: 'dashed',
-    marginVertical: 15,
+    marginVertical: 20,
   },
+  icon2: {
+    width: 20,
+    height: 20,
+    marginTop:8,
+    resizeMode: 'contain',
+  },
+  orderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: '5%',
+  },
+  iIcon: {
+    width: 18,
+    height: 18,
+  },
+//===============================
 
+buttonUpcomingStart: {
+  backgroundColor: colors.primary,
+  height:38,
+  width:dimensions.widthLevel15,
+  borderRadius:8,
+  justifyContent:'center',
+  alignItems:'center',
+  color: colors.white,
+},
+buttonUpcomingPending: {
+  backgroundColor:'lightgray',
+  height:38,
+  width:dimensions.widthLevel15,
+  borderRadius:8,
+  justifyContent:'center',
+  alignItems:'center'
+},
+buttonActiveContinue: {
+  backgroundColor: colors.primary,
+  height:38,
+  width:dimensions.widthLevel15,
+  borderRadius:8,
+  justifyContent:'center',
+  alignItems:'center'
+},
+buttonActiveEnRoute: {
+  backgroundColor: colors.white,
+  height:38,
+  width:dimensions.widthLevel15,
+  borderRadius:8,
+  borderWidth:1,
+  borderColor:"lightgray",
+  justifyContent:'center',
+  alignItems:'center'
+},
+buttonCompletedStart: {
+  backgroundColor: "lightgray",
+  height:38,
+  width:dimensions.widthLevel15,
+  borderRadius:8,
+  justifyContent:'center',
+  alignItems:'center'
+},
+buttonCompletedSuccess: {
+  backgroundColor: "#0A987F1A",
+  height:38,
+  width:dimensions.widthLevel15,
+  borderRadius:8,
+  justifyContent:'center',
+  alignItems:'center'
+},
+buttonCompletedFailed: {
+  backgroundColor: "#FF00001A",
+  height:38,
+  width:dimensions.widthLevel15,
+  borderRadius:8,
+  justifyContent:'center',
+  alignItems:'center'
+},
+buttonText: {
+  fontWeight:'500',
+  fontSize: fontSizes.fontMidMedium,
+},
+buttonTextUpcomingStart: {
+  color: '#FFFFFF',
+},
+buttonTextUpcomingPending: {
+  color:colors.secondary,
+},
+buttonTextActiveContinue: {
+  color: '#FFFFFF',
+},
+buttonTextActiveEnRoute: {
+  color: colors.black,
+},
+buttonTextCompletedStart: {
+  color:colors.secondary,
+},
+buttonTextCompletedSuccess: {
+  color: '#0CBC72',
+},
+buttonTextCompletedFailed: {
+  color: '#FF0000',
+},
 });
-

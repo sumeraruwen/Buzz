@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView ,TextInput} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView ,TextInput, Image} from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MainHeaderComponent from '../components/MainHeaderComponent';
@@ -25,6 +25,9 @@ export default function HistoryScreen() {
     setDateTo(currentDate);
   };
 
+  const sampleImage1 = require('../assets/sampleImage.webp');
+
+
   // Dummy order data
   const orders = [
     {
@@ -33,7 +36,7 @@ export default function HistoryScreen() {
       status: 'Success',
       statusColor: "#0A987F1A",
       textColor:colors.primary,
-      userImage: 'https://via.placeholder.com/150',
+      userImage: sampleImage1,
       username: 'Username',
       type: 'On-demand',
       category: 'Ride',
@@ -51,7 +54,7 @@ export default function HistoryScreen() {
       status: 'Failed',
       statusColor: '#FF00001A',
       textColor:"#FF0000",
-      userImage: 'https://via.placeholder.com/150',
+      userImage: sampleImage1,
       username: 'Username2',
       type: 'On-demand',
       category: 'Ride',
@@ -116,7 +119,8 @@ export default function HistoryScreen() {
 
 
             {/* Search Bar */}
-           <View style={{ padding: dimensions.paddingLevel3 }}>
+           {/* <View style={{ padding: dimensions.paddingLevel3 }}>
+              <View style={styles.searchContainer}>
                 <TextInput
                   placeholder="Search..."
                   style={{
@@ -127,6 +131,18 @@ export default function HistoryScreen() {
                     
                   }}
                 />
+                 <Image style={styles.searchIcon} source={require('../assets/searchIcon.webp')} />
+              </View>
+          </View> */}
+
+          <View style={{ padding: dimensions.paddingLevel3 }}>
+            <View style={styles.searchContainer}>
+              <TextInput
+                placeholder="Search..."
+                style={styles.searchInput}
+              />
+               <Image style={styles.searchIcon} source={require('../assets/searchIcon.webp')} />
+            </View>
           </View>
 
            {/* Order Cards */}
@@ -156,6 +172,25 @@ const styles = StyleSheet.create({
     borderRadius: 9,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 9,
+    paddingHorizontal: dimensions.paddingLevel2,
+    backgroundColor: '#fff',
+  },
+  searchInput: {
+    flex: 1,
+    padding: dimensions.paddingLevel2,
+    fontSize: fontSizes.fontMedium,
+  },
+ 
+  searchIcon: {
+    width: 15,
+    height: 15,
   },
   
   
