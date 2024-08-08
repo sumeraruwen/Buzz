@@ -118,18 +118,23 @@ export default function ResolutionCenterScreen({navigation}) {
           Quick Learn
         </Text>
 
-        {/* Quick Learn Section */}
-        <View style={{ flexDirection: 'row', padding: dimensions.paddingLevel3,justifyContent:"space-between", alignItems: 'center' }}>
-          <TouchableOpacity onPress={() => toggleDialog('quickTips')} style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ paddingHorizontal: dimensions.paddingLevel3 }}>
+          <TouchableOpacity onPress={() => toggleDialog('quickTips')} style={{ flexDirection: 'row', alignItems: 'center', marginRight: dimensions.paddingLevel3 }}>
             <Image source={require('../assets/playIcon.webp')} style={styles.iconCircle} />
+            <Text style={styles.title}>Quick Tips</Text>
           </TouchableOpacity>
-          <Text style={styles.title}>Quick Tips</Text>
 
-          <TouchableOpacity onPress={() => toggleDialog('deliveryManager')} style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <TouchableOpacity onPress={() => toggleDialog('deliveryManager')} style={{ flexDirection: 'row', alignItems: 'center', marginRight: dimensions.paddingLevel3 }}>
             <Image source={require('../assets/playIcon.webp')} style={styles.iconCircle} />
+            <Text style={styles.title}>Delivery Manager</Text>
           </TouchableOpacity>
-          <Text style={style=styles.title}>Delivery Manager</Text>
-        </View>
+
+          <TouchableOpacity onPress={() => toggleDialog('serviceOverview')} style={{ flexDirection: 'row', alignItems: 'center', marginRight: dimensions.paddingLevel3 }}>
+            <Image source={require('../assets/playIcon.webp')} style={styles.iconCircle} />
+            <Text style={styles.title}>Search Customer</Text>
+          </TouchableOpacity>
+        </ScrollView>
+        {/* </View> */}
 
         <Text
           style={{
@@ -315,6 +320,9 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 100,
     backgroundColor: colors.primary,
+    marginRight:10,
+   
+    
   },
   iconText: {
     color: colors.primary,

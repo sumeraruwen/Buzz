@@ -424,18 +424,6 @@ export default function SavedTripScreen() {
           activeOpacity={1}
         >
           <View style={styles.settingsModalView}>
-            {/* <View style={styles.settingsOptions}>
-              {['Open', 'Edit', 'Rename', 'Delete'].map((option) => (
-                <TouchableOpacity
-                  key={option}
-                  style={styles.settingsOption}
-                  onPress={() => handleSettingsOption(option)}
-                >
-                  <Text style={styles.settingsOptionText}>{option}</Text>
-                </TouchableOpacity>
-                 {index < options[modalType].length - 1 && <View style={styles.dottedLine} />}
-              ))}
-            </View> */}
 
             <View style={styles.settingsOptions}>
               {['Open', 'Edit', 'Rename', 'Delete'].map((option, index, array) => (

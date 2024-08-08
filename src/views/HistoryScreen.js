@@ -117,24 +117,6 @@ export default function HistoryScreen() {
           />
         )}
 
-
-            {/* Search Bar */}
-           {/* <View style={{ padding: dimensions.paddingLevel3 }}>
-              <View style={styles.searchContainer}>
-                <TextInput
-                  placeholder="Search..."
-                  style={{
-                    borderWidth: 1,
-                    borderRadius: 9,
-                    padding:dimensions.paddingLevel2,
-                    borderColor: '#ccc',
-                    
-                  }}
-                />
-                 <Image style={styles.searchIcon} source={require('../assets/searchIcon.webp')} />
-              </View>
-          </View> */}
-
           <View style={{ padding: dimensions.paddingLevel3 }}>
             <View style={styles.searchContainer}>
               <TextInput
