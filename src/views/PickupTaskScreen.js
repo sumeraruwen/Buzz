@@ -187,21 +187,15 @@ export default function PickupTaskScreen() {
         )}
         </View>
 
-        {/* <View style={styles.input}>
-          <View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}>
+                <TouchableOpacity
+          style={styles.input}
+          onPress={() => setExtraChargeModalVisible(true)}
+        >
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
             <Text style={styles.nameText}>Extra Charge and Time</Text>
             <Image style={styles.arrowIcon} source={require('../assets/rightArrow.webp')} />
           </View>
-        </View> */}
-        <TouchableOpacity
-  style={styles.input}
-  onPress={() => setExtraChargeModalVisible(true)}
->
-  <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-    <Text style={styles.nameText}>Extra Charge and Time</Text>
-    <Image style={styles.arrowIcon} source={require('../assets/rightArrow.webp')} />
-  </View>
-</TouchableOpacity>
+        </TouchableOpacity>
 
 
         <View style={styles.dottedLine} />
@@ -319,20 +313,20 @@ export default function PickupTaskScreen() {
         </View>
       </Modal>
 
-      <Modal
-  animationType="none"
-  transparent={true}
-  visible={extraChargeModalVisible}
-  onRequestClose={() => setExtraChargeModalVisible(!extraChargeModalVisible)}
->
-  <View style={styles.centeredView}>
-    <View style={styles.modalView}>
-      <View style={styles.modalHeader}>
-        <Text style={styles.modalText}>Request</Text>
-        <TouchableOpacity onPress={() => setExtraChargeModalVisible(!extraChargeModalVisible)}>
-          <Image style={styles.closeIcon} source={require('../assets/closeIcon.webp')} />
-        </TouchableOpacity>
-      </View>
+            <Modal
+        animationType="none"
+        transparent={true}
+        visible={extraChargeModalVisible}
+        onRequestClose={() => setExtraChargeModalVisible(!extraChargeModalVisible)}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalText}>Request</Text>
+              <TouchableOpacity onPress={() => setExtraChargeModalVisible(!extraChargeModalVisible)}>
+                <Image style={styles.closeIcon} source={require('../assets/closeIcon.webp')} />
+              </TouchableOpacity>
+            </View>
 
       <View style={styles.line} />
 
@@ -366,12 +360,27 @@ export default function PickupTaskScreen() {
 
       <Text style={styles.switchLabel}>Extra Charge/Tip</Text>
       {dateExtension && (
+        // <TextInput
+        //   style={styles.input}
+        //   placeholder="MM-DD-YY"
+        //   value={dateExtension}
+        //   onChangeText={setDateExtension}
+        // />
+        <View style={styles.inputContainer}>
         <TextInput
-          style={styles.input}
+          style={styles.input2}
           placeholder="MM-DD-YY"
           value={dateExtension}
           onChangeText={setDateExtension}
         />
+        <TouchableOpacity style={styles.iconContainer}>
+          <Image
+            source={require('../assets/calenderIcon.webp')} // Replace with your icon's path
+            style={styles.icon2}
+          />
+        </TouchableOpacity>
+      </View>
+      
       )}
 
       <Text style={{fontSize: fontSizes.fontMediumPlus, padding: dimensions.paddingLevel3,color:colors.black,fontWeight:'600',}}>Description</Text>
@@ -620,18 +629,11 @@ const styles = StyleSheet.create({
     fontSize: fontSizes.fontMediumPlus,
     fontWeight: '600',
   },
-  centeredView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background
-  },
+
   modalView: {
    // margin: 20,
     backgroundColor: 'white',
     borderRadius: 15,
-   //  width:dimensions.widthLevel3,
-    // height:dimensions.heightLevel13,
     width: 320,
     padding: dimensions.paddingLevel1,
     shadowColor: '#000',
@@ -761,7 +763,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 5,
     //paddingHorizontal: 55,
-    margin: 10,
+    margin: 5,
   },
   submitButton: {
     backgroundColor: colors.primary,
@@ -802,6 +804,27 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  input2: {
+    flex: 1, // Take up all available space
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+  },
+  iconContainer: {
+    padding: 5, // Adjust padding as needed
+  },
+  icon2: {
+    width: 20,
+    height: 20, // Adjust size as needed
   },
   
 });
