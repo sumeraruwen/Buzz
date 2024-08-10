@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, ScrollView, StyleSheet, Image, TouchableOpacity, Switch,Modal } from 'react-native';
+import React,{useState} from 'react';
+import { View, Text, ScrollView, StyleSheet, Image, TouchableOpacity, Switch,Modal,TextInput } from 'react-native';
 import { BarChart, Grid, XAxis } from 'react-native-svg-charts';
 import { colors, dimensions, fontSizes, imageSizes } from '../styles/constants';
 import MainHeaderComponent from '../components/MainHeaderComponent';
@@ -26,7 +26,14 @@ export default function EarningsScreen() {
     { dateRange: 'Feb 19 - Feb 26', amount: '$0.00' }
   ]);
 
-  
+  const [settingsModalVisible, setSettingsModalVisible] = React.useState(false);
+  const [selectedYear, setSelectedYear] = useState(2024);
+  const [selectedMonth, setSelectedMonth] = useState('');
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+  const handleYearChange = (direction) => {
+    setSelectedYear(selectedYear + direction);
+  };
 
   const [totalEarnings, setTotalEarnings] = React.useState('$100.00');
 
@@ -38,11 +45,13 @@ export default function EarningsScreen() {
     setModalVisible(false);
   };
 
-  // const handleDateRangeSelect = (dateRange, amount) => {
-  //   setSelectedDateRange(dateRange);
-  //   setTotalEarnings(amount);
-  //   setModalVisible(false);
-  // };
+  const openSettingsModal = () => {
+    setSettingsModalVisible(true);
+  };
+  
+  const closeSettingsModal = () => {
+    setSettingsModalVisible(false);
+  };
 
   const handleDateRangeSelect = (index, dateRange, amount) => {
     setSelectedDateRange(dateRange);
@@ -78,47 +87,6 @@ export default function EarningsScreen() {
         </Text>
         
         {/* Date Range Selector and Total Earnings */}
-
-        {/* <View style={styles.orderSummary}>
-        <View style={styles.dateRangeContainer}>
-          <TouchableOpacity style={styles.dateRangeButton} onPress={openModal}>
-            <Text style={styles.dateRangeText}>{selectedDateRange}  </Text>
-            <Image style={styles.downArrowIcon} source={require('../assets/downArrow.webp')} />
-          </TouchableOpacity>
-
-          <Text style={styles.totalEarnings}>{totalEarnings}</Text>
-        </View>
-        
-        <View style={{ height: 200, padding: 20 }}>
-          <BarChart
-            style={{ height: 180 }}
-            data={data}
-            svg={{ fill: colors.primary }} // Customize the bar color
-            contentInset={{ top: 10, bottom: 40 }}
-            spacing={5.8}
-          >
-            <Grid />
-          </BarChart>
-          <View style={styles.chartBottom}>
-              <XAxis
-                style={styles.xAxis}
-                data={data}
-                formatLabel={(value, index) => xLabels[index]}
-                contentInset={{ left: 10, right: 10 }}
-                svg={{ fontSize: 10, fill: 'black' }}
-                
-              />
-              <View style={styles.dateLabelsContainer}>
-                {dates.map((date, index) => (
-                  <Text key={index} style={styles.dateLabel}>{date}</Text>
-                ))}
-              </View>
-            </View>
-        </View>
-        </View> */}
-
-         
-        {/* Date Range Selector and Total Earnings */}
         <View style={styles.orderSummary}>
           <View style={styles.dateRangeContainer}>
             <TouchableOpacity style={styles.dateRangeButton} onPress={openModal}>
@@ -130,33 +98,35 @@ export default function EarningsScreen() {
           </View>
 
           <View style={styles.chartContainer}>
-            <BarChart
-              style={styles.barChart}
-              data={data}
-              svg={{ fill: colors.primary }} // Customize the bar color
-              contentInset={{ top: 10, bottom: 40 }}
-              spacing={0.2} // Adjust spacing between bars
-            >
-              <Grid />
-            </BarChart>
+          <BarChart
+            style={styles.barChart}
+            data={data}
+            svg={{ fill: colors.primary }} // Customize the bar color
+            contentInset={{ top: 10, bottom: 40 }}
+            spacingInner={0.18} // Adjust inner spacing between bars
+            spacingOuter={0.01} // Adjust outer spacing (between first/last bar and chart edge)
+          >
+            <Grid />
+          </BarChart>
 
-            <View style={styles.xAxisContainer}>
-              <XAxis
-                style={styles.xAxis}
-                data={data}
-                formatLabel={(value, index) => xLabels[index]}
-                contentInset={{ left: 10, right: 10 }}
-                svg={{ fontSize: 10, fill: 'black' }}
-              />
-              <View style={styles.dateLabelsContainer}>
-                {dates.map((date, index) => (
-                  <View key={index} style={styles.dateLabelContainer}>
-                    {/* <Text style={styles.dateLabel}>{date}</Text> */}
-                  </View>
-                ))}
-              </View>
+          <View style={styles.xAxisContainer}>
+            <XAxis
+              style={styles.xAxis}
+              data={data}
+              formatLabel={(value, index) => xLabels[index]}
+              contentInset={{ left: 10, right: 10, }}
+              svg={{ fontSize: 11, fill: '#000000',fontWeight: 'bold' }}
+            />
+            <View style={styles.dateLabelsContainer}>
+              {dates.map((date, index) => (
+                <View key={index} style={styles.dateLabelContainer}>
+                  <Text style={styles.dateLabel}>{date}</Text>
+                </View>
+              ))}
             </View>
           </View>
+        </View>
+
         </View>
 
         <View style={styles.sectionHeader}>
@@ -223,8 +193,8 @@ export default function EarningsScreen() {
             <TouchableOpacity style={styles.downloadButton}>
             <Text style={styles.downloadButtonText}>Download Current Statement</Text>
           </TouchableOpacity>
-          <TouchableOpacity>
-          <Image style={styles.icon2} source={require('../assets/settingsIcon.webp')} />
+          <TouchableOpacity onPress={openSettingsModal}>
+            <Image style={styles.icon2} source={require('../assets/settingsIcon.webp')} />
           </TouchableOpacity>
         </View>
         </View>
@@ -237,31 +207,6 @@ export default function EarningsScreen() {
           </TouchableOpacity>
         </View>
         {showDepositsAndTransfer && (
-        // <View style={styles.transferSummary}>
-        //   <View style={[styles.transferSummaryRow, styles.borderBottom]}>
-        //     <View style={styles.transferIconContainer}>
-        //       <Image style={styles.transferIcon} source={require('../assets/bankIcon.webp')} />
-        //     </View>
-        //     <View style={styles.transferTextContainer}>
-        //       <View>
-        //       <Text style={styles.transferTitle}>Link Bank Account</Text>
-        //       <Text style={styles.transferSubtitle}>Receive without paying a fee</Text>
-        //       </View>
-        //       <Image source={require('../assets/rightArrow.webp')} style={styles.rightArrowIcon} />
-              
-        //     </View>
-        //   </View>
-        //   <View style={styles.transferSummaryRow}>
-        //     <View style={styles.transferIconContainer}>
-        //       <Image style={styles.transferIcon} source={require('../assets/bankCardIcon.webp')} />
-        //     </View>
-        //     <View style={styles.transferTextContainer}>
-        //       <Text style={styles.transferTitle}>Add Debit Card</Text>
-        //       <Text style={styles.transferSubtitle}>Instant fee: $1.90</Text>
-        //       <Image source={require('../assets/rightArrow.webp')} style={styles.rightArrowIcon} />
-        //     </View>
-        //   </View>
-        // </View>
 
         <View style={styles.transferSummary}>
       <View style={[styles.transferSummaryRow, styles.borderBottom]}>
@@ -357,6 +302,75 @@ export default function EarningsScreen() {
         </View>
       </Modal>
 
+             <Modal
+        animationType="none"
+        transparent={true}
+        visible={settingsModalVisible}
+        onRequestClose={closeSettingsModal}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+          <View style={styles.modalHeader}>
+            <Text style={styles.modalTitle}>Statement by Month</Text>
+            <TouchableOpacity onPress={() => setSettingsModalVisible(!settingsModalVisible)}>
+              <Image
+                source={require('../assets/closeIcon.webp')}
+                style={styles.closeIcon}
+              />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.line} />
+      
+          <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.textInput}
+            placeholder="Select Month"
+            value={`${selectedMonth} ${selectedYear}`}
+            />
+            <TouchableOpacity  style={styles.iconContainer}>
+              <Image
+                source={require('../assets/calenderIcon.webp')} // Replace with your icon's path
+                style={styles.icon}
+              />
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.yearSelector}>
+            <TouchableOpacity onPress={() => handleYearChange(-1)}>
+              <Image source={require('../assets/rightArrow.webp')} style={styles.leftArrowIcon} />
+            </TouchableOpacity>
+            <Text style={styles.yearText}>{selectedYear}</Text>
+            <TouchableOpacity onPress={() => handleYearChange(1)}>
+              <Image source={require('../assets/rightArrow.webp')} style={styles.rightArrowIcon2} />
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.monthGrid}>
+            {months.map((month, index) => (
+              <TouchableOpacity
+                key={index}
+                style={[
+                  styles.monthItem,
+                  selectedMonth === month && styles.selectedMonth
+                ]}
+                onPress={() => setSelectedMonth(month)}
+              >
+                <Text style={[
+              styles.monthText,
+              selectedMonth === month && styles.selectedMonthText
+            ]}>{month}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+
+          <View style={styles.dottedLine} />
+          <TouchableOpacity style={styles.downloadButton}>
+            <Text style={styles.downloadButtonText}>Download</Text>
+          </TouchableOpacity>
+          </View>
+        </View>
+      </Modal> 
+
     </View>
   );
 }
@@ -390,38 +404,6 @@ const styles = StyleSheet.create({
     fontSize: fontSizes.fontXLarge,
     fontWeight: '700',
     color: colors.black,
-  },
-  chartContainer: {
-    marginTop: 20,
-  },
-  barChart: {
-    height: 200,
-  },
-  xAxisContainer: {
-    marginTop: 10,
-    paddingHorizontal: 10,
-    position: 'relative',
-  },
-  xAxis: {
-    height: 20,
-  },
-  dateLabelsContainer: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-    marginTop: -10, // Adjust this margin based on your needs
-  },
-  dateLabelContainer: {
-    alignItems: 'center',
-    flex: 1,
-  },
-  dateLabel: {
-    fontSize: 10,
-    color: 'black',
   },
   sectionHeader: {
     flexDirection: 'row',
@@ -525,61 +507,7 @@ const styles = StyleSheet.create({
     marginTop:15,
     resizeMode: 'contain',
   },
-  // transferSummary: {
-  //   borderWidth: 1,
-  //   borderColor: "lightgray",
-  //   borderRadius: 10,
-  //   margin: dimensions.paddingLevel3,
-  // },
-  // transferSummaryRow: {
-  //   flexDirection: 'row',
-  //   justifyContent: 'space-between',
-  //   alignItems: 'center',
-  //   borderColor: "lightgray",
-  //   padding: dimensions.paddingLevel3,
-  // },
-  // borderBottom: {
-  //   borderBottomWidth: 1,
-  //   borderBottomColor: "gray",
-  // },
-  // transferIconContainer: {
-  //   width: 55,
-  //   height: 55,
-  //   borderWidth: 1,
-  //   borderColor: "lightgray",
-  //   borderRadius:7,
-  //   backgroundColor: colors.white,
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  //   marginRight: dimensions.paddingLevel3,
-  // },
-  // transferTextContainer: {
-  //   flex: 1,
-  //   flexDirection: 'row', // Added this to ensure row direction
-  //   alignItems: 'center', // Align items in the center vertically
-  //   justifyContent: 'space-between', // Distribute space between text and arrow
-  // },
-  // transferIcon: {
-  //   width: 35,
-  //   height: 35,
-  // },
-  // transferTextContainer: {
-  //   flex: 1,
-  
-  // },
-  // rightArrowIcon: {
-  //   width: 16,
-  //   height: 16,
-  // },
-  // transferTitle: {
-  //   fontSize: fontSizes.fontMediumPlus,
-  //   fontWeight: '600',
-  //   color: colors.black,
-  // },
-  // transferSubtitle: {
-  //   fontSize: fontSizes.fontMedium,
-  //   color: colors.secondary,
-  // },
+
   paymentContainer: {
     backgroundColor: colors.black,
     borderRadius: 15,
@@ -738,6 +666,21 @@ const styles = StyleSheet.create({
     height: 16,
     transform: [{ translateY: -10 }], // Center the arrow vertically
   },
+  rightArrowIcon2: {
+    position: 'absolute',
+    right: 0,
+   // top: '50%',
+    width: 16,
+    height: 16,
+    transform: [{ translateY: -10 }], // Center the arrow vertically
+  },
+  leftArrowIcon: {
+    width: 16,
+    height: 16,
+    position: 'absolute',
+    transform: [{ translateY: -10 },{ scaleX: -1}],
+
+  },
   transferTitle: {
     fontSize: fontSizes.fontMediumPlus,
     fontWeight: '600',
@@ -747,8 +690,112 @@ const styles = StyleSheet.create({
     fontSize: fontSizes.fontMedium,
     color: colors.secondary,
   },
-  
+
+  chartContainer: {
+    marginTop: 20,
+  },
+  barChart: {
+    height: 200,
+  },
+  xAxisContainer: {
+    marginTop: 0,
+    paddingHorizontal: 8,
+    position: 'relative',
+  },
+  xAxis: {
+    height: 20,
+  },
+  dateLabelsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 3,
+    marginTop: -6, 
+    marginBottom:10
+  },
+  dateLabelContainer: {
+    alignItems: 'center',
+  },
+  dateLabel: {
+    fontSize: fontSizes.fontSmallPlus,
+    color: 'black',
+    fontWeight:'700'
+  },
+  yearSelector: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
+    marginBottom: 20,
+  },
+  yearText: {
+    fontSize: fontSizes.fontMediumPlus,
+    justifyContent:'center',
+    alignItems:'center',
+    fontWeight: 'bold',
+    color:colors.secondary
+  },
+  monthGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  monthItem: {
+    width: '22%',
+    padding: 12,
+    alignItems: 'center',
+    marginVertical: 5,
+
+  },
+  selectedMonth: {
+    backgroundColor:colors.primary,
+    borderColor: colors.white,
+    borderWidth: 1,
+    borderRadius:500,
+    color:"white",
+    width: 50, // Ensure width and height are equal
+    height: 50, 
+  },
+  selectedMonthText: {
+    color:colors.white, // Selected color
+  },
+  monthText: {
+    color:colors.secondary,
+  },
+  textInput: {
+    height: 40,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingLeft: 8,
+    marginVertical: 20,
+    width: '100%',
+    color:colors.black
+  },
+  dottedLine: {
+    borderBottomWidth: 1.5,
+    borderColor: '#ccc',
+    borderStyle: 'dashed',
+    marginVertical: '2%',
+    marginTop: '10%'
+  },
+
+  inputContainer: {
+    position: 'relative',
+    width: '100%',
+  },
+ 
+  iconContainer: {
+    position: 'absolute',
+    right: 10,
+    top: '50%',
+    transform: [{ translateY: -12 }], // Adjust vertically to center the icon
+    width: 24,
+    height: 24,
+  },
+ 
 });
+
 
 
 

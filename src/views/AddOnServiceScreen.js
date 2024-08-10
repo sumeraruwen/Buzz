@@ -9,6 +9,10 @@ export default function AddOnServiceScreen() {
   const [isRatePerHourEnabled, setIsRatePerHourEnabled] = useState(false);
   const [isRatePerDayEnabled, setIsRatePerDayEnabled] = useState(false);
   const [isEquipmentRentalEnabled, setIsEquipmentRentalEnabled] = useState(false);
+
+  const [isBoxingUnboxingEnabled, setIsBoxingUnboxingEnabled] = useState(false);
+  const [isAssemblingDisassemblingEnabled, setIsAssemblingDisassemblingEnabled] = useState(false);
+
   
   const [expandedSections, setExpandedSections] = useState({
     fourWheelDolly: false,
@@ -30,6 +34,15 @@ export default function AddOnServiceScreen() {
     loading: ['', '', '', ''],
     unloading: ['', '', '', '']
   });
+
+   // Function to handle switch toggling for Boxing/Unboxing Help and Assembling/Disassembling sections
+   const handleBoxingUnboxingSwitch = () => {
+    setIsBoxingUnboxingEnabled(!isBoxingUnboxingEnabled);
+  };
+
+  const handleAssemblingDisassemblingSwitch = () => {
+    setIsAssemblingDisassemblingEnabled(!isAssemblingDisassemblingEnabled);
+  };
 
   const renderEquipmentRow = (label, sectionKey) => (
     <View key={sectionKey} style={styles.equipmentRow}>
@@ -59,13 +72,14 @@ export default function AddOnServiceScreen() {
         <View style={styles.expandedContent}>
         <View style={styles.inputRow}>
           <Text style={styles.inputLabel}>Base Price</Text>
-          <TextInput style={styles.textInput} keyboardType="numeric" placeholder="$" />
+          <TextInput style={styles.textInput} keyboardType="numeric" placeholder="$"  editable={isBasePriceEnabled} />
           <Switch
             trackColor={{ false: colors.secondary, true: colors.primary }}
             thumbColor={isBasePriceEnabled ? colors.white : colors.white}
             ios_backgroundColor={colors.secondary}
             onValueChange={() => setIsBasePriceEnabled((prevState) => !prevState)}
             value={isBasePriceEnabled}
+           
           />
         </View>
         <View style={styles.dottedLine} />
@@ -83,7 +97,7 @@ export default function AddOnServiceScreen() {
         <View style={styles.dottedLine} />
         <View style={styles.inputRow}>
           <Text style={styles.inputLabel}>Rate Per Day</Text>
-          <TextInput style={styles.textInput} keyboardType="numeric" placeholder="$" />
+          <TextInput style={styles.textInput} keyboardType="numeric" placeholder="$"  editable={isBasePriceEnabled} />
           <Switch
             trackColor={{ false: colors.secondary, true: colors.primary }}
             thumbColor={isRatePerDayEnabled ? colors.white : colors.white}
@@ -171,6 +185,7 @@ export default function AddOnServiceScreen() {
                 style={styles.textInput2}
                 keyboardType="numeric"
                 placeholder="$"
+                
               />
               <Switch
                 trackColor={{ false: colors.secondary, true: colors.primary }}
@@ -207,8 +222,8 @@ export default function AddOnServiceScreen() {
             trackColor={{ false: colors.secondary, true: colors.primary }}
             thumbColor={isRatePerDayEnabled ? colors.white : colors.white}
             ios_backgroundColor={colors.secondary}
-            onValueChange={() => setIsBasePriceEnabled(previousState => !previousState)}
-            value={isBasePriceEnabled}
+             onValueChange={handleBoxingUnboxingSwitch}
+          value={isBoxingUnboxingEnabled}           
           />
         </View>
 
@@ -219,13 +234,16 @@ export default function AddOnServiceScreen() {
               style={styles.textInput2}
               keyboardType="numeric"
               placeholder="$"
+              editable={isBoxingUnboxingEnabled}
             />
             <Switch
               trackColor={{ false: colors.secondary, true: colors.primary }}
               thumbColor={isRatePerDayEnabled ? colors.white : colors.white}
               ios_backgroundColor={colors.secondary}
-              onValueChange={() => setIsRatePerDayEnabled(previousState => !previousState)}
-              value={isRatePerDayEnabled}
+           // onValueChange={() => setIsRatePerDayEnabled(previousState => !previousState)}
+           // value={isRatePerDayEnabled}
+                onValueChange={handleBoxingUnboxingSwitch}
+                value={isBoxingUnboxingEnabled}
             />
           </View>
           <View style={[styles.boxCardRow, styles.borderBottom]}>
@@ -234,13 +252,16 @@ export default function AddOnServiceScreen() {
               style={styles.textInput2}
               keyboardType="numeric"
               placeholder="$"
+             editable={isBoxingUnboxingEnabled}
             />
             <Switch
               trackColor={{ false: colors.secondary, true: colors.primary }}
               thumbColor={isRatePerDayEnabled ? colors.white : colors.white}
               ios_backgroundColor={colors.secondary}
-              onValueChange={() => setIsRatePerDayEnabled(previousState => !previousState)}
-              value={isRatePerDayEnabled}
+             // onValueChange={() => setIsRatePerDayEnabled(previousState => !previousState)}
+            //  value={isRatePerDayEnabled}
+              onValueChange={handleBoxingUnboxingSwitch}
+              value={isBoxingUnboxingEnabled}
             />
           </View>
           <View style={styles.boxCardRow}>
@@ -249,13 +270,16 @@ export default function AddOnServiceScreen() {
               style={styles.textInput2}
               keyboardType="numeric"
               placeholder="$"
+              editable={isBoxingUnboxingEnabled}
             />
             <Switch
               trackColor={{ false: colors.secondary, true: colors.primary }}
               thumbColor={isRatePerDayEnabled ? colors.white : colors.white}
               ios_backgroundColor={colors.secondary}
-              onValueChange={() => setIsRatePerDayEnabled(previousState => !previousState)}
-              value={isRatePerDayEnabled}
+           //   onValueChange={() => setIsRatePerDayEnabled(previousState => !previousState)}
+           //   value={isRatePerDayEnabled}
+                onValueChange={handleBoxingUnboxingSwitch}
+                value={isBoxingUnboxingEnabled}
             />
           </View>
         </View>
@@ -268,8 +292,10 @@ export default function AddOnServiceScreen() {
             trackColor={{ false: colors.secondary, true: colors.primary }}
             thumbColor={isRatePerDayEnabled ? colors.white : colors.white}
             ios_backgroundColor={colors.secondary}
-            onValueChange={() => setIsBasePriceEnabled(previousState => !previousState)}
-            value={isBasePriceEnabled}
+           // onValueChange={() => setIsBasePriceEnabled(previousState => !previousState)}
+           // value={isBasePriceEnabled}
+            onValueChange={handleAssemblingDisassemblingSwitch}
+            value={isAssemblingDisassemblingEnabled}
           />
         </View>
 
@@ -280,13 +306,16 @@ export default function AddOnServiceScreen() {
               style={styles.textInput2}
               keyboardType="numeric"
               placeholder="$"
+              editable={isAssemblingDisassemblingEnabled}
             />
             <Switch
               trackColor={{ false: colors.secondary, true: colors.primary }}
               thumbColor={isRatePerDayEnabled ? colors.white : colors.white}
               ios_backgroundColor={colors.secondary}
-              onValueChange={() => setIsRatePerDayEnabled(previousState => !previousState)}
-              value={isRatePerDayEnabled}
+              //  onValueChange={() => setIsRatePerDayEnabled(previousState => !previousState)}
+             // value={isRatePerDayEnabled}
+              onValueChange={handleAssemblingDisassemblingSwitch}
+              value={isAssemblingDisassemblingEnabled}
             />
           </View>
           <View style={[styles.boxCardRow, styles.borderBottom]}>
@@ -295,13 +324,16 @@ export default function AddOnServiceScreen() {
               style={styles.textInput2}
               keyboardType="numeric"
               placeholder="$"
+              editable={isAssemblingDisassemblingEnabled}
             />
             <Switch
               trackColor={{ false: colors.secondary, true: colors.primary }}
               thumbColor={isRatePerDayEnabled ? colors.white : colors.white}
               ios_backgroundColor={colors.secondary}
-              onValueChange={() => setIsRatePerDayEnabled(previousState => !previousState)}
-              value={isRatePerDayEnabled}
+              // onValueChange={() => setIsRatePerDayEnabled(previousState => !previousState)}
+              // value={isRatePerDayEnabled}
+              onValueChange={handleAssemblingDisassemblingSwitch}
+              value={isAssemblingDisassemblingEnabled}
             />
           </View>
           <View style={styles.boxCardRow}>
@@ -310,13 +342,16 @@ export default function AddOnServiceScreen() {
               style={styles.textInput2}
               keyboardType="numeric"
               placeholder="$"
+              editable={isAssemblingDisassemblingEnabled}
             />
             <Switch
               trackColor={{ false: colors.secondary, true: colors.primary }}
               thumbColor={isRatePerDayEnabled ? colors.white : colors.white}
               ios_backgroundColor={colors.secondary}
-              onValueChange={() => setIsRatePerDayEnabled(previousState => !previousState)}
-              value={isRatePerDayEnabled}
+              // onValueChange={() => setIsRatePerDayEnabled(previousState => !previousState)}
+              // value={isRatePerDayEnabled}
+              onValueChange={handleAssemblingDisassemblingSwitch}
+              value={isAssemblingDisassemblingEnabled}
             />
           </View>
         </View>

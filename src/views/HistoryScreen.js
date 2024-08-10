@@ -1,32 +1,212 @@
+// import React, { useState } from 'react';
+// import { View, Text, StyleSheet, TouchableOpacity, ScrollView ,TextInput, Image} from 'react-native';
+// import DateTimePicker from '@react-native-community/datetimepicker';
+// import Icon from 'react-native-vector-icons/Ionicons';
+// import MainHeaderComponent from '../components/MainHeaderComponent';
+// import { colors, dimensions, fontSizes } from '../styles/constants';
+// import OrderCardComponent from '../components/OrderCardComponent ';
+
+
+// export default function HistoryScreen() {
+//   const [dateFrom, setDateFrom] = useState(new Date());
+//   const [dateTo, setDateTo] = useState(new Date());
+//   const [showDateFrom, setShowDateFrom] = useState(false);
+//   const [showDateTo, setShowDateTo] = useState(false);
+
+//   const onChangeFromDate = (event, selectedDate) => {
+//     const currentDate = selectedDate || dateFrom;
+//     setShowDateFrom(Platform.OS === 'ios');
+//     setDateFrom(currentDate);
+//   };
+
+//   const onChangeToDate = (event, selectedDate) => {
+//     const currentDate = selectedDate || dateTo;
+//     setShowDateTo(Platform.OS === 'ios');
+//     setDateTo(currentDate);
+//   };
+
+//   const sampleImage1 = require('../assets/sampleImage.webp');
+
+
+//   // Dummy order data
+//   const orders = [
+//     {
+//       number: '123456',
+//       date: '02/26/23',
+//       status: 'Success',
+//       statusColor: "#0A987F1A",
+//       textColor:colors.primary,
+//       userImage: sampleImage1,
+//       username: 'Username',
+//       type: 'On-demand',
+//       category: 'Ride',
+//       from: 'City, ST, Zipcode',
+//       to: 'City, ST, Zipcode',
+//       distance: '10 Miles',
+//       time: '01:12 hr',
+//       cost: 80,
+//       extraCharge: 10,
+//       totalCost: 90,
+//     },
+//     {
+//       number: '123457',
+//       date: '02/27/23',
+//       status: 'Failed',
+//       statusColor: '#FF00001A',
+//       textColor:"#FF0000",
+//       userImage: sampleImage1,
+//       username: 'Username2',
+//       type: 'On-demand',
+//       category: 'Ride',
+//       from: 'City, ST, Zipcode',
+//       to: 'City, ST, Zipcode',
+//       distance: '12 Miles',
+//       time: '01:20 hr',
+//       cost: 100,
+//       extraCharge: 15,
+//       totalCost: 115,
+//     },
+//   ];
+
+
+//   return (
+//     <View style={{ flex: 1 , backgroundColor:colors.white }}>
+//       <MainHeaderComponent title="History" />
+//       <ScrollView> 
+//         <Text
+//           style={{
+//             fontSize: fontSizes.fontLarge,
+//             fontWeight: '700',
+//            // marginLeft: '6%',
+//            padding:dimensions.paddingLevel3,
+//             marginTop: '5%',
+//             color: colors.black,
+//           }}
+//         >
+//           Move History
+//         </Text>
+
+//         <View style={styles.dateContainer}>
+//           <TouchableOpacity onPress={() => setShowDateFrom(true)} style={styles.dateInput}>
+//             <Text style={{ color: "gray"}}>
+//               From: {dateFrom.toLocaleDateString()}
+//             </Text>
+//           </TouchableOpacity>
+//           <Text>____</Text>
+//           <TouchableOpacity onPress={() => setShowDateTo(true)} style={styles.dateInput}>
+//             <Text style={{ color:"gray" }}>
+//               To: {dateTo.toLocaleDateString()}
+//             </Text>
+//           </TouchableOpacity>
+//         </View>
+
+//         {showDateFrom && (
+//           <DateTimePicker
+//             value={dateFrom}
+//             mode="date"
+//             display="default"
+//             onChange={onChangeFromDate}
+//           />
+//         )}
+//         {showDateTo && (
+//           <DateTimePicker
+//             value={dateTo}
+//             mode="date"
+//             display="default"
+//             onChange={onChangeToDate}
+//           />
+//         )}
+
+//           <View style={{ padding: dimensions.paddingLevel3 }}>
+//             <View style={styles.searchContainer}>
+//               <TextInput
+//                 placeholder="Search..."
+//                 style={styles.searchInput}
+//               />
+//                <Image style={styles.searchIcon} source={require('../assets/searchIcon.webp')} />
+//             </View>
+//           </View>
+
+//            {/* Order Cards */}
+//         {orders.map(order => (
+//           <OrderCardComponent key={order.number} order={order} />
+//         ))}
+
+//       </ScrollView>
+//     </View>
+//   );
+// }
+
+// const styles = StyleSheet.create({
+//   dateContainer: {
+//     flexDirection: 'row',
+//     justifyContent: 'space-between',
+//     marginHorizontal: '5%',
+//    // marginTop: '6%',
+//     alignItems:"center"
+//   },
+//   dateInput: {
+   
+//    // marginHorizontal: 5,
+//     borderWidth: 1,
+//     borderColor: '#ccc',
+//     padding: dimensions.paddingLevel3,
+//     borderRadius: 9,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//   },
+//   searchContainer: {
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//     borderWidth: 1,
+//     borderColor: '#ccc',
+//     borderRadius: 9,
+//     paddingHorizontal: dimensions.paddingLevel2,
+//     backgroundColor: '#fff',
+//   },
+//   searchInput: {
+//     flex: 1,
+//     padding: dimensions.paddingLevel2,
+//     fontSize: fontSizes.fontMedium,
+//   },
+ 
+//   searchIcon: {
+//     width: 15,
+//     height: 15,
+//   },
+  
+  
+// });
+
+
+
+
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView ,TextInput, Image} from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, Image, Modal } from 'react-native';
 import MainHeaderComponent from '../components/MainHeaderComponent';
 import { colors, dimensions, fontSizes } from '../styles/constants';
 import OrderCardComponent from '../components/OrderCardComponent ';
-
+import CalendarModal from '../components/CalenderModal'; // Assume this is the custom calendar picker component
+import SearchBarComponent from '../components/SearchBarComponent';
 
 export default function HistoryScreen() {
   const [dateFrom, setDateFrom] = useState(new Date());
   const [dateTo, setDateTo] = useState(new Date());
   const [showDateFrom, setShowDateFrom] = useState(false);
   const [showDateTo, setShowDateTo] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
-  const onChangeFromDate = (event, selectedDate) => {
-    const currentDate = selectedDate || dateFrom;
-    setShowDateFrom(Platform.OS === 'ios');
-    setDateFrom(currentDate);
+  const onChangeFromDate = (selectedDate) => {
+    setDateFrom(selectedDate);
+    setShowDateFrom(false);
   };
 
-  const onChangeToDate = (event, selectedDate) => {
-    const currentDate = selectedDate || dateTo;
-    setShowDateTo(Platform.OS === 'ios');
-    setDateTo(currentDate);
+  const onChangeToDate = (selectedDate) => {
+    setDateTo(selectedDate);
+    setShowDateTo(false);
   };
 
   const sampleImage1 = require('../assets/sampleImage.webp');
-
 
   // Dummy order data
   const orders = [
@@ -35,7 +215,7 @@ export default function HistoryScreen() {
       date: '02/26/23',
       status: 'Success',
       statusColor: "#0A987F1A",
-      textColor:colors.primary,
+      textColor: colors.primary,
       userImage: sampleImage1,
       username: 'Username',
       type: 'On-demand',
@@ -53,7 +233,7 @@ export default function HistoryScreen() {
       date: '02/27/23',
       status: 'Failed',
       statusColor: '#FF00001A',
-      textColor:"#FF0000",
+      textColor: "#FF0000",
       userImage: sampleImage1,
       username: 'Username2',
       type: 'On-demand',
@@ -68,17 +248,15 @@ export default function HistoryScreen() {
     },
   ];
 
-
   return (
-    <View style={{ flex: 1 , backgroundColor:colors.white }}>
+    <View style={{ flex: 1, backgroundColor: colors.white }}>
       <MainHeaderComponent title="History" />
-      <ScrollView> 
+      <ScrollView>
         <Text
           style={{
             fontSize: fontSizes.fontLarge,
             fontWeight: '700',
-           // marginLeft: '6%',
-           padding:dimensions.paddingLevel3,
+            padding: dimensions.paddingLevel3,
             marginTop: '5%',
             color: colors.black,
           }}
@@ -88,46 +266,41 @@ export default function HistoryScreen() {
 
         <View style={styles.dateContainer}>
           <TouchableOpacity onPress={() => setShowDateFrom(true)} style={styles.dateInput}>
-            <Text style={{ color: "gray"}}>
+            <Text style={{ color: "gray" }}>
               From: {dateFrom.toLocaleDateString()}
             </Text>
           </TouchableOpacity>
           <Text>____</Text>
           <TouchableOpacity onPress={() => setShowDateTo(true)} style={styles.dateInput}>
-            <Text style={{ color:"gray" }}>
+            <Text style={{ color: "gray" }}>
               To: {dateTo.toLocaleDateString()}
             </Text>
           </TouchableOpacity>
         </View>
 
-        {showDateFrom && (
-          <DateTimePicker
-            value={dateFrom}
-            mode="date"
-            display="default"
-            onChange={onChangeFromDate}
-          />
-        )}
-        {showDateTo && (
-          <DateTimePicker
-            value={dateTo}
-            mode="date"
-            display="default"
-            onChange={onChangeToDate}
-          />
-        )}
+        <CalendarModal
+          visible={showDateFrom}
+          onClose={() => setShowDateFrom(false)}
+          onSelectDate={onChangeFromDate}
+          selectedDate={dateFrom}
+        />
 
-          <View style={{ padding: dimensions.paddingLevel3 }}>
-            <View style={styles.searchContainer}>
-              <TextInput
-                placeholder="Search..."
-                style={styles.searchInput}
-              />
-               <Image style={styles.searchIcon} source={require('../assets/searchIcon.webp')} />
-            </View>
-          </View>
+        <CalendarModal
+          visible={showDateTo}
+          onClose={() => setShowDateTo(false)}
+          onSelectDate={onChangeToDate}
+          selectedDate={dateTo}
+        />
 
-           {/* Order Cards */}
+        <View style={{ padding: dimensions.paddingLevel3 }}>
+          <SearchBarComponent
+            placeholder="Search..."
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+          />
+        </View>
+
+        {/* Order Cards */}
         {orders.map(order => (
           <OrderCardComponent key={order.number} order={order} />
         ))}
@@ -142,12 +315,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginHorizontal: '5%',
-   // marginTop: '6%',
-    alignItems:"center"
+    alignItems: "center"
   },
   dateInput: {
-   
-   // marginHorizontal: 5,
     borderWidth: 1,
     borderColor: '#ccc',
     padding: dimensions.paddingLevel3,
@@ -155,28 +325,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 9,
-    paddingHorizontal: dimensions.paddingLevel2,
-    backgroundColor: '#fff',
-  },
-  searchInput: {
-    flex: 1,
-    padding: dimensions.paddingLevel2,
-    fontSize: fontSizes.fontMedium,
-  },
- 
-  searchIcon: {
-    width: 15,
-    height: 15,
-  },
-  
-  
 });
+
 
 
 // import React, { useState } from 'react';

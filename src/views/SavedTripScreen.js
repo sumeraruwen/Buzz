@@ -743,7 +743,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1.5,
     borderColor: 'lightgray',
     borderStyle: 'dashed',
-    marginVertical: 20,
+    marginVertical: 15,
   },
   icon2: {
     width: 20,

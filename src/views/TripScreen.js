@@ -65,7 +65,7 @@ export default function TripScreen() {
         <TextInput style={styles.input} placeholder="Name / Order #" placeholderTextColor="gray" />
 
         <Text style={styles.label}>Customer Phone</Text>
-        <TextInput style={styles.input} placeholder="(000)-000-0000" keyboardType="phone-pad" placeholderTextColor="gray" />
+        <TextInput style={styles.input} placeholder="(000)-000-0000" keyboardType="phone-pad" placeholderTextColor="gray" maxLength={10}/>
 
         <Text style={styles.label}>Category</Text>
         <DropDownPicker

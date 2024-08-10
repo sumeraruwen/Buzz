@@ -3,8 +3,12 @@ import { View, Text, ScrollView, TextInput, TouchableOpacity, StyleSheet, Image 
 import HeaderComponent from '../components/HeaderComponent';
 import DialogBoxComponent from '../components/DialogBoxComponent';
 import { colors, fontSizes, dimensions } from '../styles/constants';
+import SearchBarComponent from '../components/SearchBarComponent';
 
 export default function ResolutionCenterScreen({navigation}) {
+
+  const [searchQuery, setSearchQuery] = useState('');
+
   const [dialogVisible, setDialogVisible] = useState({
     settings: false,
     trackOrders: false,
@@ -69,15 +73,10 @@ export default function ResolutionCenterScreen({navigation}) {
       <ScrollView>
         {/* Search Bar */}
         <View style={{ padding: dimensions.paddingLevel3 }}>
-          <TextInput
+           <SearchBarComponent
             placeholder="Search..."
-            style={{
-              borderWidth: 1,
-              borderRadius: 9,
-              padding: dimensions.paddingLevel1,
-              borderColor: '#ccc',
-              marginTop: '5%',
-            }}
+            value={searchQuery}
+            onChangeText={setSearchQuery}
           />
         </View>
 
@@ -321,8 +320,6 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     backgroundColor: colors.primary,
     marginRight:10,
-   
-    
   },
   iconText: {
     color: colors.primary,
