@@ -19,11 +19,11 @@ export default function EarningsScreen() {
   const [selectedDateRange, setSelectedDateRange] = React.useState('Mar 25 - Apr 1');
   const [earningsData, setEarningsData] = React.useState([
     { dateRange: 'Mar 25 - Apr 1', amount: '$100.00' },
-    { dateRange: 'Mar 18 - Mar 25', amount: '$50.00' },
-    { dateRange: 'Mar 11 - Mar 18', amount: '$0.00' },
-    { dateRange: 'Mar 4 - Mar 11', amount: '$0.00' },
-    { dateRange: 'Feb 26 - Mar 4', amount: '$0.00' },
-    { dateRange: 'Feb 19 - Feb 26', amount: '$0.00' }
+    { dateRange: 'Mar 18 - Mar 25', amount: '$100.00' },
+    { dateRange: 'Mar 11 - Mar 18', amount: '$100.00' },
+    { dateRange: 'Mar 4 - Mar 11', amount: '$100.00' },
+    { dateRange: 'Feb 26 - Mar 4', amount: '$100.00' },
+    { dateRange: 'Feb 19 - Feb 26', amount: '$100.00' }
   ]);
 
   const [settingsModalVisible, setSettingsModalVisible] = React.useState(false);
@@ -211,12 +211,14 @@ export default function EarningsScreen() {
         <View style={styles.transferSummary}>
       <View style={[styles.transferSummaryRow, styles.borderBottom]}>
         <View style={styles.transferIconContainer}>
-        <Image style={styles.transferIcon} source={require('../assets/bankCardIcon.webp')} />
+        <Image style={styles.transferIcon} source={require('../assets/bankIcon.webp')} />
         </View>
         <View style={styles.transferTextContainer}>
           <Text style={styles.transferTitle}>Link Bank Account</Text>
           <Text style={styles.transferSubtitle}>Receive without paying a fee</Text>
+          <TouchableOpacity>
           <Image source={require('../assets/rightArrow.webp')} style={styles.rightArrowIcon} />
+          </TouchableOpacity>
         </View>
       </View>
       <View style={styles.transferSummaryRow}>
@@ -226,7 +228,9 @@ export default function EarningsScreen() {
         <View style={styles.transferTextContainer}>
           <Text style={styles.transferTitle}>Add Debit Card</Text>
           <Text style={styles.transferSubtitle}>Instant fee: $1.90</Text>
+          <TouchableOpacity>
           <Image source={require('../assets/rightArrow.webp')} style={styles.rightArrowIcon} />
+          </TouchableOpacity>
         </View>
       </View>
     </View>
@@ -583,8 +587,8 @@ const styles = StyleSheet.create({
   },
  
   closeIcon: {
-    width: 13,
-    height: 13,
+    width: 16,
+    height: 16,
   },
   dottedLine2:{
     borderBottomWidth: 1,
@@ -607,18 +611,19 @@ const styles = StyleSheet.create({
     fontSize: fontSizes.fontMidMedium,
     color: colors.secondary,
     textAlign:'right',
-    right:20,
+    right:13,
     fontWeight:'400'
   },
  
   selectedDateRangeItem: {
     color:colors.primary, 
-    left:-5
+    left:0,
+   // right:8,
   },
   tickIcon: {
     width: 13,
     height: 13,
-    left:5
+    left:10
 
   },
   transferSummary: {
@@ -633,6 +638,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderColor: 'lightgray',
     padding: dimensions.paddingLevel3,
+    position: 'relative',
   },
   borderBottom: {
     borderBottomWidth: 1,
@@ -655,28 +661,29 @@ const styles = StyleSheet.create({
   },
   transferTextContainer: {
     flex: 1,
-    position: 'relative', // Add relative positioning
-    paddingRight: 30, // Add padding to ensure space for the arrow
+   // position: 'relative', // Add relative positioning
+    paddingRight: 5, // Add padding to ensure space for the arrow
   },
   rightArrowIcon: {
     position: 'absolute',
     right: 0,
-    top: '50%',
-    width: 16,
-    height: 16,
-    transform: [{ translateY: -10 }], // Center the arrow vertically
+   // top: '50%',
+    width: 18,
+    height: 18,
+    transform: [{ translateY: -30 }], // Center the arrow vertically
   },
   rightArrowIcon2: {
     position: 'absolute',
     right: 0,
-   // top: '50%',
-    width: 16,
-    height: 16,
+    //alignItems:'flex-end',
+  //  top: '50%',
+    width: 18,
+    height: 18,
     transform: [{ translateY: -10 }], // Center the arrow vertically
   },
   leftArrowIcon: {
-    width: 16,
-    height: 16,
+    width: 18,
+    height: 18,
     position: 'absolute',
     transform: [{ translateY: -10 },{ scaleX: -1}],
 
@@ -741,10 +748,10 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   monthItem: {
-    width: '22%',
-    padding: 12,
+    width: '25%',
+    padding: 13,
     alignItems: 'center',
-    marginVertical: 5,
+    marginVertical: 9,
 
   },
   selectedMonth: {
@@ -753,8 +760,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius:500,
     color:"white",
-    width: 50, // Ensure width and height are equal
-    height: 50, 
+    width: 55, // Ensure width and height are equal
+    height: 53, 
+    alignItems:'center'
   },
   selectedMonthText: {
     color:colors.white, // Selected color
@@ -790,8 +798,8 @@ const styles = StyleSheet.create({
     right: 10,
     top: '50%',
     transform: [{ translateY: -12 }], // Adjust vertically to center the icon
-    width: 24,
-    height: 24,
+    width: 26,
+    height: 26,
   },
  
 });

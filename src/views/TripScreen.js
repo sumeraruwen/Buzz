@@ -263,10 +263,15 @@ export default function TripScreen() {
             </TouchableOpacity>
 
             <View style={styles.dottedLine2} />
+            <View style={{flexDirection:'row',justifyContent:'space-between'}}>
             <TouchableOpacity style={styles.modalOption} onPress={() => setUploadStopsModalVisible(true)} >
               <Image style={styles.icon} source={require('../assets/fileIcon.webp')} />
               <Text style={styles.textStyle}>Upload stops from{'\n'} documents</Text>
             </TouchableOpacity>
+            <TouchableOpacity>
+                  <Image style={styles.iIcon2} source={require('../assets/iIcon.webp')} />
+                  </TouchableOpacity>
+                  </View>
             </View>
 
             <Text style={styles.modalNote}>Format: Excel file (.xls or .xlsx) only</Text>
@@ -576,8 +581,8 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   closeIcon: {
-    width: 15,
-    height: 15,
+    width: 16,
+    height: 16,
   },
   closeIcon2: {
     width: 12,
@@ -630,5 +635,11 @@ const styles = StyleSheet.create({
   iIcon: {
     width: 16,
     height: 16,
+  },
+  iIcon2: {
+    width: 16,
+    height: 16,
+  right:20,
+  top:'40%'
   },
 });

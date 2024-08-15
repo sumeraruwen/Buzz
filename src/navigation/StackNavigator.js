@@ -6,6 +6,7 @@ import ResolutionCenterScreen from '../views/ResolutionCenterScreen';
 import SupportTeamChatScreen from '../views/SupportTeamChatScreen';
 import AddOnServiceScreen from '../views/AddOnServiceScreen';
 import PickupTaskScreen from '../views/PickupTaskScreen';
+import DropoffTaskScreen from '../views/DropoffTaskScreen';
 
 
 const Stack = createStackNavigator();
@@ -25,6 +26,7 @@ function StackNavigator() {
        <Stack.Screen name="SupportTeamChatScreen" component={SupportTeamChatScreen} />
        <Stack.Screen name="AddOnServiceScreen" component={AddOnServiceScreen} />
        <Stack.Screen name="PickupTaskScreen" component={PickupTaskScreen} />
+       <Stack.Screen name="DropoffTaskScreen" component={DropoffTaskScreen} />
      
     </Stack.Navigator>
   );

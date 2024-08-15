@@ -1,121 +1,159 @@
-// import React, { useState } from "react";
+
+// import React, { useState, useEffect } from 'react';
 // import {
 //   View,
 //   Text,
 //   TouchableOpacity,
 //   Modal,
 //   StyleSheet,
-//   ScrollView,
-// } from "react-native";
-// import { Picker } from "@react-native-picker/picker";
-// import { colors } from "../styles/constants";
+//   Dimensions,
+//   Image
+// } from 'react-native';
+// import { Picker } from '@react-native-picker/picker';
+// import { Calendar } from 'react-native-calendars';
+// import { colors, dimensions, fontSizes } from '../styles/constants';
 
-// const CalendarModal = ({ visible, onClose, onDateSelect }) => {
-//   const today = new Date();
-//   const [selectedMonth, setSelectedMonth] = useState(today.getMonth());
-//   const [selectedYear, setSelectedYear] = useState(today.getFullYear());
-//   const [selectedDay, setSelectedDay] = useState(today.getDate());
+// const CalendarModal = ({
+//   visible,
+//   onClose,
+//   onSelectDate,
+//   selectedDate,
+//   title,
+//   mainColor,
+// }) => {
+//   const [currentDate, setCurrentDate] = useState(selectedDate);
+//   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
+//   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+//   const [calendarKey, setCalendarKey] = useState(0); // Added for forcing a rerender
 
-//   const getDaysInMonth = (month, year) => {
-//     return new Date(year, month + 1, 0).getDate();
+//   useEffect(() => {
+//     if (selectedDate) {
+//       const date = new Date(selectedDate);
+//       setSelectedMonth(date.getMonth());
+//       setSelectedYear(date.getFullYear());
+//       setCurrentDate(selectedDate);
+//     }
+//   }, [selectedDate]);
+
+//   const handleDayPress = (day) => {
+//     setCurrentDate(day.dateString);
 //   };
 
-//   const getFirstDayOfWeek = (month, year) => {
-//     return new Date(year, month, 1).getDay(); // Sunday is 0, Monday is 1, ..., Saturday is 6
+//   const handleTodayPress = () => {
+//     const today = new Date().toISOString().split('T')[0];
+//     setCurrentDate(today);
+//     const todayDate = new Date();
+//     setSelectedMonth(todayDate.getMonth());
+//     setSelectedYear(todayDate.getFullYear());
+//     setCalendarKey(calendarKey + 1); // Force rerender
 //   };
 
-//   const daysInMonth = getDaysInMonth(selectedMonth, selectedYear);
-//   const firstDayOfWeek = getFirstDayOfWeek(selectedMonth, selectedYear);
-
-//   const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
-
-//   const handleToday = () => {
-//     setSelectedDay(today.getDate());
-//     setSelectedMonth(today.getMonth());
-//     setSelectedYear(today.getFullYear());
-//   };
-
-//   const handleSetDate = () => {
-//     onDateSelect(new Date(selectedYear, selectedMonth, selectedDay));
+//   const handleSetPress = () => {
+//     onSelectDate(currentDate);
 //     onClose();
 //   };
 
+//   const handleMonthChange = (month) => {
+//     setSelectedMonth(month);
+//     const newDate = new Date(selectedYear, month, 1).toISOString().split('T')[0];
+//     setCurrentDate(newDate);
+//     setCalendarKey(calendarKey + 1); // Force rerender
+//   };
+
+//   const handleYearChange = (year) => {
+//     setSelectedYear(year);
+//     const newDate = new Date(year, selectedMonth, 1).toISOString().split('T')[0];
+//     setCurrentDate(newDate);
+//     setCalendarKey(calendarKey + 1); // Force rerender
+//   };
+
 //   return (
-//     <Modal transparent={true} visible={visible} animationType="slide">
+//     <Modal
+//       visible={visible}
+//       transparent={true}
+//       animationType="none"
+//       onRequestClose={onClose}
+//     >
 //       <View style={styles.modalContainer}>
 //         <View style={styles.calendarContainer}>
 //           <View style={styles.header}>
-//             <Text style={styles.title}>From Date</Text>
+//             <Text style={styles.title}>{title || 'Select Date'}</Text>
 //             <TouchableOpacity onPress={onClose}>
-//               <Text style={styles.closeButton}>X</Text>
+//               {/* <Text style={styles.closeButton}>X</Text> */}
+//               <Image style={styles.closeIcon} source={require('../assets/closeIcon.webp')} />
 //             </TouchableOpacity>
 //           </View>
+//           <View style={styles.line} />
 
 //           <View style={styles.monthYearPicker}>
+//           <View style={styles.pickerContainer}>
 //             <Picker
 //               selectedValue={selectedMonth}
 //               style={styles.picker}
-//               onValueChange={(itemValue) => setSelectedMonth(itemValue)}
+//               onValueChange={handleMonthChange}
 //             >
-//               {["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"].map((month, index) => (
+//               {['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'].map((month, index) => (
 //                 <Picker.Item key={index} label={month} value={index} />
 //               ))}
 //             </Picker>
+//             </View>
+//             <View style={styles.pickerContainer}>
 //             <Picker
 //               selectedValue={selectedYear}
 //               style={styles.picker}
-//               onValueChange={(itemValue) => setSelectedYear(itemValue)}
+//               onValueChange={handleYearChange}
 //             >
-//               {[2022, 2023, 2024].map((year) => (
+//               {[2022, 2023, 2024, 2025, 2026, 2027].map((year) => (
 //                 <Picker.Item key={year} label={year.toString()} value={year} />
 //               ))}
 //             </Picker>
+//             </View>
 //           </View>
-
-//           <View style={styles.daysOfWeek}>
-//             {["S", "M", "T", "W", "T", "F", "S"].map((day, index) => (
-//               <Text key={index} style={styles.dayLabel}>
-//                 {day}
-//               </Text>
-//             ))}
-//           </View>
-
-//           <ScrollView contentContainerStyle={styles.calendarGrid}>
-//             {Array.from({ length: firstDayOfWeek }).map((_, index) => (
-//               <View key={`empty-${index}`} style={styles.dayContainer} />
-//             ))}
-//             {days.map((day, index) => (
-//               <TouchableOpacity
-//                 key={index}
-//                 style={styles.dayContainer}
-//                 onPress={() => setSelectedDay(day)}
-//               >
-//                 <Text
-//                   style={[
-//                     styles.dayText,
-//                     day === selectedDay && styles.selectedDay,
-//                     day === today.getDate() &&
-//                       selectedMonth === today.getMonth() &&
-//                       selectedYear === today.getFullYear() &&
-//                       styles.currentDay,
-//                   ]}
-//                 >
-//                   {day}
-//                 </Text>
-//               </TouchableOpacity>
-//             ))}
-//           </ScrollView>
-
+//           <View style={styles.dottedLine} />
+//           <Calendar
+//             key={calendarKey}  // Added to force rerender on month/year change
+//             current={currentDate}
+//             onDayPress={handleDayPress}
+//             markedDates={{
+//               [currentDate]: { selected: true, selectedColor: mainColor || colors.primary },
+//             }}
+//             theme={{
+//               calendarBackground: colors.white,
+//               textSectionTitleColor: colors.black,
+//               selectedDayBackgroundColor: mainColor || colors.primary,
+//               selectedDayTextColor: colors.white,
+//               todayTextColor: mainColor || colors.primary,
+//               dayTextColor: colors.black,
+//               textDisabledColor: colors.gray,
+//               monthTextColor: colors.black,
+//               arrowColor: mainColor || colors.primary,
+//             }}
+//             style={styles.calendar}
+//           />
+//            <View style={styles.dottedLine} />
 //           <View style={styles.footer}>
-//             <TouchableOpacity style={styles.footerButton} onPress={onClose}>
-//               <Text style={styles.footerButtonText}>Cancel</Text>
+//             <TouchableOpacity
+//               style={[styles.button, styles.cancelButton]}
+//               onPress={onClose}
+//             >
+//               <Text style={{ color: colors.secondary, fontWeight: '700', fontSize: fontSizes.fontMidMedium }}>Cancel</Text>
 //             </TouchableOpacity>
-//             <TouchableOpacity style={styles.footerButton} onPress={handleToday}>
-//               <Text style={styles.footerButtonText}>Today</Text>
+
+//         <View style={{flexDirection:'row'}}>
+//             <TouchableOpacity
+//               style={[styles.button, styles.todayButton]}
+//               onPress={handleTodayPress}
+//             >
+//               <Text style={[styles.buttonText, { color: mainColor || colors.primary }]}>Today</Text>
 //             </TouchableOpacity>
-//             <TouchableOpacity style={styles.footerButton} onPress={handleSetDate}>
-//               <Text style={styles.footerButtonText}>Set</Text>
+
+//             <TouchableOpacity
+//               style={[styles.button, { backgroundColor: mainColor || colors.primary }]}
+//               onPress={handleSetPress}
+//             >
+//               <Text style={styles.buttonText}>Set</Text>
 //             </TouchableOpacity>
+//             </View>
 //           </View>
 //         </View>
 //       </View>
@@ -126,267 +164,252 @@
 // const styles = StyleSheet.create({
 //   modalContainer: {
 //     flex: 1,
-//     justifyContent: "center",
-//     alignItems: "center",
-//     backgroundColor: "rgba(0, 0, 0, 0.5)",
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     backgroundColor: 'rgba(0, 0, 0, 0.5)',
 //   },
 //   calendarContainer: {
-//     width: 300,
+//     width:dimensions.widthLevel3,
 //     padding: 20,
 //     backgroundColor: colors.white,
 //     borderRadius: 10,
 //   },
 //   header: {
-//     flexDirection: "row",
-//     justifyContent: "space-between",
-//     alignItems: "center",
-//     marginBottom: 20,
+//     flexDirection: 'row',
+//     justifyContent: 'space-between',
+//     alignItems: 'center',
+//     marginBottom: 10,
 //   },
 //   title: {
 //     fontSize: 18,
-//     fontWeight: "bold",
+//     fontWeight: 'bold',
+//     color: colors.black,
+//   },
+//   closeIcon: {
+//     width: 13,
+//     height: 13,
 //   },
 //   closeButton: {
 //     fontSize: 16,
 //     color: colors.gray,
 //   },
 //   monthYearPicker: {
-//     flexDirection: "row",
-//     justifyContent: "space-between",
+//     flexDirection: 'row',
+//     justifyContent: 'space-between',
 //     marginBottom: 10,
+   
 //   },
-//   picker: {
-//     width: 140,
-//   },
-//   daysOfWeek: {
-//     flexDirection: "row",
-//     justifyContent: "space-around",
-//     marginBottom: 10,
-//   },
-//   dayLabel: {
-//     fontSize: 16,
-//     fontWeight: "bold",
-//     color: colors.gray,
-//   },
-//   calendarGrid: {
-//     flexDirection: "row",
-//     flexWrap: "wrap",
-//     justifyContent: "space-around",
-//   },
-//   dayContainer: {
-//     width: 40,
-//     height: 40,
-//     justifyContent: "center",
-//     alignItems: "center",
-//   },
-//   dayText: {
-//     fontSize: 16,
-//     color: colors.black,
-//   },
-//   selectedDay: {
-//     backgroundColor: colors.primary,
-//     color: colors.white,
-//     borderRadius: 20,
-//   },
-//   currentDay: {
-//     color: colors.primary,
-//     fontWeight: "bold",
+//   pickerContainer: {
+//     width: '48%',
+//     borderWidth: 1,
+//     borderColor: "lightgray",
+//     borderRadius: 8,
+//    marginTop:10
 //   },
 //   footer: {
-//     flexDirection: "row",
-//     justifyContent: "space-between",
-//     marginTop: 20,
+//     flexDirection: 'row',
+//     justifyContent: 'space-between',
+//     marginTop: 10,
 //   },
-//   footerButton: {
-//     paddingHorizontal: 10,
-//     paddingVertical: 5,
-//     borderRadius: 5,
-//     backgroundColor: colors.primary,
+//   button: {
+//     paddingHorizontal: 15,
+//     paddingVertical: 8,
+//     borderRadius: 8,
+//     alignItems: 'center',
 //   },
-//   footerButtonText: {
+//   picker: {
+//     // width: '48%',
+//     paddingHorizontal:5,
+//     color:colors.secondary
+//   },
+//   cancelButton: {
+//     backgroundColor: 'lightgray',
+//   },
+//   todayButton: {
+//     borderColor: colors.primary,
+//     borderWidth: 1,
+//     right:20
+//   },
+//   buttonText: {
+//     fontSize: fontSizes.fontMidMedium,
+//     fontWeight: 'bold',
 //     color: colors.white,
+//   },
+//   calendar: {
+//     //borderWidth: 1,
+//     borderColor: 'lightgray',
+//     borderRadius: 10,
+//   },
+//   line: {
+//     height: 1,
+//     backgroundColor: 'lightgray',
+//     marginBottom:8
+//    // flex: 1,
+//   },
+//   dottedLine: {
+//     borderBottomWidth: 1.5,
+//     borderColor: '#ccc',
+//     borderStyle: 'dashed',
+//     marginVertical: '1%',
+//    // marginTop: '10%'
 //   },
 // });
 
 // export default CalendarModal;
 
 
-// import React, { useState, useEffect } from "react";
+// import React, { useState, useEffect } from 'react';
 // import {
 //   View,
 //   Text,
 //   TouchableOpacity,
 //   Modal,
 //   StyleSheet,
-//   ScrollView,
-//   Dimensions,
-//   Image,
-// } from "react-native";
+// } from 'react-native';
 // import { Picker } from '@react-native-picker/picker';
-
-// import { Calendar, LocaleConfig } from "react-native-calendars";
+// import { Calendar } from 'react-native-calendars';
 // import { colors, dimensions, fontSizes } from '../styles/constants';
 
-
-// // Configure custom day names
-// LocaleConfig.locales["en"] = {
-//   monthNames: [
-//     "January", "February", "March", "April", "May", "June",
-//     "July", "August", "September", "October", "November", "December",
-//   ],
-//   monthNamesShort: [
-//     "Jan.", "Feb.", "Mar.", "Apr.", "May", "Jun.", "Jul.", "Aug.", "Sep.", "Oct.", "Nov.", "Dec.",
-//   ],
-//   dayNames: [
-//     "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday",
-//   ],
-//   dayNamesShort: ["S", "M", "T", "W", "T", "F", "S"], // Single-letter day names
-// };
-// LocaleConfig.defaultLocale = "en";
-
-// const CustomCalendar = ({
-//   modalVisible,
-//   setModalVisible,
-//   setDate,
+// const CalendarModal = ({
+//   visible,
+//   onClose,
+//   onSelectDate,
+//   selectedDate,
 //   title,
-//   date,
 //   mainColor,
 // }) => {
-//   const [selectedDay, setSelectedDay] = useState(new Date().getDate());
+//   const [currentDate, setCurrentDate] = useState(selectedDate);
 //   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
 //   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-//   const [currentMonth, setCurrentMonth] = useState("");
+//   const [calendarKey, setCalendarKey] = useState(0); // Added for forcing a rerender
 
 //   useEffect(() => {
-//     const today = new Date();
-//     setCurrentMonth(today.toISOString().split("T")[0].slice(0, 7));
-//   }, [modalVisible]);
-
-//   const getDaysInMonth = (month, year) => new Date(year, month + 1, 0).getDate();
-//   const getFirstDayOfWeek = (month, year) => new Date(year, month, 1).getDay();
-
-//   const daysInMonth = getDaysInMonth(selectedMonth, selectedYear);
-//   const firstDayOfWeek = getFirstDayOfWeek(selectedMonth, selectedYear);
-//   const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
+//     if (selectedDate) {
+//       const date = new Date(selectedDate);
+//       setSelectedMonth(date.getMonth());
+//       setSelectedYear(date.getFullYear());
+//       setCurrentDate(selectedDate);
+//     }
+//   }, [selectedDate]);
 
 //   const handleDayPress = (day) => {
-//     setDate(day.dateString);
-//     setModalVisible(false);
+//     setCurrentDate(day.dateString);
 //   };
 
-//   const handleToday = () => {
-//     const today = new Date();
-//     setSelectedDay(today.getDate());
-//     setSelectedMonth(today.getMonth());
-//     setSelectedYear(today.getFullYear());
+//   const handleTodayPress = () => {
+//     const today = new Date().toISOString().split('T')[0];
+//     setCurrentDate(today);
+//     const todayDate = new Date();
+//     setSelectedMonth(todayDate.getMonth());
+//     setSelectedYear(todayDate.getFullYear());
+//     setCalendarKey(calendarKey + 1); // Force rerender
 //   };
 
-//   const handleSetDate = () => {
-//     setDate(`${selectedYear}-${String(selectedMonth + 1).padStart(2, "0")}-${String(selectedDay).padStart(2, "0")}`);
-//     setModalVisible(false);
+//   const handleSetPress = () => {
+//     onSelectDate(currentDate);
+//     onClose();
 //   };
 
-//   const renderArrow = (direction) => (
-//     <Image
-//       source={direction === "left" ? icon.backIcon : icon.formardIcon}
-//       style={styles.arrow}
-//       resizeMode="contain"
-//     />
-//   );
+//   const handleMonthChange = (month) => {
+//     setSelectedMonth(month);
+//     const newDate = new Date(selectedYear, month, 1).toISOString().split('T')[0];
+//     setCurrentDate(newDate);
+//     setCalendarKey(calendarKey + 1); // Force rerender
+//   };
+
+//   const handleYearChange = (year) => {
+//     setSelectedYear(year);
+//     const newDate = new Date(year, selectedMonth, 1).toISOString().split('T')[0];
+//     setCurrentDate(newDate);
+//     setCalendarKey(calendarKey + 1); // Force rerender
+//   };
 
 //   return (
 //     <Modal
-//       visible={modalVisible}
+//       visible={visible}
 //       transparent={true}
-//       animationType="slide"
-//       onRequestClose={() => setModalVisible(false)}
+//       animationType="none"
+//       onRequestClose={onClose}
 //     >
 //       <View style={styles.modalContainer}>
 //         <View style={styles.calendarContainer}>
 //           <View style={styles.header}>
-//             <Text style={styles.title}>{title || "Select Date"}</Text>
-//             <TouchableOpacity onPress={() => setModalVisible(false)}>
+//             <Text style={styles.title}>{title || 'Select Date'}</Text>
+//             <TouchableOpacity onPress={onClose}>
 //               <Text style={styles.closeButton}>X</Text>
 //             </TouchableOpacity>
 //           </View>
+//           <View style={styles.line} />
 
 //           <View style={styles.monthYearPicker}>
-//             <Picker
-//               selectedValue={selectedMonth}
-//               style={styles.picker}
-//               onValueChange={(itemValue) => setSelectedMonth(itemValue)}
-//             >
-//               {["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"].map((month, index) => (
-//                 <Picker.Item key={index} label={month} value={index} />
-//               ))}
-//             </Picker>
-//             <Picker
-//               selectedValue={selectedYear}
-//               style={styles.picker}
-//               onValueChange={(itemValue) => setSelectedYear(itemValue)}
-//             >
-//               {[2022, 2023, 2024].map((year) => (
-//                 <Picker.Item key={year} label={year.toString()} value={year} />
-//               ))}
-//             </Picker>
-//           </View>
-
-//           <View style={styles.daysOfWeek}>
-//             {["S", "M", "T", "W", "T", "F", "S"].map((day, index) => (
-//               <Text key={index} style={styles.dayLabel}>
-//                 {day}
-//               </Text>
-//             ))}
-//           </View>
-
-//           <ScrollView contentContainerStyle={styles.calendarGrid}>
-//             {Array.from({ length: firstDayOfWeek }).map((_, index) => (
-//               <View key={`empty-${index}`} style={styles.dayContainer} />
-//             ))}
-//             {days.map((day, index) => (
-//               <TouchableOpacity
-//                 key={index}
-//                 style={styles.dayContainer}
-//                 onPress={() => {
-//                   setSelectedDay(day);
-//                   handleDayPress({ dateString: `${selectedYear}-${String(selectedMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}` });
-//                 }}
+//             <View style={styles.pickerContainer}>
+//               <Picker
+//                 selectedValue={selectedMonth}
+//                 style={styles.picker}
+//                 onValueChange={handleMonthChange}
 //               >
-//                 <Text
-//                   style={[
-//                     styles.dayText,
-//                     day === selectedDay && styles.selectedDay,
-//                     day === new Date().getDate() &&
-//                       selectedMonth === new Date().getMonth() &&
-//                       selectedYear === new Date().getFullYear() &&
-//                       styles.currentDay,
-//                   ]}
-//                 >
-//                   {day}
-//                 </Text>
-//               </TouchableOpacity>
-//             ))}
-//           </ScrollView>
-
+//                 {['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'].map((month, index) => (
+//                   <Picker.Item key={index} label={month} value={index} />
+//                 ))}
+//               </Picker>
+//             </View>
+//             <View style={styles.pickerContainer}>
+//               <Picker
+//                 selectedValue={selectedYear}
+//                 style={styles.picker}
+//                 onValueChange={handleYearChange}
+//               >
+//                 {[2022, 2023, 2024, 2025, 2026, 2027].map((year) => (
+//                   <Picker.Item key={year} label={year.toString()} value={year} />
+//                 ))}
+//               </Picker>
+//             </View>
+//           </View>
+//           <View style={styles.dottedLine} />
+//           <Calendar
+//             key={calendarKey}  // Added to force rerender on month/year change
+//             current={currentDate}
+//             onDayPress={handleDayPress}
+//             markedDates={{
+//               [currentDate]: { selected: true, selectedColor: mainColor || colors.primary },
+//             }}
+//             theme={{
+//               calendarBackground: colors.white,
+//               textSectionTitleColor: colors.black,
+//               selectedDayBackgroundColor: mainColor || colors.primary,
+//               selectedDayTextColor: colors.white,
+//               todayTextColor: mainColor || colors.primary,
+//               dayTextColor: colors.black,
+//               textDisabledColor: colors.gray,
+//               monthTextColor: colors.black,
+//               arrowColor: mainColor || colors.primary,
+//             }}
+//             style={styles.calendar}
+//           />
+//            <View style={styles.dottedLine} />
 //           <View style={styles.footer}>
 //             <TouchableOpacity
 //               style={[styles.button, styles.cancelButton]}
-//               onPress={() => setModalVisible(false)}
+//               onPress={onClose}
 //             >
-//               <Text style={styles.buttonText}>Cancel</Text>
+//               <Text style={{ color: colors.secondary, fontWeight: '700', fontSize: fontSizes.fontMidMedium }}>Cancel</Text>
 //             </TouchableOpacity>
-//             <TouchableOpacity
-//               style={[styles.button, { backgroundColor: mainColor || colors.primary }]}
-//               onPress={handleSetDate}
-//             >
-//               <Text style={styles.buttonText}>Set</Text>
-//             </TouchableOpacity>
-//             <TouchableOpacity
-//               style={[styles.button, styles.todayButton]}
-//               onPress={handleToday}
-//             >
-//               <Text style={[styles.buttonText, { color: mainColor || colors.primary }]}>Today</Text>
-//             </TouchableOpacity>
+
+//             <View style={{ flexDirection: 'row' }}>
+//               <TouchableOpacity
+//                 style={[styles.button, styles.todayButton]}
+//                 onPress={handleTodayPress}
+//               >
+//                 <Text style={[styles.buttonText, { color: mainColor || colors.primary }]}>Today</Text>
+//               </TouchableOpacity>
+
+//               <TouchableOpacity
+//                 style={[styles.button, { backgroundColor: mainColor || colors.primary }]}
+//                 onPress={handleSetPress}
+//               >
+//                 <Text style={styles.buttonText}>Set</Text>
+//               </TouchableOpacity>
+//             </View>
 //           </View>
 //         </View>
 //       </View>
@@ -394,30 +417,28 @@
 //   );
 // };
 
-// export default CustomCalendar;
-
 // const styles = StyleSheet.create({
 //   modalContainer: {
 //     flex: 1,
-//     justifyContent: "center",
-//     alignItems: "center",
-//     backgroundColor: "rgba(0, 0, 0, 0.5)",
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     backgroundColor: 'rgba(0, 0, 0, 0.5)',
 //   },
 //   calendarContainer: {
-//     width: Dimensions.get("window").width * 0.9,
+//     width: dimensions.widthLevel3,
 //     padding: 20,
 //     backgroundColor: colors.white,
 //     borderRadius: 10,
 //   },
 //   header: {
-//     flexDirection: "row",
-//     justifyContent: "space-between",
-//     alignItems: "center",
-//     marginBottom: 20,
+//     flexDirection: 'row',
+//     justifyContent: 'space-between',
+//     alignItems: 'center',
+//     marginBottom: 10,
 //   },
 //   title: {
 //     fontSize: 18,
-//     fontWeight: "bold",
+//     fontWeight: 'bold',
 //     color: colors.black,
 //   },
 //   closeButton: {
@@ -425,76 +446,63 @@
 //     color: colors.gray,
 //   },
 //   monthYearPicker: {
-//     flexDirection: "row",
-//     justifyContent: "space-between",
+//     flexDirection: 'row',
+//     justifyContent: 'space-between',
 //     marginBottom: 10,
+//   },
+//   pickerContainer: {
+//     width: '48%',
+//     borderWidth: 1,
+//     borderColor: colors.primary,
+//     borderRadius: 5,
 //   },
 //   picker: {
-//     width: 140,
-//   },
-//   daysOfWeek: {
-//     flexDirection: "row",
-//     justifyContent: "space-around",
-//     marginBottom: 10,
-//   },
-//   dayLabel: {
-//     fontSize: 16,
-//     fontWeight: "bold",
-//     color: colors.gray,
-//   },
-//   calendarGrid: {
-//     flexDirection: "row",
-//     flexWrap: "wrap",
-//     justifyContent: "space-around",
-//   },
-//   dayContainer: {
-//     width: 40,
-//     height: 40,
-//     justifyContent: "center",
-//     alignItems: "center",
-//   },
-//   dayText: {
-//     fontSize: 16,
+//     paddingHorizontal: 5, // Added padding for text inside the Picker
 //     color: colors.black,
 //   },
-//   selectedDay: {
-//     backgroundColor: colors.primary,
-//     color: colors.white,
-//     borderRadius: 20,
-//   },
-//   currentDay: {
-//     backgroundColor: colors.lightGray,
-//     borderRadius: 20,
-//   },
 //   footer: {
-//     flexDirection: "row",
-//     justifyContent: "space-between",
+//     flexDirection: 'row',
+//     justifyContent: 'space-between',
 //     marginTop: 10,
 //   },
 //   button: {
 //     paddingHorizontal: 15,
 //     paddingVertical: 8,
-//     borderRadius: 5,
-//     alignItems: "center",
+//     borderRadius: 8,
+//     alignItems: 'center',
 //   },
 //   cancelButton: {
-//     backgroundColor: colors.grayLight,
-//     borderColor: colors.gray,
-//     borderWidth: 1,
+//     backgroundColor: 'lightgray',
 //   },
 //   todayButton: {
 //     borderColor: colors.primary,
 //     borderWidth: 1,
+//     marginRight: 20,
 //   },
 //   buttonText: {
-//     fontSize: 16,
-//     fontWeight: "bold",
+//     fontSize: fontSizes.fontMidMedium,
+//     fontWeight: 'bold',
+//     color: colors.white,
 //   },
-//   arrow: {
-//     width: 16,
-//     height: 16,
+//   calendar: {
+//     borderColor: 'lightgray',
+//     borderRadius: 10,
+//   },
+//   line: {
+//     height: 1,
+//     backgroundColor: 'lightgray',
+//     marginBottom: 8,
+//   },
+//   dottedLine: {
+//     borderBottomWidth: 1.5,
+//     borderColor: '#ccc',
+//     borderStyle: 'dashed',
+//     marginVertical: '1%',
 //   },
 // });
+
+// export default CalendarModal;
+
 
 import React, { useState, useEffect } from 'react';
 import {
@@ -503,29 +511,11 @@ import {
   TouchableOpacity,
   Modal,
   StyleSheet,
-  ScrollView,
-  Dimensions,
-  Image,
+  Image
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { Calendar, LocaleConfig } from 'react-native-calendars';
+import { Calendar } from 'react-native-calendars';
 import { colors, dimensions, fontSizes } from '../styles/constants';
-
-// Configure custom day names
-LocaleConfig.locales['en'] = {
-  monthNames: [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December',
-  ],
-  monthNamesShort: [
-    'Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'Jun.', 'Jul.', 'Aug.', 'Sep.', 'Oct.', 'Nov.', 'Dec.',
-  ],
-  dayNames: [
-    'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday',
-  ],
-  dayNamesShort: ['S', 'M', 'T', 'W', 'T', 'F', 'S'], // Single-letter day names
-};
-LocaleConfig.defaultLocale = 'en';
 
 const CalendarModal = ({
   visible,
@@ -535,49 +525,71 @@ const CalendarModal = ({
   title,
   mainColor,
 }) => {
-  const [selectedDay, setSelectedDay] = useState(new Date().getDate());
+  const [currentDate, setCurrentDate] = useState(selectedDate);
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-  const [currentMonth, setCurrentMonth] = useState('');
+  const [calendarKey, setCalendarKey] = useState(0); // Added for forcing a rerender
 
   useEffect(() => {
     if (selectedDate) {
       const date = new Date(selectedDate);
-      setSelectedDay(date.getDate());
-      setSelectedMonth(date.getMonth());
-      setSelectedYear(date.getFullYear());
+      if (!isNaN(date.getTime())) { // Check if the date is valid
+        setSelectedMonth(date.getMonth());
+        setSelectedYear(date.getFullYear());
+        setCurrentDate(selectedDate);
+      } else {
+        console.error('Invalid date:', selectedDate);
+      }
     }
   }, [selectedDate]);
 
-  useEffect(() => {
-    const today = new Date();
-    setCurrentMonth(today.toISOString().split('T')[0].slice(0, 7));
-  }, [visible]);
-
   const handleDayPress = (day) => {
-    const selectedDate = new Date(day.dateString);
-    setSelectedDay(selectedDate.getDate());
-    setSelectedMonth(selectedDate.getMonth());
-    setSelectedYear(selectedDate.getFullYear());
-    onSelectDate(day.dateString);
-    onClose();
+    const date = new Date(day.dateString);
+    if (!isNaN(date.getTime())) {
+      setCurrentDate(day.dateString);
+    } else {
+      console.error('Invalid date:', day.dateString);
+    }
   };
 
-  const handleToday = () => {
-    const today = new Date();
-    setSelectedDay(today.getDate());
-    setSelectedMonth(today.getMonth());
-    setSelectedYear(today.getFullYear());
+  const handleTodayPress = () => {
+    const today = new Date().toISOString().split('T')[0];
+    setCurrentDate(today);
+    const todayDate = new Date();
+    setSelectedMonth(todayDate.getMonth());
+    setSelectedYear(todayDate.getFullYear());
+    setCalendarKey(calendarKey + 1); // Force rerender
   };
 
-  const handleSetDate = () => {
-    onSelectDate(`${selectedYear}-${String(selectedMonth + 1).padStart(2, '0')}-${String(selectedDay).padStart(2, '0')}`);
-    onClose();
+  // const handleSetPress = () => {
+  //   onSelectDate(currentDate);
+  //   onClose();
+  // };
+
+  const handleSetPress = () => {
+    const dateObject = new Date(currentDate);
+    if (!isNaN(dateObject)) {
+      onSelectDate(dateObject);
+      onClose();
+    } else {
+      console.error('Invalid date:', currentDate);
+    }
+  };
+  
+
+  const handleMonthChange = (month) => {
+    setSelectedMonth(month);
+    const newDate = new Date(selectedYear, month, 1).toISOString().split('T')[0];
+    setCurrentDate(newDate);
+    setCalendarKey(calendarKey + 1); // Force rerender
   };
 
-  const daysInMonth = new Date(selectedYear, selectedMonth + 1, 0).getDate();
-  const firstDayOfWeek = new Date(selectedYear, selectedMonth, 1).getDay();
-  const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
+  const handleYearChange = (year) => {
+    setSelectedYear(year);
+    const newDate = new Date(year, selectedMonth, 1).toISOString().split('T')[0];
+    setCurrentDate(newDate);
+    setCalendarKey(calendarKey + 1); // Force rerender
+  };
 
   return (
     <Modal
@@ -591,84 +603,80 @@ const CalendarModal = ({
           <View style={styles.header}>
             <Text style={styles.title}>{title || 'Select Date'}</Text>
             <TouchableOpacity onPress={onClose}>
-              <Text style={styles.closeButton}>X</Text>
+              <Image style={styles.closeIcon} source={require('../assets/closeIcon.webp')} />
             </TouchableOpacity>
           </View>
+          <View style={styles.line} />
 
           <View style={styles.monthYearPicker}>
-            <Picker
-              selectedValue={selectedMonth}
-              style={styles.picker}
-              onValueChange={(itemValue) => setSelectedMonth(itemValue)}
-            >
-              {['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'].map((month, index) => (
-                <Picker.Item key={index} label={month} value={index} />
-              ))}
-            </Picker>
-            <Picker
-              selectedValue={selectedYear}
-              style={styles.picker}
-              onValueChange={(itemValue) => setSelectedYear(itemValue)}
-            >
-              {[2022, 2023, 2024].map((year) => (
-                <Picker.Item key={year} label={year.toString()} value={year} />
-              ))}
-            </Picker>
-          </View>
-
-          <View style={styles.daysOfWeek}>
-            {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, index) => (
-              <Text key={index} style={styles.dayLabel}>
-                {day}
-              </Text>
-            ))}
-          </View>
-
-          <ScrollView contentContainerStyle={styles.calendarGrid}>
-            {Array.from({ length: firstDayOfWeek }).map((_, index) => (
-              <View key={`empty-${index}`} style={styles.dayContainer} />
-            ))}
-            {days.map((day, index) => (
-              <TouchableOpacity
-                key={index}
-                style={styles.dayContainer}
-                onPress={() => handleDayPress({ dateString: `${selectedYear}-${String(selectedMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}` })}
+            <View style={styles.pickerContainer}>
+              <Picker
+                selectedValue={selectedMonth}
+                style={styles.picker}
+                onValueChange={handleMonthChange}
               >
-                <Text
-                  style={[
-                    styles.dayText,
-                    day === selectedDay && styles.selectedDay,
-                    day === new Date().getDate() &&
-                      selectedMonth === new Date().getMonth() &&
-                      selectedYear === new Date().getFullYear() &&
-                      styles.currentDay,
-                  ]}
-                >
-                  {day}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-
+                {['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'].map((month, index) => (
+                  <Picker.Item key={index} label={month} value={index} />
+                ))}
+              </Picker>
+            </View>
+            <View style={styles.pickerContainer}>
+              <Picker
+                selectedValue={selectedYear}
+                style={styles.picker}
+                onValueChange={handleYearChange}
+              >
+                {[2022, 2023, 2024, 2025, 2026, 2027].map((year) => (
+                  <Picker.Item key={year} label={year.toString()} value={year} />
+                ))}
+              </Picker>
+            </View>
+          </View>
+          <View style={styles.dottedLine} />
+          <Calendar
+            key={calendarKey}  // Added to force rerender on month/year change
+            current={currentDate}
+            onDayPress={handleDayPress}
+            markedDates={{
+              [currentDate]: { selected: true, selectedColor: mainColor || colors.primary },
+            }}
+            theme={{
+              calendarBackground: colors.white,
+              textSectionTitleColor: colors.black,
+              selectedDayBackgroundColor: mainColor || colors.primary,
+              selectedDayTextColor: colors.white,
+              todayTextColor: mainColor || colors.primary,
+              dayTextColor: colors.black,
+              textDisabledColor: colors.gray,
+              monthTextColor: colors.black,
+              arrowColor: mainColor || colors.primary,
+            }}
+            style={styles.calendar}
+          />
+          <View style={styles.dottedLine} />
           <View style={styles.footer}>
             <TouchableOpacity
               style={[styles.button, styles.cancelButton]}
               onPress={onClose}
             >
-              <Text style={styles.buttonText}>Cancel</Text>
+              <Text style={{ color: colors.secondary, fontWeight: '700', fontSize: fontSizes.fontMidMedium }}>Cancel</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.button, { backgroundColor: mainColor || colors.primary }]}
-              onPress={handleSetDate}
-            >
-              <Text style={styles.buttonText}>Set</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.button, styles.todayButton]}
-              onPress={handleToday}
-            >
-              <Text style={[styles.buttonText, { color: mainColor || colors.primary }]}>Today</Text>
-            </TouchableOpacity>
+
+            <View style={{ flexDirection: 'row' }}>
+              <TouchableOpacity
+                style={[styles.button, styles.todayButton]}
+                onPress={handleTodayPress}
+              >
+                <Text style={[styles.buttonText, { color: mainColor || colors.primary }]}>Today</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.button, { backgroundColor: mainColor || colors.primary }]}
+                onPress={handleSetPress}
+              >
+                <Text style={styles.buttonText}>Set</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </View>
@@ -684,7 +692,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   calendarContainer: {
-    width: Dimensions.get('window').width * 0.9,
+    width: dimensions.widthLevel3,
     padding: 20,
     backgroundColor: colors.white,
     borderRadius: 10,
@@ -693,58 +701,28 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 10,
   },
   title: {
     fontSize: 18,
     fontWeight: 'bold',
     color: colors.black,
   },
-  closeButton: {
-    fontSize: 16,
-    color: colors.gray,
+  closeIcon: {
+    width: 16,
+    height: 16,
   },
   monthYearPicker: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 10,
   },
-  picker: {
-    width: 140,
-  },
-  daysOfWeek: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginBottom: 10,
-  },
-  dayLabel: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: colors.gray,
-  },
-  calendarGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-around',
-  },
-  dayContainer: {
-    width: 40,
-    height: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  dayText: {
-    fontSize: 16,
-    color: colors.black,
-  },
-  selectedDay: {
-    backgroundColor: colors.primary,
-    color: colors.white,
-    borderRadius: 20,
-  },
-  currentDay: {
-    backgroundColor: colors.lightGray,
-    borderRadius: 20,
+  pickerContainer: {
+    width: '48%',
+    borderWidth: 1,
+    borderColor: "lightgray",
+    borderRadius: 8,
+    marginTop: 10,
   },
   footer: {
     flexDirection: 'row',
@@ -754,25 +732,40 @@ const styles = StyleSheet.create({
   button: {
     paddingHorizontal: 15,
     paddingVertical: 8,
-    borderRadius: 5,
+    borderRadius: 8,
     alignItems: 'center',
   },
+  picker: {
+    paddingHorizontal: 5,
+    color: colors.secondary,
+  },
   cancelButton: {
-    backgroundColor: colors.grayLight,
-    borderColor: colors.gray,
-    borderWidth: 1,
+    backgroundColor: 'lightgray',
   },
   todayButton: {
     borderColor: colors.primary,
     borderWidth: 1,
+    right: 20,
   },
   buttonText: {
-    fontSize: 16,
+    fontSize: fontSizes.fontMidMedium,
     fontWeight: 'bold',
+    color: colors.white,
   },
-  arrow: {
-    width: 16,
-    height: 16,
+  calendar: {
+    borderColor: 'lightgray',
+    borderRadius: 10,
+  },
+  line: {
+    height: 1,
+    backgroundColor: 'lightgray',
+    marginBottom: 8,
+  },
+  dottedLine: {
+    borderBottomWidth: 1.5,
+    borderColor: '#ccc',
+    borderStyle: 'dashed',
+    marginVertical: '1%',
   },
 });
 

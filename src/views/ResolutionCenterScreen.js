@@ -53,6 +53,10 @@ export default function ResolutionCenterScreen({navigation}) {
     navigation.navigate('PickupTaskScreen');
   };
 
+  const handleDropoffTask = () => {
+    navigation.navigate('DropoffTaskScreen');
+  };
+
   const renderTopic = (section, title) => (
     <TouchableOpacity onPress={() => toggleDialog(section)} style={styles.topicContainer}>
       <Text style={styles.title}>{title}</Text>
@@ -294,7 +298,7 @@ export default function ResolutionCenterScreen({navigation}) {
             <View style={styles.line2} />
           </View>
 
-          <TouchableOpacity style={styles.rowContainer}>
+          <TouchableOpacity style={styles.rowContainer}  onPress={handleDropoffTask}>
             <Text style={[styles.title]}>Additional Resources (Documentation)</Text>
             <Image source={require('../assets/rightArrow.webp')} style={styles.rightArrowIcon} />
           </TouchableOpacity>

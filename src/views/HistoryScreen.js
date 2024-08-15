@@ -1,32 +1,43 @@
 // import React, { useState } from 'react';
-// import { View, Text, StyleSheet, TouchableOpacity, ScrollView ,TextInput, Image} from 'react-native';
-// import DateTimePicker from '@react-native-community/datetimepicker';
-// import Icon from 'react-native-vector-icons/Ionicons';
+// import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, Image, Modal } from 'react-native';
 // import MainHeaderComponent from '../components/MainHeaderComponent';
 // import { colors, dimensions, fontSizes } from '../styles/constants';
 // import OrderCardComponent from '../components/OrderCardComponent ';
-
+// import CalendarModal from '../components/CalenderModal'; // Assume this is the custom calendar picker component
+// import SearchBarComponent from '../components/SearchBarComponent';
 
 // export default function HistoryScreen() {
 //   const [dateFrom, setDateFrom] = useState(new Date());
 //   const [dateTo, setDateTo] = useState(new Date());
 //   const [showDateFrom, setShowDateFrom] = useState(false);
 //   const [showDateTo, setShowDateTo] = useState(false);
+//   const [searchQuery, setSearchQuery] = useState('');
 
-//   const onChangeFromDate = (event, selectedDate) => {
-//     const currentDate = selectedDate || dateFrom;
-//     setShowDateFrom(Platform.OS === 'ios');
-//     setDateFrom(currentDate);
-//   };
 
-//   const onChangeToDate = (event, selectedDate) => {
-//     const currentDate = selectedDate || dateTo;
-//     setShowDateTo(Platform.OS === 'ios');
-//     setDateTo(currentDate);
+//   const onChangeFromDate = (selectedDate) => {
+//     if (selectedDate instanceof Date && !isNaN(selectedDate)) {
+//       setDateFrom(selectedDate);
+//     } else {
+//       console.error('Invalid date:', selectedDate);
+//     }
+//     setShowDateFrom(false);
 //   };
+  
+//   const onChangeToDate = (selectedDate) => {
+//     if (selectedDate instanceof Date && !isNaN(selectedDate)) {
+//       setDateTo(selectedDate);
+//     } else {
+//       console.error('Invalid date:', selectedDate);
+//     }
+//     setShowDateTo(false);
+//   };
+  
+//   const formatDate = (date) => {
+//     return date instanceof Date && !isNaN(date) ? date.toLocaleDateString() : 'Invalid Date';
+//   };
+  
 
 //   const sampleImage1 = require('../assets/sampleImage.webp');
-
 
 //   // Dummy order data
 //   const orders = [
@@ -35,7 +46,7 @@
 //       date: '02/26/23',
 //       status: 'Success',
 //       statusColor: "#0A987F1A",
-//       textColor:colors.primary,
+//       textColor: colors.primary,
 //       userImage: sampleImage1,
 //       username: 'Username',
 //       type: 'On-demand',
@@ -53,7 +64,7 @@
 //       date: '02/27/23',
 //       status: 'Failed',
 //       statusColor: '#FF00001A',
-//       textColor:"#FF0000",
+//       textColor: "#FF0000",
 //       userImage: sampleImage1,
 //       username: 'Username2',
 //       type: 'On-demand',
@@ -68,17 +79,15 @@
 //     },
 //   ];
 
-
 //   return (
-//     <View style={{ flex: 1 , backgroundColor:colors.white }}>
+//     <View style={{ flex: 1, backgroundColor: colors.white }}>
 //       <MainHeaderComponent title="History" />
-//       <ScrollView> 
+//       <ScrollView>
 //         <Text
 //           style={{
 //             fontSize: fontSizes.fontLarge,
 //             fontWeight: '700',
-//            // marginLeft: '6%',
-//            padding:dimensions.paddingLevel3,
+//             padding: dimensions.paddingLevel3,
 //             marginTop: '5%',
 //             color: colors.black,
 //           }}
@@ -88,46 +97,51 @@
 
 //         <View style={styles.dateContainer}>
 //           <TouchableOpacity onPress={() => setShowDateFrom(true)} style={styles.dateInput}>
-//             <Text style={{ color: "gray"}}>
-//               From: {dateFrom.toLocaleDateString()}
+//             <Text style={{ color: "gray" }}>
+//               {/* From: {dateFrom.toLocaleDateString()} */}
+//               From: {formatDate(dateFrom)}
 //             </Text>
+//             <Image
+//             source={require('../assets/calenderIcon.webp')} // Replace with your icon's path
+//             style={styles.icon}
+//           />
 //           </TouchableOpacity>
 //           <Text>____</Text>
 //           <TouchableOpacity onPress={() => setShowDateTo(true)} style={styles.dateInput}>
-//             <Text style={{ color:"gray" }}>
-//               To: {dateTo.toLocaleDateString()}
+//             <Text style={{ color: "gray" }}>
+//               {/* To: {dateTo.toLocaleDateString()} */}
+//               To: {formatDate(dateTo)}
 //             </Text>
+//             <Image
+//             source={require('../assets/calenderIcon.webp')} // Replace with your icon's path
+//             style={styles.icon}
+//           />
 //           </TouchableOpacity>
 //         </View>
 
-//         {showDateFrom && (
-//           <DateTimePicker
-//             value={dateFrom}
-//             mode="date"
-//             display="default"
-//             onChange={onChangeFromDate}
-//           />
-//         )}
-//         {showDateTo && (
-//           <DateTimePicker
-//             value={dateTo}
-//             mode="date"
-//             display="default"
-//             onChange={onChangeToDate}
-//           />
-//         )}
+//         <CalendarModal
+//           visible={showDateFrom}
+//           onClose={() => setShowDateFrom(false)}
+//           onSelectDate={onChangeFromDate}
+//           selectedDate={dateFrom}
+//         />
 
-//           <View style={{ padding: dimensions.paddingLevel3 }}>
-//             <View style={styles.searchContainer}>
-//               <TextInput
-//                 placeholder="Search..."
-//                 style={styles.searchInput}
-//               />
-//                <Image style={styles.searchIcon} source={require('../assets/searchIcon.webp')} />
-//             </View>
-//           </View>
+//         <CalendarModal
+//           visible={showDateTo}
+//           onClose={() => setShowDateTo(false)}
+//           onSelectDate={onChangeToDate}
+//           selectedDate={dateTo}
+//         />
 
-//            {/* Order Cards */}
+//         <View style={{ padding: dimensions.paddingLevel3 }}>
+//           <SearchBarComponent
+//             placeholder="Search..."
+//             value={searchQuery}
+//             onChangeText={setSearchQuery}
+//           />
+//         </View>
+
+//         {/* Order Cards */}
 //         {orders.map(order => (
 //           <OrderCardComponent key={order.number} order={order} />
 //         ))}
@@ -142,12 +156,9 @@
 //     flexDirection: 'row',
 //     justifyContent: 'space-between',
 //     marginHorizontal: '5%',
-//    // marginTop: '6%',
-//     alignItems:"center"
+//     alignItems: "center"
 //   },
 //   dateInput: {
-   
-//    // marginHorizontal: 5,
 //     borderWidth: 1,
 //     borderColor: '#ccc',
 //     padding: dimensions.paddingLevel3,
@@ -155,34 +166,16 @@
 //     justifyContent: 'center',
 //     alignItems: 'center',
 //   },
-//   searchContainer: {
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//     borderWidth: 1,
-//     borderColor: '#ccc',
-//     borderRadius: 9,
-//     paddingHorizontal: dimensions.paddingLevel2,
-//     backgroundColor: '#fff',
-//   },
-//   searchInput: {
-//     flex: 1,
-//     padding: dimensions.paddingLevel2,
-//     fontSize: fontSizes.fontMedium,
-//   },
  
-//   searchIcon: {
-//     width: 15,
-//     height: 15,
-//   },
-  
+//   icon: {
+//       width: 20,
+//       height: 20, // Adjust size as needed
+//     },
   
 // });
 
-
-
-
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, Image, Modal } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, Modal } from 'react-native';
 import MainHeaderComponent from '../components/MainHeaderComponent';
 import { colors, dimensions, fontSizes } from '../styles/constants';
 import OrderCardComponent from '../components/OrderCardComponent ';
@@ -195,15 +188,31 @@ export default function HistoryScreen() {
   const [showDateFrom, setShowDateFrom] = useState(false);
   const [showDateTo, setShowDateTo] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [dateSelectedFrom, setDateSelectedFrom] = useState(false); // Track if date is selected for "From"
+  const [dateSelectedTo, setDateSelectedTo] = useState(false); // Track if date is selected for "To"
 
   const onChangeFromDate = (selectedDate) => {
-    setDateFrom(selectedDate);
+    if (selectedDate instanceof Date && !isNaN(selectedDate)) {
+      setDateFrom(selectedDate);
+      setDateSelectedFrom(true); // Set date selected for "From"
+    } else {
+      console.error('Invalid date:', selectedDate);
+    }
     setShowDateFrom(false);
   };
-
+  
   const onChangeToDate = (selectedDate) => {
-    setDateTo(selectedDate);
+    if (selectedDate instanceof Date && !isNaN(selectedDate)) {
+      setDateTo(selectedDate);
+      setDateSelectedTo(true); // Set date selected for "To"
+    } else {
+      console.error('Invalid date:', selectedDate);
+    }
     setShowDateTo(false);
+  };
+
+  const formatDate = (date) => {
+    return date instanceof Date && !isNaN(date) ? date.toLocaleDateString() : 'Invalid Date';
   };
 
   const sampleImage1 = require('../assets/sampleImage.webp');
@@ -265,17 +274,58 @@ export default function HistoryScreen() {
         </Text>
 
         <View style={styles.dateContainer}>
-          <TouchableOpacity onPress={() => setShowDateFrom(true)} style={styles.dateInput}>
+          {/* <TouchableOpacity onPress={() => setShowDateFrom(true)} style={styles.dateInput}>
             <Text style={{ color: "gray" }}>
-              From: {dateFrom.toLocaleDateString()}
+              From: {dateSelectedFrom ? formatDate(dateFrom) : 'Select Date'}
             </Text>
+            {!dateSelectedFrom && (
+              <Image
+                source={require('../assets/calenderIcon.webp')} // Replace with your icon's path
+                style={styles.icon}
+              />
+            )}
           </TouchableOpacity>
           <Text>____</Text>
           <TouchableOpacity onPress={() => setShowDateTo(true)} style={styles.dateInput}>
             <Text style={{ color: "gray" }}>
-              To: {dateTo.toLocaleDateString()}
+              To: {dateSelectedTo ? formatDate(dateTo) : 'Select Date'}
             </Text>
+            {!dateSelectedTo && (
+              <Image
+                source={require('../assets/calenderIcon.webp')} // Replace with your icon's path
+                style={styles.icon}
+              />
+            )}
+          </TouchableOpacity> */}
+
+          <TouchableOpacity onPress={() => setShowDateFrom(true)} style={styles.dateInput}>
+            <View style={styles.dateTextContainer}>
+              <Text style={{ color: "gray" }}>
+                From: {dateSelectedFrom ? formatDate(dateFrom) : ''}
+              </Text>
+              {!dateSelectedFrom && (
+                <Image
+                  source={require('../assets/calenderIcon.webp')} // Replace with your icon's path
+                  style={styles.icon}
+                />
+              )}
+            </View>
           </TouchableOpacity>
+          <Text>____</Text>
+          <TouchableOpacity onPress={() => setShowDateTo(true)} style={styles.dateInput}>
+            <View style={styles.dateTextContainer}>
+              <Text style={{ color: "gray" }}>
+                To: {dateSelectedTo ? formatDate(dateTo) : ''}
+              </Text>
+              {!dateSelectedTo && (
+                <Image
+                  source={require('../assets/calenderIcon.webp')} // Replace with your icon's path
+                  style={styles.icon}
+                />
+              )}
+            </View>
+          </TouchableOpacity>
+
         </View>
 
         <CalendarModal
@@ -318,12 +368,23 @@ const styles = StyleSheet.create({
     alignItems: "center"
   },
   dateInput: {
+    width:dimensions.widthLevel13,
     borderWidth: 1,
     borderColor: '#ccc',
-    padding: dimensions.paddingLevel3,
+    padding: dimensions.paddingLevel2,
     borderRadius: 9,
     justifyContent: 'center',
-    alignItems: 'center',
+    //alignItems: 'center',
+  
+  },
+  icon: {
+    width: 20,
+    height: 20, // Adjust size as needed
+    marginLeft: 20, 
+  },
+  dateTextContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    //flex: 1
   },
 });
-

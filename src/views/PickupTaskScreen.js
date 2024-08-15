@@ -138,18 +138,12 @@ export default function PickupTaskScreen() {
           <Text style={styles.subTitleText}>Pick-Up Instruction</Text>
         </View>
 
-        {/* <Text style={styles.subText}>
-          Come in to front store entrance and say you’re here for “A My Deliver”...
-        </Text> */}
-         {/* Toggle the text based on the state */}
          <TouchableOpacity onPress={toggleTextExpansion}>
           <Text style={styles.subText}>
             Come in to front store entrance and say you’re here for “A My Deliver”...
             {textExpanded && '\nPlease also make sure to check the order number with the store representative, and ensure the package is securely sealed before leaving the premises.'}
           </Text>
-          {/* <Text style={styles.showMoreText}>
-            {textExpanded ? 'Show Less' : 'Show More'}
-          </Text> */}
+
         </TouchableOpacity>
 
         <View style={styles.dottedLine} />
@@ -165,7 +159,7 @@ export default function PickupTaskScreen() {
 
             <TouchableOpacity onPress={toggleStatusModal}>
               <View style={styles.statusRow}>
-                <Text style={styles.nameText}>Select Drop-Off Status</Text>
+                <Text style={styles.nameText}>Select Pick-Up Status</Text>
                 <Image style={styles.arrowIcon} source={require('../assets/rightArrow.webp')} />
               </View>
             </TouchableOpacity>
@@ -257,7 +251,7 @@ export default function PickupTaskScreen() {
                   value={status === 'Delayed'}
                   onValueChange={() => handleStatusChange('Delayed')}
                   trackColor={{ false: 'lightgray', true: 'gray' }}
-                  thumbColor={status === 'Delayed' ? 'gray' : 'lightgray'}
+                  thumbColor={status === 'Delayed' ? 'lightgray' : 'gray'}
                 />
                 <Text style={styles.switchLabel}>Delayed</Text>
                 <TouchableOpacity onPress={() => setIsDelayedExpanded(!isDelayedExpanded)}>
@@ -360,12 +354,7 @@ export default function PickupTaskScreen() {
 
       <Text style={styles.switchLabel}>Extra Charge/Tip</Text>
       {dateExtension && (
-        // <TextInput
-        //   style={styles.input}
-        //   placeholder="MM-DD-YY"
-        //   value={dateExtension}
-        //   onChangeText={setDateExtension}
-        // />
+
         <View style={styles.inputContainer}>
         <TextInput
           style={styles.input2}
