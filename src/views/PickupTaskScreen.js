@@ -5,8 +5,9 @@ import {
 import HeaderComponent from '../components/HeaderComponent';
 import { colors, dimensions, fontSizes } from '../styles/constants';
 import { launchImageLibrary, launchCamera } from 'react-native-image-picker';
+import CalendarModal from '../components/CalenderModal';
 
-export default function PickupTaskScreen() {
+export default function PickupTaskScreen({navigation}) {
   const [photoUri, setPhotoUri] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [textExpanded, setTextExpanded] = useState(false); // State to manage the text expansion
@@ -14,6 +15,7 @@ export default function PickupTaskScreen() {
   const [status, setStatus] = useState(''); // New state to track selected status
   const [reasons, setReasons] = useState(''); // State for reason input
   const [isDelayedExpanded, setIsDelayedExpanded] = useState(false);
+  const [tempStatus, setTempStatus] = useState('');
   const [isFailedExpanded, setIsFailedExpanded] = useState(false);
   const [extraChargeModalVisible, setExtraChargeModalVisible] = useState(false);
   const [extraChargeTip, setExtraChargeTip] = useState(false); // For the switch
@@ -21,7 +23,32 @@ export default function PickupTaskScreen() {
   const [dateExtension, setDateExtension] = useState('');
   const [description, setDescription] = useState('');
   const [confirmModalVisible, setConfirmModalVisible] = useState(false);
+  const [dateFrom, setDateFrom] = useState(new Date());
+  const [showDateFrom, setShowDateFrom] = useState(false);
+  const [dateSelectedFrom, setDateSelectedFrom] = useState(false);
+  const [descriptionError, setDescriptionError] = useState('');
 
+
+  const onChangeFromDate = (selectedDate) => {
+    if (selectedDate instanceof Date && !isNaN(selectedDate)) {
+      const formattedDate = selectedDate.toLocaleDateString(); // Format the date as needed
+      setDateExtension(formattedDate);
+      setDateFrom(selectedDate);
+    } else {
+      console.error('Invalid date:', selectedDate);
+    }
+    setShowDateFrom(false);
+  };
+
+  const handleSubmit = () => {
+    if (!description) {
+      setDescriptionError('Required field *'); // Show error if description is empty
+    } else {
+      setDescriptionError(''); // Clear error if description is filled
+      setExtraChargeModalVisible(false);
+      // Continue with the submission logic
+    }
+  };
 
   const handlePhotoUpload = () => {
     setModalVisible(true);
@@ -58,12 +85,6 @@ export default function PickupTaskScreen() {
     setStatusModalVisible(!statusModalVisible);
   };
 
-  // const handleStatusChange = (selectedStatus) => {
-  //   setStatus(selectedStatus);
-  //   if (selectedStatus !== 'Success') {
-  //     setReasons('');
-  //   }
-  // };
 
   const capturePhoto = () => {
     const options = {
@@ -89,19 +110,34 @@ export default function PickupTaskScreen() {
   };
 
   const handleStatusChange = (selectedStatus) => {
-    setStatus(selectedStatus);
-    if (selectedStatus === 'Delayed') {
-      setIsDelayedExpanded(true);
-      setIsFailedExpanded(false);
-    } else if (selectedStatus === 'Failed') {
+    if (tempStatus === selectedStatus) {
+      setTempStatus(''); // Turn off the toggle if it's already selected
       setIsDelayedExpanded(false);
-      setIsFailedExpanded(true);
+      setIsFailedExpanded(false);
+      setReasons(''); // Clear reasons when switching status
     } else {
-      setIsDelayedExpanded(false);
-      setIsFailedExpanded(false);
+      setTempStatus(selectedStatus);
+      if (selectedStatus === 'Delayed') {
+        setIsDelayedExpanded(true);
+        setIsFailedExpanded(false);
+      } else if (selectedStatus === 'Failed') {
+        setIsDelayedExpanded(false);
+        setIsFailedExpanded(true);
+      } else {
+        setIsDelayedExpanded(false);
+        setIsFailedExpanded(false);
+      }
+      setReasons(''); // Clear reasons when switching status
     }
-    setReasons(''); // Clear reasons when switching status
-    toggleStatusModal(); // Close the modal after selecting a status
+  };
+
+  const handleSubmitStatus = () => {
+    setStatus(tempStatus); // Set the selected status when the user submits
+    toggleStatusModal(); // Close the modal
+  };
+
+  const handleDropoffTask = () => {
+    navigation.navigate('DropoffTaskScreen');
   };
 
   return (
@@ -171,8 +207,8 @@ export default function PickupTaskScreen() {
             <View style={styles.statusRow}>
               <Switch
                 value={true}
-                trackColor={{ false: 'lightgray', true: status === 'Success' ? colors.success : status === 'Delayed' ? 'gray' : colors.failed }}
-                thumbColor={status === 'Success' ? colors.success : status === 'Delayed' ? 'gray' : colors.failed}
+                trackColor={{ false: 'lightgray', true: status === 'Success' ? "#0A987F1A" : status === 'Delayed' ? 'lightgray' : '#FF00001A' }}
+                thumbColor={status === 'Success' ? colors.primary : status === 'Delayed' ? 'gray' : 'red'}
               />
               <Text style={styles.switchLabel}>{status}</Text>
               <Image style={styles.arrowIcon} source={require('../assets/rightArrow.webp')} />
@@ -215,8 +251,9 @@ export default function PickupTaskScreen() {
         </TouchableOpacity>
       </ScrollView>
 
-     {/* Status Modal */}
-     <Modal
+   
+ {/* Status Modal */}
+ <Modal
         animationType="none"
         transparent={true}
         visible={statusModalVisible}
@@ -236,24 +273,24 @@ export default function PickupTaskScreen() {
             {/* Success Switch */}
             <View style={styles.switchContainer}>
               <Switch
-                value={status === 'Success'}
+                value={tempStatus === 'Success'}
                 onValueChange={() => handleStatusChange('Success')}
                 trackColor={{ false: 'lightgray', true: colors.success }}
-                thumbColor={status === 'Success' ? colors.success : 'gray'}
+                thumbColor={tempStatus === 'Success' ? colors.primary : 'gray'}
               />
-              <Text style={styles.switchLabel}>Success</Text>
+              <Text style={[styles.switchLabel,{color:colors.primary}]}>Success</Text>
             </View>
 
             {/* Delayed Switch */}
             <View style={styles.switchContainer}>
               <View style={styles.statusRow}>
                 <Switch
-                  value={status === 'Delayed'}
+                  value={tempStatus === 'Delayed'}
                   onValueChange={() => handleStatusChange('Delayed')}
                   trackColor={{ false: 'lightgray', true: 'gray' }}
-                  thumbColor={status === 'Delayed' ? 'lightgray' : 'gray'}
+                  thumbColor={tempStatus === 'Delayed' ? 'lightgray' : 'gray'}
                 />
-                <Text style={styles.switchLabel}>Delayed</Text>
+                <Text style={[styles.switchLabel,{color:'lightgray'}]}>Delayed</Text>
                 <TouchableOpacity onPress={() => setIsDelayedExpanded(!isDelayedExpanded)}>
                   <Image
                     style={styles.arrowIcon}
@@ -276,12 +313,12 @@ export default function PickupTaskScreen() {
             <View style={styles.switchContainer}>
               <View style={styles.statusRow}>
                 <Switch
-                  value={status === 'Failed'}
+                  value={tempStatus === 'Failed'}
                   onValueChange={() => handleStatusChange('Failed')}
-                  trackColor={{ false: 'lightgray', true: colors.failed }}
-                  thumbColor={status === 'Failed' ? colors.failed : 'gray'}
+                  trackColor={{ false: 'lightgray', true: '#FF00001A' }}
+                  thumbColor={tempStatus === 'Failed' ? 'red' : 'gray'}
                 />
-                <Text style={styles.switchLabel}>Failed</Text>
+                <Text style={[styles.switchLabel,{color:"red"}]}>Failed</Text>
                 <TouchableOpacity onPress={() => setIsFailedExpanded(!isFailedExpanded)}>
                   <Image
                     style={styles.arrowIcon}
@@ -300,12 +337,13 @@ export default function PickupTaskScreen() {
               />
             )}
 
-            <TouchableOpacity style={styles.submitButton} onPress={toggleStatusModal}>
+            <TouchableOpacity style={styles.submitButton} onPress={handleSubmitStatus}>
               <Text style={styles.submitButtonText}>Submit</Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
+
 
             <Modal
         animationType="none"
@@ -329,8 +367,8 @@ export default function PickupTaskScreen() {
         <Switch
           value={extraChargeTip}
           onValueChange={setExtraChargeTip}
-          trackColor={{ false: 'lightgray', true: 'green' }}
-          thumbColor={extraChargeTip ? 'green' : 'gray'}
+          trackColor={{ false: 'lightgray', true:  colors.success }}
+          thumbColor={extraChargeTip ? colors.primary : 'gray'}
         />
       </View>
 
@@ -340,6 +378,7 @@ export default function PickupTaskScreen() {
         keyboardType="numeric"
         value={extraChargeAmount}
         onChangeText={setExtraChargeAmount}
+        editable={extraChargeTip} 
       />
 
       <View style={styles.switchContainer}>
@@ -347,8 +386,8 @@ export default function PickupTaskScreen() {
         <Switch
           value={!!dateExtension}
           onValueChange={() => setDateExtension(dateExtension ? '' : new Date().toLocaleDateString())}
-          trackColor={{ false: 'lightgray', true: 'green' }}
-          thumbColor={dateExtension ? 'green' : 'gray'}
+          trackColor={{ false: 'lightgray', true: colors.success  }}
+          thumbColor={dateExtension ? colors.primary : 'gray'}
         />
       </View>
 
@@ -362,7 +401,7 @@ export default function PickupTaskScreen() {
           value={dateExtension}
           onChangeText={setDateExtension}
         />
-        <TouchableOpacity style={styles.iconContainer}>
+        <TouchableOpacity style={styles.iconContainer} onPress={() => setShowDateFrom(true)}>
           <Image
             source={require('../assets/calenderIcon.webp')} // Replace with your icon's path
             style={styles.icon2}
@@ -372,6 +411,16 @@ export default function PickupTaskScreen() {
       
       )}
 
+        <CalendarModal
+          visible={showDateFrom}
+          onClose={() => setShowDateFrom(false)}
+          onSelectDate={(selectedDate) => {
+            onChangeFromDate(selectedDate);
+            setShowDateFrom(false);
+          }}
+          selectedDate={dateFrom}
+        />
+
       <Text style={{fontSize: fontSizes.fontMediumPlus, padding: dimensions.paddingLevel3,color:colors.black,fontWeight:'600',}}>Description</Text>
       <TextInput
         style={styles.reasonInput}
@@ -380,7 +429,7 @@ export default function PickupTaskScreen() {
         onChangeText={setDescription}
       />
 
-      <View style={{flexDirection:'row', justifyContent:'space-between'}}>
+      {/* <View style={{flexDirection:'row', justifyContent:'space-between'}}>
 
       <TouchableOpacity style={styles.cancelButton} onPress={() => setExtraChargeModalVisible(false)}>
         <Text style={styles.cancelButtonText}>Cancel</Text>
@@ -390,7 +439,18 @@ export default function PickupTaskScreen() {
         <Text style={styles.submitButtonText}>Submit</Text>
       </TouchableOpacity>
 
-      </View>
+      </View> */}
+       {descriptionError ? <Text style={styles.errorText}>{descriptionError}</Text> : null}
+
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <TouchableOpacity style={styles.cancelButton} onPress={() => setExtraChargeModalVisible(false)}>
+            <Text style={styles.cancelButtonText}>Cancel</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+            <Text style={styles.submitButtonText}>Submit</Text>
+          </TouchableOpacity>
+        </View>
     </View>
   </View>
 </Modal>
@@ -452,7 +512,7 @@ export default function PickupTaskScreen() {
 
         <TouchableOpacity
           style={styles.cancelButton}
-          onPress={() => setConfirmModalVisible(false)}
+          onPress={handleDropoffTask}
         >
           <Text style={styles.cancelButtonText}>No Drop-Off Now</Text>
         </TouchableOpacity>
@@ -736,8 +796,7 @@ const styles = StyleSheet.create({
   switchLabel: {
     fontSize: fontSizes.fontMediumPlus,
     marginLeft: 10,
-    color:colors.black,
-    fontWeight:'600',
+    fontWeight:'700',
     flex: 1, // Take up remaining space between switch and arrow
    
   },
@@ -814,6 +873,12 @@ const styles = StyleSheet.create({
   icon2: {
     width: 20,
     height: 20, // Adjust size as needed
+  },
+  errorText: {
+    color: 'red',
+    margin: 5,
+    fontSize: fontSizes.fontMidMedium,
+    marginLeft: 10,
   },
   
 });

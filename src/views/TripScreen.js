@@ -13,7 +13,6 @@ export default function TripScreen() {
     { label: 'Courier Service', value: 'Courier Service' },
     { label: 'Transport Service', value: 'Transport Service' }
   ]);
-
   const [modalVisible, setModalVisible] = useState(false);
 
   const [addStopModalVisible, setAddStopModalVisible] = useState(false);
@@ -29,6 +28,15 @@ export default function TripScreen() {
     }
   };
 
+  const [phone, setPhone] = useState('');
+  const [newTrips, setNewTrips] = useState([]); // State to manage new trip orders
+  const [nameOrOrder, setNameOrOrder] = useState(''); // State to manage name or order input
+  const [pickupAddress, setPickupAddress] = useState(''); // State to manage pickup address
+  const [pickupInstruction, setPickupInstruction] = useState('');
+  const [dropOffAddress, setDropOffAddress] = useState('');
+  const [limitReached, setLimitReached] = useState(false); // State to manage modal visibility
+
+
   const openModal = (type) => {
     setModalVisible(true);
   };
@@ -37,6 +45,56 @@ export default function TripScreen() {
     setModalVisible(false);
   };
 
+  const formatPhoneNumber = (input) => {
+    let cleaned = ('' + input).replace(/\D/g, '');
+    // Split the cleaned number into parts
+    let match = cleaned.match(/^(\d{0,3})(\d{0,3})(\d{0,4})$/);
+
+    if (match) {
+      // Format the number in the pattern (000)-000-0000
+      let formatted = `${match[1] ? '(' + match[1] : ''}${
+        match[2] ? ')-' + match[2] : ''
+      }${match[3] ? '-' + match[3] : ''}`;
+      return formatted;
+    }
+
+    return input;
+  };
+
+  const handlePhoneChange = (text) => {
+    setPhone(formatPhoneNumber(text));
+  };
+
+  const handleAddTrip = () => {
+    //const trimmedNameOrOrder = nameOrOrder.trim();
+  
+      const totalTrips = [...tripOrders, ...newTrips].length;
+      if (totalTrips >= 3) {
+        setLimitReached(true);
+        return;
+      }
+
+      const newTrip = {
+        id: newTrips.length + 3, // Adjusting the id based on the default trips
+        name: nameOrOrder || `Order #${new Date().getTime()}`,
+        pickUp: pickupAddress,
+        dropOff: dropOffAddress,
+        phone: phone,
+        category: category
+      };
+  
+    setNewTrips([...newTrips, newTrip]);
+    setNameOrOrder('');
+    setPhone('');
+    setPickupAddress('');  // Clear the pickup address field
+    setPickupInstruction(''); 
+    setDropOffAddress(''); // Clear the drop-off address field
+    setDropOffs([{ address: '', instruction: '' }]);
+  };
+
+  const handleRemoveTrip = (id) => {
+    setNewTrips(newTrips.filter((trip) => trip.id !== id));
+  };
 
   const tripOrders = [
     { id: 1, name: 'Order #7162533', pickUp: 'Down town, new york', dropOff: 'Down town, new york', phone: '(000)-000-0000', category: 'Local Delivery' },
@@ -62,10 +120,10 @@ export default function TripScreen() {
 
       </View>
         <Text style={styles.label}>Name / Order #</Text>
-        <TextInput style={styles.input} placeholder="Name / Order #" placeholderTextColor="gray" />
+        <TextInput style={styles.input} placeholder="Name / Order #" placeholderTextColor="gray"  value={nameOrOrder} onChangeText={setNameOrOrder} />
 
         <Text style={styles.label}>Customer Phone</Text>
-        <TextInput style={styles.input} placeholder="(000)-000-0000" keyboardType="phone-pad" placeholderTextColor="gray" maxLength={10}/>
+        <TextInput style={styles.input} placeholder="(000)-000-0000" keyboardType="phone-pad" placeholderTextColor="gray" maxLength={14} value={phone}  onChangeText={handlePhoneChange}/>
 
         <Text style={styles.label}>Category</Text>
         <DropDownPicker
@@ -84,10 +142,10 @@ export default function TripScreen() {
         />
 
         <Text style={styles.label}>Pick-Up Address</Text>
-        <TextInput style={styles.input} placeholder="Pick-Up Address" placeholderTextColor="gray" />
+        <TextInput style={styles.input} placeholder="Pick-Up Address" placeholderTextColor="gray"  value={pickupAddress} onChangeText={setPickupAddress} />
 
         <Text style={styles.label}>Pick-Up Instruction</Text>
-        <TextInput style={styles.input} placeholder="Pick-Up Instruction" placeholderTextColor="gray" />
+        <TextInput style={styles.input} placeholder="Pick-Up Instruction" placeholderTextColor="gray"  value={pickupInstruction} onChangeText={setPickupInstruction}/>
 
         {/* Render Drop-Off fields dynamically */}
         {dropOffs.map((dropOff, index) => (
@@ -103,6 +161,7 @@ export default function TripScreen() {
                 updatedDropOffs[index].address = text;
                 setDropOffs(updatedDropOffs);
               }}
+              value={dropOffAddress} onChangeText={setDropOffAddress}
             />
 
             <Text style={styles.label}>{`Drop-Off Instruction (${index + 1})`}</Text>
@@ -136,7 +195,7 @@ export default function TripScreen() {
           </TouchableOpacity>
           <TouchableOpacity 
             style={styles.addStopButton} 
-            onPress={() => setModalVisible(true)} // Open modal on press
+            onPress={handleAddTrip}
           >
             <Text style={{ color: colors.white, fontWeight: '600', fontSize: fontSizes.fontMidMedium }}>Add Stop to Trip</Text>
           </TouchableOpacity>
@@ -144,7 +203,7 @@ export default function TripScreen() {
 
         <View style={styles.dottedLine} />
 
-        {tripOrders.map((order, index) => (
+        {/* {tripOrders.map((order, index) => (
           <View key={index} style={styles.tripOrderContainer}>
             <View style={styles.timeline}>
               <View style={styles.circle}>
@@ -184,6 +243,49 @@ export default function TripScreen() {
               <Text style={styles.orderDetail}>{order.category}</Text>
               </View>
             
+            </View>
+          </View>
+        ))} */}
+
+
+        {[...tripOrders, ...newTrips].map((order, index) => (
+          <View key={index} style={styles.tripOrderContainer}>
+            <View style={styles.timeline}>
+              <View style={styles.circle}>
+                <Text style={styles.circleText}>{order.id}</Text>
+              </View>
+              {index < tripOrders.length + newTrips.length && <View style={styles.verticalLine} />}
+            </View>
+            <View style={styles.orderDetails}>
+              <View style={styles.orderRow}>
+                  <Text style={styles.orderName}>{order.name}</Text>
+                  <TouchableOpacity>
+                    <Image style={styles.iIcon} source={require('../assets/iIcon.webp')} />
+                  </TouchableOpacity>
+                </View>
+              <View style={styles.orderRow}>
+                  <Text style={styles.orderText}>Pick-Up Address</Text>
+                  <TouchableOpacity>
+                    <Image style={styles.iIcon} source={require('../assets/dragIcon.webp')} />
+                  </TouchableOpacity>
+                </View>
+              <View style={styles.orderRow}>
+                  <Text style={styles.orderDetail}>{order.pickUp}</Text>
+                  <TouchableOpacity  onPress={() => handleRemoveTrip(order.id)}>
+                    <Image style={styles.closeIcon2} source={require('../assets/closeIcon.webp')} />
+                  </TouchableOpacity>
+                </View>
+              <Text style={styles.orderText}>Drop-Off Address</Text>
+              <Text style={styles.orderDetail}>{order.dropOff}</Text>
+              
+              <View style={{flexDirection:'row',justifyContent:"space-between"}}>
+                <Text style={styles.orderText}>Phone</Text>
+                <Text style={styles.orderText}>Category</Text>
+              </View>
+              <View style={{flexDirection:'row',justifyContent:"space-between"}}>
+                <Text style={styles.orderDetail}>{order.phone}</Text>
+                <Text style={styles.orderDetail}>{order.category}</Text>
+              </View>
             </View>
           </View>
         ))}
@@ -322,6 +424,32 @@ export default function TripScreen() {
             
           </TouchableOpacity>
         </TouchableOpacity>
+      </Modal>
+
+      {/* Modal for limit reached */}
+      <Modal
+        animationType="none"
+        transparent={true}
+        visible={limitReached}
+        onRequestClose={() => setLimitReached(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent2}>
+            <TouchableOpacity onPress={() => setLimitReached(false)} style={styles.closeButton2}>
+            <Image style={styles.closeIcon} source={require('../assets/closeIcon.webp')} />
+            </TouchableOpacity>
+            <Text style={styles.modalText}>Error!</Text>
+            <Text style={styles.modalText2}>Your plan is limited to 20 stops (including orders). Please upgrade or reduce the number of stops.</Text>
+            <View style={styles.modalButtons}>
+              <TouchableOpacity style={styles.dismissButton} onPress={() => setLimitReached(false)}>
+              <Text style={styles.modalButtonText}>Dismiss</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.modalButton}>
+                <Text style={styles.modalButtonText2}>Upgrade</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
       </Modal>
 
       </KeyboardAwareScrollView>
@@ -524,6 +652,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     width: '80%',
     padding: dimensions.paddingLevel3,
+    justifyContent:'center',
     alignItems: 'center',
   },
   // closeButton: {
@@ -539,7 +668,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   modalText: {
-    fontSize: fontSizes.fontMediumPlus,
+    fontSize: fontSizes.fontXLarge,
     color:colors.black,
     fontWeight: '700',
    marginTop:10,
@@ -552,6 +681,8 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     marginBottom:30,
     marginVertical: dimensions.paddingLevel2,
+    justifyContent:'center',
+    textAlign:'center'
   },
   modalButtons: {
     flexDirection: 'row',
@@ -568,7 +699,7 @@ const styles = StyleSheet.create({
   },
   modalButtonText: {
     color: colors.secondary,
-    fontSize: fontSizes.fontMediumPlus,
+    fontSize: fontSizes.fontMidMedium,
     fontWeight: '700',
     paddingVertical: dimensions.paddingLevel2,
     paddingHorizontal: dimensions.paddingLevel3,
@@ -578,7 +709,11 @@ const styles = StyleSheet.create({
   modalButtonText2: {
     color: colors.white,
     fontSize: fontSizes.fontMidMedium,
-    fontWeight: '600',
+    fontWeight: '700',
+  //  paddingVertical: dimensions.paddingLevel2,
+    paddingHorizontal: dimensions.paddingLevel1,
+   // marginHorizontal: 5,
+    alignItems: 'center',
   },
   closeIcon: {
     width: 16,
