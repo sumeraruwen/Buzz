@@ -267,8 +267,17 @@ export default function EarningsScreen() {
         visible={modalVisible}
         onRequestClose={closeModal}
       >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
+        {/* <View style={styles.modalContainer}>
+          <View style={styles.modalContent}> */}
+             <TouchableOpacity 
+          style={styles.modalContainer} 
+          activeOpacity={1} 
+          onPressOut={() => closeModal(false)}
+        >
+        <TouchableOpacity 
+            style={styles.modalContent} 
+            activeOpacity={1} 
+            onPress={(e) => e.stopPropagation()}>
           <View style={styles.modalHeader}>
             <Text style={styles.modalTitle}>Date Range</Text>
             <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
@@ -302,8 +311,10 @@ export default function EarningsScreen() {
             ))}
           </ScrollView>
             
-          </View>
-        </View>
+          {/* </View>
+        </View> */}
+        </TouchableOpacity>
+        </TouchableOpacity>
       </Modal>
 
              <Modal
@@ -312,8 +323,17 @@ export default function EarningsScreen() {
         visible={settingsModalVisible}
         onRequestClose={closeSettingsModal}
       >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
+        {/* <View style={styles.modalContainer}>
+          <View style={styles.modalContent}> */}
+             <TouchableOpacity 
+          style={styles.modalContainer} 
+          activeOpacity={1} 
+          onPressOut={() => closeSettingsModal(false)}
+        >
+        <TouchableOpacity 
+            style={styles.modalContent} 
+            activeOpacity={1} 
+            onPress={(e) => e.stopPropagation()}>
           <View style={styles.modalHeader}>
             <Text style={styles.modalTitle}>Statement by Month</Text>
             <TouchableOpacity onPress={() => setSettingsModalVisible(!settingsModalVisible)}>
@@ -371,8 +391,8 @@ export default function EarningsScreen() {
           <TouchableOpacity style={styles.downloadButton}>
             <Text style={styles.downloadButtonText}>Download</Text>
           </TouchableOpacity>
-          </View>
-        </View>
+         </TouchableOpacity>
+         </TouchableOpacity>
       </Modal> 
 
     </View>

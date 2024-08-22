@@ -598,8 +598,17 @@ const CalendarModal = ({
       animationType="none"
       onRequestClose={onClose}
     >
-      <View style={styles.modalContainer}>
-        <View style={styles.calendarContainer}>
+      {/* <View style={styles.modalContainer}>
+        <View style={styles.calendarContainer}> */}
+         <TouchableOpacity 
+          style={styles.modalContainer} 
+          activeOpacity={1} 
+          onPressOut={() => onClose(false)}
+        >
+        <TouchableOpacity 
+            style={styles.calendarContainer} 
+            activeOpacity={1} 
+            onPress={(e) => e.stopPropagation()}>
           <View style={styles.header}>
             <Text style={styles.title}>{title || 'Select Date'}</Text>
             <TouchableOpacity onPress={onClose}>
@@ -678,8 +687,10 @@ const CalendarModal = ({
               </TouchableOpacity>
             </View>
           </View>
-        </View>
-      </View>
+        {/* </View>
+      </View> */}
+      </TouchableOpacity>
+      </TouchableOpacity>
     </Modal>
   );
 };

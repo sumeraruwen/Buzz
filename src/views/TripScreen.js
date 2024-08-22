@@ -33,6 +33,7 @@ export default function TripScreen() {
   const [nameOrOrder, setNameOrOrder] = useState(''); // State to manage name or order input
   const [pickupAddress, setPickupAddress] = useState(''); // State to manage pickup address
   const [pickupInstruction, setPickupInstruction] = useState('');
+  const [stop, setStop] = useState('');
   const [dropOffAddress, setDropOffAddress] = useState('');
   const [limitReached, setLimitReached] = useState(false); // State to manage modal visibility
 
@@ -69,7 +70,7 @@ export default function TripScreen() {
     //const trimmedNameOrOrder = nameOrOrder.trim();
   
       const totalTrips = [...tripOrders, ...newTrips].length;
-      if (totalTrips >= 3) {
+      if (totalTrips >= 4) {
         setLimitReached(true);
         return;
       }
@@ -84,6 +85,7 @@ export default function TripScreen() {
       };
   
     setNewTrips([...newTrips, newTrip]);
+    setStop(''); 
     setNameOrOrder('');
     setPhone('');
     setPickupAddress('');  // Clear the pickup address field
@@ -110,7 +112,7 @@ export default function TripScreen() {
 
 
       <View style={styles.inputWrapper}>
-         <TextInput style={styles.input} placeholder="Stop" placeholderTextColor="black" />
+         <TextInput style={styles.input} placeholder="Stop" placeholderTextColor="black" value={stop} onChangeText={setStop} />
         
           <TouchableOpacity style={styles.overlay} onPress={() => setAddStopModalVisible(true)}>
           <Image style={styles.dropOffIcon} source={require('../assets/addDropOff.webp')} />
@@ -304,8 +306,17 @@ export default function TripScreen() {
               setModalVisible(!modalVisible);
             }}
           >
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent2}>
+          {/* <View style={styles.modalContainer}>
+            <View style={styles.modalContent2}> */}
+             <TouchableOpacity 
+          style={styles.modalContainer} 
+          activeOpacity={1} 
+          onPressOut={() => setModalVisible(false)}
+        >
+          <TouchableOpacity 
+            style={styles.modalContent2} 
+            activeOpacity={1} 
+            onPress={(e) => e.stopPropagation()}>
 
                <TouchableOpacity onPress={closeModal} style={styles.closeButton2}>
                 <Image style={styles.closeIcon} source={require('../assets/closeIcon.webp')} />
@@ -324,8 +335,10 @@ export default function TripScreen() {
                   <Text style={styles.modalButtonText2}>See Saved Trips</Text>
                 </TouchableOpacity>
               </View>
-            </View>
-          </View>
+            {/* </View>
+          </View> */}
+          </TouchableOpacity>
+          </TouchableOpacity>
         </Modal>
 
               <Modal
@@ -433,8 +446,18 @@ export default function TripScreen() {
         visible={limitReached}
         onRequestClose={() => setLimitReached(false)}
       >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent2}>
+        {/* <View style={styles.modalContainer}>
+          <View style={styles.modalContent2}> */}
+            <TouchableOpacity 
+          style={styles.modalContainer} 
+          activeOpacity={1} 
+          onPressOut={() => setLimitReached(false)}
+        >
+          <TouchableOpacity 
+            style={styles.modalContent2} 
+            activeOpacity={1} 
+            onPress={(e) => e.stopPropagation()}>
+
             <TouchableOpacity onPress={() => setLimitReached(false)} style={styles.closeButton2}>
             <Image style={styles.closeIcon} source={require('../assets/closeIcon.webp')} />
             </TouchableOpacity>
@@ -448,8 +471,10 @@ export default function TripScreen() {
                 <Text style={styles.modalButtonText2}>Upgrade</Text>
               </TouchableOpacity>
             </View>
-          </View>
-        </View>
+          {/* </View>
+        </View> */}
+        </TouchableOpacity>
+        </TouchableOpacity>
       </Modal>
 
       </KeyboardAwareScrollView>

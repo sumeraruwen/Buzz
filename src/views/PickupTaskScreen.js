@@ -259,8 +259,19 @@ export default function PickupTaskScreen({navigation}) {
         visible={statusModalVisible}
         onRequestClose={toggleStatusModal}
       >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
+        {/* <View style={styles.centeredView}>
+          <View style={styles.modalView}> */}
+            <TouchableOpacity 
+          style={styles.centeredView} 
+          activeOpacity={1} 
+          onPressOut={() => toggleStatusModal(false)}
+        >
+          <TouchableOpacity 
+            style={styles.modalView} 
+            activeOpacity={1} 
+            onPress={(e) => e.stopPropagation()}>
+
+           
             <View style={styles.modalHeader}>
               <Text style={styles.modalText}>Pick-Up Status Option</Text>
               <TouchableOpacity onPress={toggleStatusModal}>
@@ -340,8 +351,10 @@ export default function PickupTaskScreen({navigation}) {
             <TouchableOpacity style={styles.submitButton} onPress={handleSubmitStatus}>
               <Text style={styles.submitButtonText}>Submit</Text>
             </TouchableOpacity>
-          </View>
-        </View>
+          {/* </View>
+        </View> */}
+        </TouchableOpacity>
+        </TouchableOpacity>
       </Modal>
 
 
@@ -351,8 +364,19 @@ export default function PickupTaskScreen({navigation}) {
         visible={extraChargeModalVisible}
         onRequestClose={() => setExtraChargeModalVisible(!extraChargeModalVisible)}
       >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
+        {/* <View style={styles.centeredView}>
+          <View style={styles.modalView}> */}
+
+        <TouchableOpacity 
+          style={styles.centeredView} 
+          activeOpacity={1} 
+          onPressOut={() => setExtraChargeModalVisible(false)}
+        >
+          <TouchableOpacity 
+            style={styles.modalView} 
+            activeOpacity={1} 
+            onPress={(e) => e.stopPropagation()}>
+          
             <View style={styles.modalHeader}>
               <Text style={styles.modalText}>Request</Text>
               <TouchableOpacity onPress={() => setExtraChargeModalVisible(!extraChargeModalVisible)}>
@@ -429,17 +453,6 @@ export default function PickupTaskScreen({navigation}) {
         onChangeText={setDescription}
       />
 
-      {/* <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-
-      <TouchableOpacity style={styles.cancelButton} onPress={() => setExtraChargeModalVisible(false)}>
-        <Text style={styles.cancelButtonText}>Cancel</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.submitButton} onPress={() => setExtraChargeModalVisible(false)}>
-        <Text style={styles.submitButtonText}>Submit</Text>
-      </TouchableOpacity>
-
-      </View> */}
        {descriptionError ? <Text style={styles.errorText}>{descriptionError}</Text> : null}
 
         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
@@ -451,8 +464,10 @@ export default function PickupTaskScreen({navigation}) {
             <Text style={styles.submitButtonText}>Submit</Text>
           </TouchableOpacity>
         </View>
-    </View>
-  </View>
+    {/* </View>
+  </View> */}
+  </TouchableOpacity>
+  </TouchableOpacity>
 </Modal>
 
           <Modal
@@ -463,8 +478,19 @@ export default function PickupTaskScreen({navigation}) {
         setModalVisible(!modalVisible);
       }}
     >
-  <View style={styles.centeredView}>
-    <View style={styles.modalView}>
+  {/* <View style={styles.centeredView}>
+    <View style={styles.modalView}> */}
+
+        <TouchableOpacity 
+          style={styles.centeredView} 
+          activeOpacity={1} 
+          onPressOut={() => setModalVisible(false)}
+        >
+          <TouchableOpacity 
+            style={styles.modalView} 
+            activeOpacity={1} 
+            onPress={(e) => e.stopPropagation()}>
+
       <View style={styles.modalHeader}>
         <Text style={styles.modalText}>Upload Delivery Photo</Text>
         <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
@@ -484,8 +510,10 @@ export default function PickupTaskScreen({navigation}) {
         <Text style={styles.textStyle}>Capture Photo</Text>
       </TouchableOpacity>
       </View>
-    </View>
-  </View>
+    {/* </View>
+  </View> */}
+  </TouchableOpacity>
+  </TouchableOpacity>
 </Modal>
 
 <Modal
@@ -494,8 +522,19 @@ export default function PickupTaskScreen({navigation}) {
   visible={confirmModalVisible}
   onRequestClose={() => setConfirmModalVisible(!confirmModalVisible)}
 >
-  <View style={styles.centeredView}>
-    <View style={styles.modalView}>
+  {/* <View style={styles.centeredView}>
+    <View style={styles.modalView}> */}
+
+        <TouchableOpacity 
+          style={styles.centeredView} 
+          activeOpacity={1} 
+          onPressOut={() => setConfirmModalVisible(false)}
+        >
+          <TouchableOpacity 
+            style={styles.modalView} 
+            activeOpacity={1} 
+            onPress={(e) => e.stopPropagation()}>
+
       <Text style={styles.modalText2}>Do you want to drop-off using Route manager?</Text>
       
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 20 }}>
@@ -518,8 +557,10 @@ export default function PickupTaskScreen({navigation}) {
         </TouchableOpacity>
 
       </View>
-    </View>
-  </View>
+    {/* </View>
+  </View> */}
+  </TouchableOpacity>
+  </TouchableOpacity>
 </Modal>
 
     </View>
