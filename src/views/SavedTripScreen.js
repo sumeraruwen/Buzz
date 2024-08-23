@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Modal, StyleSheet, Image } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Modal,TextInput,Button, StyleSheet, Image } from 'react-native';
 import MainHeaderComponent from '../components/MainHeaderComponent';
 import { colors, fontSizes, dimensions } from '../styles/constants';
+import { useNavigation } from '@react-navigation/native';
+
 
 export default function SavedTripScreen() {
+  const navigation = useNavigation();  // Get the navigation prop
   const [modalVisible, setModalVisible] = useState(false);
   const [modalType, setModalType] = useState('');
   const [selectedOption, setSelectedOption] = useState({
@@ -24,6 +27,8 @@ export default function SavedTripScreen() {
   const [isAddModalVisible, setAddModalVisible] = useState(false);
   const [isDeleteModalVisible, setDeleteModalVisible] = useState(false);
 
+  const [isRenameModalVisible, setRenameModalVisible] = useState(false);
+  const [newName, setNewName] = useState('');
 
 
   const [tripDetails, setTripDetails] = useState({
@@ -69,6 +74,10 @@ export default function SavedTripScreen() {
     setModalType('');
   };
 
+  const handleCloseRenameModal = () => {
+    setRenameModalVisible(false);
+  };
+
   const selectOption = (option) => {
     setSelectedOption((prev) => ({
       ...prev,
@@ -86,6 +95,13 @@ export default function SavedTripScreen() {
     setSettingsModalVisible(false);
     setSelectedTripId(null);
   };
+
+  const handleRename = () => {
+    // Logic to rename the trip or order using newName
+    console.log("Renamed to:", newName);
+    setIsModalVisible(false);  // Close the modal after renaming
+  };
+
 
   const renderAddModal = () => (
     <Modal
@@ -166,12 +182,15 @@ export default function SavedTripScreen() {
     const handleSettingsOption = (option) => {
     switch (option) {
       case 'Open':
+        navigation.navigate('Route');
         // Handle opening the trip or order details
         break;
       case 'Edit':
+        navigation.navigate('Trip');
         // Handle editing the trip or order details
         break;
       case 'Rename':
+        setRenameModalVisible(true);
         // Handle renaming the trip or order
         break;
       case 'Delete':
@@ -184,27 +203,6 @@ export default function SavedTripScreen() {
   };
 
 const [isAnyItemSelected, setIsAnyItemSelected] = useState(false);
-
-    // const handleLongPress = (tripId) => {
-    //   if (!isAnyItemSelected) {
-    //     // Select the first item on long press
-    //     setSelectedTrips((prevSelected) => ({
-    //       ...prevSelected,
-    //       [tripId]: true,
-    //     }));
-    //     setIsAnyItemSelected(true); // Mark that an item has been selected
-    //   }
-    // };
-
-    // const handlePress = (tripId) => {
-    //   if (isAnyItemSelected) {
-    //     // Toggle selection for subsequent items with a single press
-    //     setSelectedTrips((prevSelected) => ({
-    //       ...prevSelected,
-    //       [tripId]: !prevSelected[tripId],
-    //     }));
-    //   }
-    // };
 
     const handleLongPress = (tripId) => {
       if (!isAnyItemSelected) {
@@ -276,29 +274,6 @@ const [isAnyItemSelected, setIsAnyItemSelected] = useState(false);
       }
     };
 
-    // const handleLongPressOrder2 = (orderId) => {
-    //   if (!isAnyItemSelected) {
-    //     // Select the first item on long press
-    //     setSelectedOrders((prevSelected) => ({
-    //       ...prevSelected,
-    //       [orderId]: true,
-    //     }));
-    //     setIsAnyItemSelected(true); // Mark that an item has been selected
-    //   }
-    // };
-    
-    // const handlePressOrder2 = (orderId) => {
-    //   if (isAnyItemSelected) {
-    //     // Toggle selection for subsequent items with a single press
-    //     setSelectedOrders((prevSelected) => ({
-    //       ...prevSelected,
-    //       [orderId]: !prevSelected[orderId],
-    //     }));
-    //   }
-    // };
-
-
-    //===============
     const handleBackPress = () => {
       setIsHeaderVisible(false);
       setIsAnyItemSelected(false);
@@ -308,12 +283,10 @@ const [isAnyItemSelected, setIsAnyItemSelected] = useState(false);
     };
     
     const handleAddPress = () => {
-      // Add your logic here
       setAddModalVisible(true);
     };
     
     const handleDeletePress = () => {
-      // Add your logic here
       setDeleteModalVisible(true);
     };
     const handleCloseAddModal = () => {
@@ -344,7 +317,7 @@ const [isAnyItemSelected, setIsAnyItemSelected] = useState(false);
           </View>
         );
       }
-      return null; // Return null if header is not visible
+      return null;
     };
     
   
@@ -446,9 +419,14 @@ const [isAnyItemSelected, setIsAnyItemSelected] = useState(false);
                   </TouchableOpacity>
 
                     {/* Checkmark icon for selected items */}
-                    {selectedTrips[trip.id] && (
+                    {/* {selectedTrips[trip.id] && (
                     <Image style={styles.checkIcon} source={require('../assets/tickIcon.webp')} />
-                  )}
+                  )} */}
+                  {selectedTrips[trip.id] && (
+                   <View style={styles.checkIcon}>
+    <Image style={{ width: '90%', height: '90%', tintColor: 'white' }} source={require('../assets/tickIcon.webp')} />
+  </View>
+  )}
                   
                 </View>
                 {/* {index < tripDetails[date].length  && <View style={styles.horizontalLine} />} */}
@@ -470,40 +448,172 @@ const [isAnyItemSelected, setIsAnyItemSelected] = useState(false);
     );
   };
   
+  // const renderDeliveredOrders = () => {
+  //   const orders = deliveredOrders[orderStatus] || [];
+  //   return (
+  //     <View>
+  //       {orders.map((order) => {
+  //         // Determine button styles based on the part and button state
+  //        // let button1Style, button2Style, buttonText1Style, buttonText2Style;
+  //        let button1Style = styles.buttonDisabled, button2Style = styles.buttonDisabled, buttonText1Style = styles.buttonTextDisabled, buttonText2Style = styles.buttonTextDisabled;
+  //         switch (orderStatus) {
+  //           case 'Upcoming':
+  //             button1Style = styles.buttonUpcomingStart;
+  //             button2Style = styles.buttonUpcomingPending;
+  //             buttonText1Style = styles.buttonTextUpcomingStart;
+  //             buttonText2Style = styles.buttonTextUpcomingPending;
+  //             break;
+  //           case 'Active':
+  //             button1Style = order.button1 === 'Continue' ? styles.buttonActiveContinue : styles.buttonActiveEnRoute;
+  //             button2Style = order.button2 === 'Continue' ? styles.buttonActiveContinue : styles.buttonActiveEnRoute;
+  //             buttonText1Style = button1Style === styles.buttonActiveContinue ? styles.buttonTextActiveContinue : styles.buttonTextActiveEnRoute;
+  //             buttonText2Style = button2Style === styles.buttonActiveContinue ? styles.buttonTextActiveContinue : styles.buttonTextActiveEnRoute;
+  //             break;
+  //           case 'Completed':
+  //             button1Style = order.button1 === 'Start' ? styles.buttonCompletedStart : order.button1 === 'Success' ? styles.buttonCompletedSuccess : styles.buttonCompletedFailed;
+  //             button2Style = order.button2 === 'Start' ? styles.buttonCompletedStart : order.button2 === 'Success' ? styles.buttonCompletedSuccess : styles.buttonCompletedFailed;
+  //             buttonText1Style = button1Style === styles.buttonCompletedStart ? styles.buttonTextCompletedStart : button1Style === styles.buttonCompletedSuccess ? styles.buttonTextCompletedSuccess : styles.buttonTextCompletedFailed;
+  //             buttonText2Style = button2Style === styles.buttonCompletedStart ? styles.buttonTextCompletedStart : button2Style === styles.buttonCompletedSuccess ? styles.buttonTextCompletedSuccess : styles.buttonTextCompletedFailed;
+  //             break;
+  //           default:
+  //             button1Style = styles.buttonUpcomingStart; // Default fallback
+  //             button2Style = styles.buttonUpcomingPending; // Default fallback
+  //             buttonText1Style = styles.buttonTextUpcomingStart;
+  //             buttonText2Style = styles.buttonTextUpcomingPending;
+  //         }
+  
+  //         return (
+  //           <TouchableOpacity
+  //             key={order.id}
+  //             onLongPress={() => handleLongPressOrder2(order.id)}
+  //             onPress={() => handlePressOrder2(order.id)}
+  //             style={[
+  //               styles.deliveredOrderContainer,
+  //               selectedOrders[order.id] && styles.selectedCard, // Apply selected card style
+  //             ]}
+  //           >
+  //             <View style={{ flexDirection: 'row', paddingTop: 20, paddingBottom: 10 }}>
+  //               <Text style={styles.dateHeader}>Date: </Text>
+  //               <Text style={styles.dateHeader2}>{order.date}</Text>
+  //             </View>
+  
+  //             <View style={styles.orderDetails}>
+  //               <View style={styles.orderRow}>
+  //                 <Text
+  //                   style={[
+  //                     styles.orderName,
+  //                     selectedOrders[order.id] && styles.selectedTextColor, // Apply selected text color
+  //                   ]}
+  //                 >
+  //                   {order.name}
+  //                 </Text>
+  //                 <Image style={styles.iIcon} source={require('../assets/iIcon.webp')} />
+  //               </View>
+  //               <Text style={styles.orderText}>Pick-Up Address</Text>
+  //               <Text
+  //                 style={[
+  //                   styles.orderDetail,
+  //                   selectedOrders[order.id] && styles.selectedTextColor, // Apply selected text color
+  //                 ]}
+  //               >
+  //                 {order.pickUp}
+  //               </Text>
+  //               <View style={{ flexDirection: 'row', justifyContent: "space-between" }}>
+  //                 <Text style={styles.orderText}>Start Time</Text>
+  //                 <Text style={styles.orderText}>Category</Text>
+  //               </View>
+  
+  //               <View style={{ flexDirection: 'row', justifyContent: "space-between" }}>
+  //                 <Text
+  //                   style={[
+  //                     styles.orderDetail,
+  //                     selectedOrders[order.id] && styles.selectedTextColor, // Apply selected text color
+  //                   ]}
+  //                 >
+  //                   {order.phone}
+  //                 </Text>
+  //                 <Text
+  //                   style={[
+  //                     styles.orderDetail,
+  //                     selectedOrders[order.id] && styles.selectedTextColor, // Apply selected text color
+  //                   ]}
+  //                 >
+  //                   {order.category}
+  //                 </Text>
+  //               </View>
+  
+  //               <View style={styles.dottedLine} />
+  
+  //             <View style={styles.orderActions}>
+  //               <TouchableOpacity style={button1Style} disabled={selectedOrders[order.id]}>
+  //                 <Text style={[styles.buttonText, buttonText1Style]}>{order.button1}</Text>
+  //               </TouchableOpacity>
+  //               <View style={button2Style}>
+  //                 <Text style={[styles.buttonText, buttonText2Style]}>{order.button2}</Text>
+  //               </View>
+  //             </View>
+
+  
+  //               {/* Checkmark icon for selected items */}
+  //               {/* {selectedOrders[order.id] && (
+  //                 <Image style={styles.checkIcon} source={require('../assets/tickIcon.webp')} />
+  //               )} */}
+  //                {selectedOrders[order.id] && (
+  //                  <View style={styles.checkIcon}>
+  //   <Image style={{ width: '90%', height: '90%', tintColor: 'white' }} source={require('../assets/tickIcon.webp')} />
+  // </View>
+  // )}
+  //             </View>
+  //           </TouchableOpacity>
+  //         );
+  //       })}
+  //     </View>
+  //   );
+  // };
+
   const renderDeliveredOrders = () => {
     const orders = deliveredOrders[orderStatus] || [];
     return (
       <View>
         {orders.map((order) => {
           // Determine button styles based on the part and button state
-         // let button1Style, button2Style, buttonText1Style, buttonText2Style;
-         let button1Style = styles.buttonDisabled, button2Style = styles.buttonDisabled, buttonText1Style = styles.buttonTextDisabled, buttonText2Style = styles.buttonTextDisabled;
-          switch (orderStatus) {
-            case 'Upcoming':
-              button1Style = styles.buttonUpcomingStart;
-              button2Style = styles.buttonUpcomingPending;
-              buttonText1Style = styles.buttonTextUpcomingStart;
-              buttonText2Style = styles.buttonTextUpcomingPending;
-              break;
-            case 'Active':
-              button1Style = order.button1 === 'Continue' ? styles.buttonActiveContinue : styles.buttonActiveEnRoute;
-              button2Style = order.button2 === 'Continue' ? styles.buttonActiveContinue : styles.buttonActiveEnRoute;
-              buttonText1Style = button1Style === styles.buttonActiveContinue ? styles.buttonTextActiveContinue : styles.buttonTextActiveEnRoute;
-              buttonText2Style = button2Style === styles.buttonActiveContinue ? styles.buttonTextActiveContinue : styles.buttonTextActiveEnRoute;
-              break;
-            case 'Completed':
-              button1Style = order.button1 === 'Start' ? styles.buttonCompletedStart : order.button1 === 'Success' ? styles.buttonCompletedSuccess : styles.buttonCompletedFailed;
-              button2Style = order.button2 === 'Start' ? styles.buttonCompletedStart : order.button2 === 'Success' ? styles.buttonCompletedSuccess : styles.buttonCompletedFailed;
-              buttonText1Style = button1Style === styles.buttonCompletedStart ? styles.buttonTextCompletedStart : button1Style === styles.buttonCompletedSuccess ? styles.buttonTextCompletedSuccess : styles.buttonTextCompletedFailed;
-              buttonText2Style = button2Style === styles.buttonCompletedStart ? styles.buttonTextCompletedStart : button2Style === styles.buttonCompletedSuccess ? styles.buttonTextCompletedSuccess : styles.buttonTextCompletedFailed;
-              break;
-            default:
-              button1Style = styles.buttonUpcomingStart; // Default fallback
-              button2Style = styles.buttonUpcomingPending; // Default fallback
-              buttonText1Style = styles.buttonTextUpcomingStart;
-              buttonText2Style = styles.buttonTextUpcomingPending;
+          let button1Style, button2Style, buttonText1Style, buttonText2Style;
+
+          if (selectedOrders[order.id]) {
+            // If the order is selected, apply disabled styles
+            button1Style = [styles.buttonDisabled, { width:dimensions.widthLevel15,borderRadius:8,justifyContent:'center',alignItems:'center', }];
+            button2Style = [styles.buttonDisabled, { width:dimensions.widthLevel15,borderRadius:8,justifyContent:'center',alignItems:'center', }];
+            buttonText1Style = styles.buttonTextDisabled;
+            buttonText2Style = styles.buttonTextDisabled;
+          } else {
+            // Otherwise, apply normal styles based on orderStatus and button state
+            switch (orderStatus) {
+              case 'Upcoming':
+                button1Style = styles.buttonUpcomingStart;
+                button2Style = styles.buttonUpcomingPending;
+                buttonText1Style = styles.buttonTextUpcomingStart;
+                buttonText2Style = styles.buttonTextUpcomingPending;
+                break;
+              case 'Active':
+                button1Style = order.button1 === 'Continue' ? styles.buttonActiveContinue : styles.buttonActiveEnRoute;
+                button2Style = order.button2 === 'Continue' ? styles.buttonActiveContinue : styles.buttonActiveEnRoute;
+                buttonText1Style = button1Style === styles.buttonActiveContinue ? styles.buttonTextActiveContinue : styles.buttonTextActiveEnRoute;
+                buttonText2Style = button2Style === styles.buttonActiveContinue ? styles.buttonTextActiveContinue : styles.buttonTextActiveEnRoute;
+                break;
+              case 'Completed':
+                button1Style = order.button1 === 'Start' ? styles.buttonCompletedStart : order.button1 === 'Success' ? styles.buttonCompletedSuccess : styles.buttonCompletedFailed;
+                button2Style = order.button2 === 'Start' ? styles.buttonCompletedStart : order.button2 === 'Success' ? styles.buttonCompletedSuccess : styles.buttonCompletedFailed;
+                buttonText1Style = button1Style === styles.buttonCompletedStart ? styles.buttonTextCompletedStart : button1Style === styles.buttonCompletedSuccess ? styles.buttonTextCompletedSuccess : styles.buttonTextCompletedFailed;
+                buttonText2Style = button2Style === styles.buttonCompletedStart ? styles.buttonTextCompletedStart : button2Style === styles.buttonCompletedSuccess ? styles.buttonTextCompletedSuccess : styles.buttonTextCompletedFailed;
+                break;
+              default:
+                button1Style = styles.buttonUpcomingStart; // Default fallback
+                button2Style = styles.buttonUpcomingPending; // Default fallback
+                buttonText1Style = styles.buttonTextUpcomingStart;
+                buttonText2Style = styles.buttonTextUpcomingPending;
+            }
           }
-  
+
           return (
             <TouchableOpacity
               key={order.id}
@@ -518,7 +628,7 @@ const [isAnyItemSelected, setIsAnyItemSelected] = useState(false);
                 <Text style={styles.dateHeader}>Date: </Text>
                 <Text style={styles.dateHeader2}>{order.date}</Text>
               </View>
-  
+
               <View style={styles.orderDetails}>
                 <View style={styles.orderRow}>
                   <Text
@@ -544,7 +654,7 @@ const [isAnyItemSelected, setIsAnyItemSelected] = useState(false);
                   <Text style={styles.orderText}>Start Time</Text>
                   <Text style={styles.orderText}>Category</Text>
                 </View>
-  
+
                 <View style={{ flexDirection: 'row', justifyContent: "space-between" }}>
                   <Text
                     style={[
@@ -563,22 +673,23 @@ const [isAnyItemSelected, setIsAnyItemSelected] = useState(false);
                     {order.category}
                   </Text>
                 </View>
-  
-                <View style={styles.dottedLine} />
-  
-              <View style={styles.orderActions}>
-                <TouchableOpacity style={button1Style} disabled={selectedOrders[order.id]}>
-                  <Text style={[styles.buttonText, buttonText1Style]}>{order.button1}</Text>
-                </TouchableOpacity>
-                <View style={button2Style}>
-                  <Text style={[styles.buttonText, buttonText2Style]}>{order.button2}</Text>
-                </View>
-              </View>
 
-  
+                <View style={styles.dottedLine} />
+
+                <View style={styles.orderActions}>
+                  <TouchableOpacity style={button1Style} disabled={selectedOrders[order.id]}>
+                    <Text style={[styles.buttonText, buttonText1Style]}>{order.button1}</Text>
+                  </TouchableOpacity>
+                  <View style={button2Style}>
+                    <Text style={[styles.buttonText, buttonText2Style]}>{order.button2}</Text>
+                  </View>
+                </View>
+
                 {/* Checkmark icon for selected items */}
                 {selectedOrders[order.id] && (
-                  <Image style={styles.checkIcon} source={require('../assets/tickIcon.webp')} />
+                  <View style={styles.checkIcon}>
+                    <Image style={{ width: '90%', height: '90%', tintColor: 'white' }} source={require('../assets/tickIcon.webp')} />
+                  </View>
                 )}
               </View>
             </TouchableOpacity>
@@ -587,6 +698,7 @@ const [isAnyItemSelected, setIsAnyItemSelected] = useState(false);
       </View>
     );
   };
+
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.white }}>
@@ -789,6 +901,63 @@ const [isAnyItemSelected, setIsAnyItemSelected] = useState(false);
           </View>
         </TouchableOpacity>
       </Modal>
+
+      {/* Rename Modal */}
+
+      <Modal
+        animationType="none"
+        transparent={true}
+        visible={isRenameModalVisible}
+        onRequestClose={handleCloseRenameModal}
+      >
+        {/* <View style={styles.modalContainer}>
+          <View style={styles.modalContent}> */}
+             <TouchableOpacity 
+          style={styles.centeredView} 
+          activeOpacity={1} 
+          onPressOut={() => handleCloseRenameModal(false)}
+        >
+        <TouchableOpacity 
+            style={styles.modalView} 
+            activeOpacity={1} 
+            onPress={(e) => e.stopPropagation()}>
+          {/* <View style={styles.modalHeader}>
+            <Text style={styles.modalTitle}>Rename</Text>
+            <TouchableOpacity onPress={() => setRenameModalVisible(!isRenameModalVisible)}>
+              <Image
+                source={require('../assets/closeIcon.webp')}
+                style={styles.closeIcon}
+              />
+            </TouchableOpacity>
+          </View> */}
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalText}>Rename</Text>
+              <TouchableOpacity onPress={() => setRenameModalVisible(!isRenameModalVisible)}>
+                <Image style={styles.closeIcon} source={require('../assets/closeIcon.webp')} />
+              </TouchableOpacity>
+            </View>
+          <View style={styles.line} />
+      
+          <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.textInput}
+            placeholder="[Name]"
+            placeholderTextColor="black"
+            />
+          </View>
+
+          <View style={styles.modalButtonsContainer}>
+            <TouchableOpacity onPress={handleCloseRenameModal} style={styles.cancelButton}>
+              <Text style={styles.noText}>Cancel</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleCloseRenameModal} style={styles.submitButton}>
+              <Text style={styles.yesText}>Submit</Text>
+            </TouchableOpacity>
+          </View>
+         </TouchableOpacity>
+         </TouchableOpacity>
+      </Modal> 
+
     </View>
   );
 }
@@ -918,6 +1087,11 @@ const styles = StyleSheet.create({
     justifyContent:'center',
     alignContent:'center'
   },
+  closeIcon2: {
+    width: 15,
+    height: 15,
+    
+  },
   line: {
     height: 1,
     width: '100%',
@@ -962,19 +1136,26 @@ const styles = StyleSheet.create({
     paddingHorizontal:4,
     alignContent:'center'
   },
-
-  selectedCard: {
-  //  backgroundColor: '#E0F7FA', // light blue or any color for selected background
-   // borderColor: '#00796B', // a border to highlight the selection
-  //  borderWidth: 2,
-  },
+  // checkIcon: {
+  //   position: 'absolute',
+  //   left: '50%',
+  //   top: '60%',
+  //   transform: [{ translateX: -10 }, { translateY: 25 }], // Adjust these values to center the icon
+  //   width: 15,
+  //   height: 15,
+  // },
   checkIcon: {
     position: 'absolute',
     left: '50%',
     top: '60%',
     transform: [{ translateX: -10 }, { translateY: 25 }], // Adjust these values to center the icon
-    width: 15,
-    height: 15,
+    width: 20,   // Increase the width and height to make it a bit larger and circular
+    height: 20,
+    borderRadius: 15,  // Half of the width/height to make it a perfect circle
+    backgroundColor:colors.primary,  // Green background color
+    justifyContent: 'center',  // Center the tick icon inside
+    alignItems: 'center',
+    padding: 5,  // Optional padding for the inner icon
   },
   tripColumn: {
     flex: 1,
@@ -1003,13 +1184,6 @@ const styles = StyleSheet.create({
   deliveredOrderContainer: {
     padding: dimensions.paddingLevel3,
   },
-  // deliveredOrderCard: {
-  //   padding: 10,
-  //   borderWidth: 1,
-  //   borderColor: "red",
-  //   borderRadius: 5,
-  //   marginBottom: 10,
-  // },
   deliveredOrderInfo: {
     marginBottom: 10,
   },
@@ -1035,12 +1209,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  // startButton: {
-  //   backgroundColor: colors.primary,
-  //   padding: 10,
-  //   borderRadius: 5,
-  // },
-  
   startButtonText: {
     color: colors.white,
   },
@@ -1125,8 +1293,6 @@ const styles = StyleSheet.create({
     width: 18,
     height: 18,
   },
-//===============================
-
 buttonUpcomingStart: {
   backgroundColor: colors.primary,
   height:38,
@@ -1214,6 +1380,19 @@ buttonTextCompletedFailed: {
 selectedTextColor: {
   color: 'lightgray',
 },
+// buttonDisabled: {
+//   backgroundColor: 'red',
+//   width: '88%', // Fixed width to match other buttons
+//   borderColor: 'gray',
+//   borderWidth: 1,
+//   borderRadius: 5,
+//   paddingVertical: 20,
+//   alignItems: 'center',
+// },
+// buttonTextDisabled: {
+//   color: 'white',
+// },
+
 lineVerticalSelected: {
   backgroundColor: 'lightgray', // Change vertical line color to light gray for selected items
 },
@@ -1280,7 +1459,6 @@ leftArrow: {
   width: 18,
   height: 18,
 },
-//==================
 
 modalContainer: {
   flex: 1,
@@ -1361,6 +1539,15 @@ noButton: {
   backgroundColor: 'lightgray',
   borderRadius: 9,
 },
+cancelButton: {
+  //flex: 1,
+  paddingVertical: dimensions.paddingLevel1,
+  paddingHorizontal: dimensions.paddingLevel4,
+  alignItems: 'center',
+  padding: 10,
+  backgroundColor: 'lightgray',
+  borderRadius: 9,
+},
 noText: {
   fontSize: 16,
   color: colors.secondary,
@@ -1375,9 +1562,24 @@ yesButton: {
   backgroundColor: 'red',
   borderRadius: 9,
 },
+submitButton: {
+   paddingVertical: dimensions.paddingLevel1,
+   paddingHorizontal: dimensions.paddingLevel4,
+   alignItems: 'center',
+   padding: 10,
+   backgroundColor:colors.primary,
+   borderRadius: 9,
+ },
 yesText: {
   fontSize: 16,
   color: 'white',
   fontWeight:'600'
+},
+textInput: {
+  borderColor: '#ccc',
+  borderWidth: 1,
+  padding: 10,
+  marginBottom: 10,
+  borderRadius: 5,
 },
 });

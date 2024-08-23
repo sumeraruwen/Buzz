@@ -250,11 +250,13 @@ export default function EarningsScreen() {
           </View>
 
           <View style={styles.fastCashOutContainer}>
-            <View style={{flexDirection:"row", justifyContent:"space-between"}}>
+
+            <View style={{backgroundColor:colors.primary,alignItems:"center",borderRadius:8}}>
             <Text style={styles.fastCashOutTitle}>Fast Cash Out</Text>
             <Text style={styles.fastCashOutFee}>Instant fee: $1.90</Text>
-            </View>
+           
             <Text style={styles.fastCashOutSubtitle}>Available in minutes to 1 day.</Text>
+            </View>
           </View>
         </View>
 
@@ -554,20 +556,22 @@ const styles = StyleSheet.create({
     marginVertical: 15,
   },
   fastCashOutContainer: {
-    padding: dimensions.paddingLevel3,
+    padding: dimensions.paddingLevel2,
   },
   fastCashOutTitle: {
-    fontSize: fontSizes.fontMediumPlus,
+    fontSize: fontSizes.fontLarge,
     fontWeight: '700',
     color: colors.white,
+    marginTop:10
   },
   fastCashOutSubtitle: {
-    fontSize: fontSizes.fontMidMedium,
-    color: colors.secondary,
+    fontSize: fontSizes.fontMedium,
+    color: 'lightgray',
     marginVertical: 5,
+    marginBottom:10
   },
   fastCashOutFee: {
-    fontSize: fontSizes.fontMidMedium,
+    fontSize: fontSizes.fontMedium,
     color: colors.white,
     fontWeight:'400'
   },

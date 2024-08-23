@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useRef  } from 'react';
 import {
-  View, Text, ScrollView, StyleSheet, Image, TouchableOpacity, Modal, Switch, TextInput
+  View, Text, ScrollView, StyleSheet, Image, TouchableOpacity, Modal, Switch, TextInput,Pressable
 } from 'react-native';
 import HeaderComponent from '../components/HeaderComponent';
 import { colors, dimensions, fontSizes } from '../styles/constants';
 import { launchImageLibrary, launchCamera } from 'react-native-image-picker';
 import CalendarModal from '../components/CalenderModal';
+//import SignatureComponent from '../components/SignatureComponent';
+import SignatureScreen from 'react-native-signature-canvas';
 
 export default function PickupTaskScreen({navigation}) {
   const [photoUri, setPhotoUri] = useState(null);
@@ -27,7 +29,28 @@ export default function PickupTaskScreen({navigation}) {
   const [showDateFrom, setShowDateFrom] = useState(false);
   const [dateSelectedFrom, setDateSelectedFrom] = useState(false);
   const [descriptionError, setDescriptionError] = useState('');
+  // const [signatureData, setSignatureData] = useState(null);
+ // const [signature, setSignature] = useState(null); // State to store the signature
+  const signatureRef = useRef(null); // Ref for the SignatureScreen
 
+  const [signature, setSignature] = useState(null);
+  const [scrollEnabled, setScrollEnabled] = useState(true);
+
+  // const handleSignatureOK = (signatureData) => {
+  //   setSignature(signatureData);
+  // };
+
+  // const handleSignatureClear = () => {
+  //   signatureRef.current.clearSignature();
+  //   setSignature(null);
+  // };
+
+  const handleSave = () => {
+    // handle save action here
+  };
+  // const handleSignatureSave = (signature) => {
+  //   setSignatureData(signature);
+  // };
 
   const onChangeFromDate = (selectedDate) => {
     if (selectedDate instanceof Date && !isNaN(selectedDate)) {
@@ -140,6 +163,19 @@ export default function PickupTaskScreen({navigation}) {
     navigation.navigate('DropoffTaskScreen');
   };
 
+  const handleSignatureOK = (signatureData) => {
+    setSignature(signatureData);
+  };
+
+  const handleSignatureClear = () => {
+    signatureRef.current.clearSignature();
+    setSignature(null);
+  };
+
+  const handleSignatureEmpty = () => {
+    console.log('Signature pad is empty');
+  };
+
   return (
     <View style={{ flex: 1, backgroundColor: colors.white }}>
       <HeaderComponent title="Pick Up Task" />
@@ -231,9 +267,68 @@ export default function PickupTaskScreen({navigation}) {
         <View style={styles.dottedLine} />
 
         <Text style={styles.repText}>Rep. Signature</Text>
-        <View style={styles.signatureBox}>
-          {/* Placeholder for signature */}
-        </View>
+        {/* <View style={styles.signatureBox}>
+  <SignatureScreen
+    ref={signatureRef}
+    onOK={handleSignatureOK}
+    onEmpty={handleSignatureEmpty}
+    autoClear={false}
+    descriptionText="Sign here"
+    clearText="Clear"
+    confirmText="Save"
+    penColor="black"
+    backgroundColor="white"
+    strokeWidth={4} // Adjust the stroke width for smoother lines
+    webStyle={`.m-signature-pad--footer { display: none; } .m-signature-pad { width: 100%; height: 100%; }`}
+  />
+  {signature && (
+    <TouchableOpacity onPress={handleSignatureClear}>
+      <Text style={styles.clearSignatureText}>Clear Signature</Text>
+    </TouchableOpacity>
+  )}
+</View> */}
+{/* <View
+      style={styles.signatureBox}
+      onTouchStart={() => {
+        setScrollEnabled(false);
+      }}
+      onTouchEnd={() => {
+        setScrollEnabled(true);
+      }}
+    > */}
+      <SignatureScreen
+       style={styles.signatureBox}
+        ref={signatureRef}
+        onOK={handleSignatureOK}
+        onEmpty={() => {
+          console.log('Signature pad is empty');
+        }}
+        autoClear={false}
+        penColor="black"
+        backgroundColor="white"
+        strokeWidth={4}
+        webStyle={`.m-signature-pad {box-shadow: none; border: none;} 
+                   .m-signature-pad--footer {display: none; margin: 0px;} 
+                   .m-signature-pad--body {position: absolute; left: 0px; 
+                   border: 2px solid #e6e6e6; border-radius: 10px;}`}
+        onEnd={handleSave}
+        showsVerticalScrollIndicator={false}
+      />
+      <View style={[styles.row, { marginTop: 4 }]}>
+        {/* <Pressable
+          onPress={handleSignatureClear}
+          style={{
+            backgroundColor: '#01ad8f',
+            paddingVertical: 2,
+            paddingHorizontal: 4,
+            borderRadius: 6,
+          }}
+        >
+          <Text style={{ fontWeight: '500', color: 'white' }}>Clear</Text>
+        </Pressable> */}
+      </View>
+    {/* </View> */}
+      
         <View style={styles.dottedLine} />
 
         <Text style={styles.repText}>Photo</Text>
@@ -688,6 +783,11 @@ const styles = StyleSheet.create({
     borderColor: 'lightgray',
     borderRadius: 10,
     marginVertical: 20,
+  },
+  clearSignatureText: {
+    color: 'red',
+    textAlign: 'center',
+    marginVertical: 5,
   },
   photoBox: {
     height: 180,

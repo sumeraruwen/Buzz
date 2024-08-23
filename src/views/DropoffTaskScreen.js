@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useRef  } from 'react';
 import {
-  View, Text, ScrollView, StyleSheet, Image, TouchableOpacity, Modal, Switch, TextInput
+  View, Text, ScrollView, StyleSheet, Image, TouchableOpacity, Modal, Switch, TextInput,Pressable
 } from 'react-native';
 import HeaderComponent from '../components/HeaderComponent';
 import { colors, dimensions, fontSizes } from '../styles/constants';
 import { launchImageLibrary, launchCamera } from 'react-native-image-picker';
+import CalendarModal from '../components/CalenderModal';
+//import SignatureComponent from '../components/SignatureComponent';
+import SignatureScreen from 'react-native-signature-canvas';
 
-export default function DropoffTaskScreen() {
+export default function PickupTaskScreen({navigation}) {
   const [photoUri, setPhotoUri] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [textExpanded, setTextExpanded] = useState(false); // State to manage the text expansion
@@ -14,6 +17,7 @@ export default function DropoffTaskScreen() {
   const [status, setStatus] = useState(''); // New state to track selected status
   const [reasons, setReasons] = useState(''); // State for reason input
   const [isDelayedExpanded, setIsDelayedExpanded] = useState(false);
+  const [tempStatus, setTempStatus] = useState('');
   const [isFailedExpanded, setIsFailedExpanded] = useState(false);
   const [extraChargeModalVisible, setExtraChargeModalVisible] = useState(false);
   const [extraChargeTip, setExtraChargeTip] = useState(false); // For the switch
@@ -21,6 +25,57 @@ export default function DropoffTaskScreen() {
   const [dateExtension, setDateExtension] = useState('');
   const [description, setDescription] = useState('');
   const [confirmModalVisible, setConfirmModalVisible] = useState(false);
+  const [dateFrom, setDateFrom] = useState(new Date());
+  const [showDateFrom, setShowDateFrom] = useState(false);
+  const [dateSelectedFrom, setDateSelectedFrom] = useState(false);
+  const [descriptionError, setDescriptionError] = useState('');
+  // const [signatureData, setSignatureData] = useState(null);
+ // const [signature, setSignature] = useState(null); // State to store the signature
+  const signatureRef = useRef(null); // Ref for the SignatureScreen
+
+  const [signature, setSignature] = useState(null);
+  const [scrollEnabled, setScrollEnabled] = useState(true);
+
+  // const handleSignatureOK = (signatureData) => {
+  //   setSignature(signatureData);
+  // };
+
+  // const handleSignatureClear = () => {
+  //   signatureRef.current.clearSignature();
+  //   setSignature(null);
+  // };
+
+  const handleSave = () => {
+    // handle save action here
+  };
+  // const handleSignatureSave = (signature) => {
+  //   setSignatureData(signature);
+  // };
+
+  const handleDropoffTask = () => {
+    navigation.navigate('Route');
+  };
+
+  const onChangeFromDate = (selectedDate) => {
+    if (selectedDate instanceof Date && !isNaN(selectedDate)) {
+      const formattedDate = selectedDate.toLocaleDateString(); // Format the date as needed
+      setDateExtension(formattedDate);
+      setDateFrom(selectedDate);
+    } else {
+      console.error('Invalid date:', selectedDate);
+    }
+    setShowDateFrom(false);
+  };
+
+  const handleSubmit = () => {
+    if (!description) {
+      setDescriptionError('Required field *'); // Show error if description is empty
+    } else {
+      setDescriptionError(''); // Clear error if description is filled
+      setExtraChargeModalVisible(false);
+      // Continue with the submission logic
+    }
+  };
 
   const handlePhotoUpload = () => {
     setModalVisible(true);
@@ -57,6 +112,7 @@ export default function DropoffTaskScreen() {
     setStatusModalVisible(!statusModalVisible);
   };
 
+
   const capturePhoto = () => {
     const options = {
       mediaType: 'photo',
@@ -81,19 +137,42 @@ export default function DropoffTaskScreen() {
   };
 
   const handleStatusChange = (selectedStatus) => {
-    setStatus(selectedStatus);
-    if (selectedStatus === 'Delayed') {
-      setIsDelayedExpanded(true);
-      setIsFailedExpanded(false);
-    } else if (selectedStatus === 'Failed') {
+    if (tempStatus === selectedStatus) {
+      setTempStatus(''); // Turn off the toggle if it's already selected
       setIsDelayedExpanded(false);
-      setIsFailedExpanded(true);
+      setIsFailedExpanded(false);
+      setReasons(''); // Clear reasons when switching status
     } else {
-      setIsDelayedExpanded(false);
-      setIsFailedExpanded(false);
+      setTempStatus(selectedStatus);
+      if (selectedStatus === 'Delayed') {
+        setIsDelayedExpanded(true);
+        setIsFailedExpanded(false);
+      } else if (selectedStatus === 'Failed') {
+        setIsDelayedExpanded(false);
+        setIsFailedExpanded(true);
+      } else {
+        setIsDelayedExpanded(false);
+        setIsFailedExpanded(false);
+      }
+      setReasons(''); // Clear reasons when switching status
     }
-    setReasons(''); // Clear reasons when switching status
-    toggleStatusModal(); // Close the modal after selecting a status
+  };
+
+  const handleSubmitStatus = () => {
+    setStatus(tempStatus); // Set the selected status when the user submits
+    toggleStatusModal(); // Close the modal
+  };
+  const handleSignatureOK = (signatureData) => {
+    setSignature(signatureData);
+  };
+
+  const handleSignatureClear = () => {
+    signatureRef.current.clearSignature();
+    setSignature(null);
+  };
+
+  const handleSignatureEmpty = () => {
+    console.log('Signature pad is empty');
   };
 
   return (
@@ -130,15 +209,12 @@ export default function DropoffTaskScreen() {
           <Text style={styles.subTitleText}>Drop-Off Instruction</Text>
         </View>
 
-         {/* Toggle the text based on the state */}
          <TouchableOpacity onPress={toggleTextExpansion}>
           <Text style={styles.subText}>
             Come in to front store entrance and say you’re here for “A My Deliver”...
             {textExpanded && '\nPlease also make sure to check the order number with the store representative, and ensure the package is securely sealed before leaving the premises.'}
           </Text>
-          {/* <Text style={styles.showMoreText}>
-            {textExpanded ? 'Show Less' : 'Show More'}
-          </Text> */}
+
         </TouchableOpacity>
 
         <View style={styles.dottedLine} />
@@ -166,8 +242,8 @@ export default function DropoffTaskScreen() {
             <View style={styles.statusRow}>
               <Switch
                 value={true}
-                trackColor={{ false: 'lightgray', true: status === 'Success' ? colors.success : status === 'Delayed' ? 'gray' : colors.failed }}
-                thumbColor={status === 'Success' ? colors.success : status === 'Delayed' ? 'gray' : colors.failed}
+                trackColor={{ false: 'lightgray', true: status === 'Success' ? "#0A987F1A" : status === 'Delayed' ? 'lightgray' : '#FF00001A' }}
+                thumbColor={status === 'Success' ? colors.primary : status === 'Delayed' ? 'gray' : 'red'}
               />
               <Text style={styles.switchLabel}>{status}</Text>
               <Image style={styles.arrowIcon} source={require('../assets/rightArrow.webp')} />
@@ -190,9 +266,68 @@ export default function DropoffTaskScreen() {
         <View style={styles.dottedLine} />
 
         <Text style={styles.repText}>Rep. Signature</Text>
-        <View style={styles.signatureBox}>
-          {/* Placeholder for signature */}
-        </View>
+        {/* <View style={styles.signatureBox}>
+  <SignatureScreen
+    ref={signatureRef}
+    onOK={handleSignatureOK}
+    onEmpty={handleSignatureEmpty}
+    autoClear={false}
+    descriptionText="Sign here"
+    clearText="Clear"
+    confirmText="Save"
+    penColor="black"
+    backgroundColor="white"
+    strokeWidth={4} // Adjust the stroke width for smoother lines
+    webStyle={`.m-signature-pad--footer { display: none; } .m-signature-pad { width: 100%; height: 100%; }`}
+  />
+  {signature && (
+    <TouchableOpacity onPress={handleSignatureClear}>
+      <Text style={styles.clearSignatureText}>Clear Signature</Text>
+    </TouchableOpacity>
+  )}
+</View> */}
+{/* <View
+      style={styles.signatureBox}
+      onTouchStart={() => {
+        setScrollEnabled(false);
+      }}
+      onTouchEnd={() => {
+        setScrollEnabled(true);
+      }}
+    > */}
+      <SignatureScreen
+       style={styles.signatureBox}
+        ref={signatureRef}
+        onOK={handleSignatureOK}
+        onEmpty={() => {
+          console.log('Signature pad is empty');
+        }}
+        autoClear={false}
+        penColor="black"
+        backgroundColor="white"
+        strokeWidth={4}
+        webStyle={`.m-signature-pad {box-shadow: none; border: none;} 
+                   .m-signature-pad--footer {display: none; margin: 0px;} 
+                   .m-signature-pad--body {position: absolute; left: 0px; 
+                   border: 2px solid #e6e6e6; border-radius: 10px;}`}
+        onEnd={handleSave}
+        showsVerticalScrollIndicator={false}
+      />
+      <View style={[styles.row, { marginTop: 4 }]}>
+        {/* <Pressable
+          onPress={handleSignatureClear}
+          style={{
+            backgroundColor: '#01ad8f',
+            paddingVertical: 2,
+            paddingHorizontal: 4,
+            borderRadius: 6,
+          }}
+        >
+          <Text style={{ fontWeight: '500', color: 'white' }}>Clear</Text>
+        </Pressable> */}
+      </View>
+    {/* </View> */}
+      
         <View style={styles.dottedLine} />
 
         <Text style={styles.repText}>Photo</Text>
@@ -205,22 +340,34 @@ export default function DropoffTaskScreen() {
         </TouchableOpacity>
         <View style={styles.dottedLine} />
 
-        <TouchableOpacity style={styles.confirmButton} onPress={() => setConfirmModalVisible(true)}>
-          <Text style={styles.confirmButtonText}>Confirm Pick-up</Text>
+        <TouchableOpacity style={styles.confirmButton} onPress={handleDropoffTask}>
+          <Text style={styles.confirmButtonText}>Confirm Drop-Off</Text>
         </TouchableOpacity>
       </ScrollView>
 
-     {/* Status Modal */}
-     <Modal
+   
+ {/* Status Modal */}
+ <Modal
         animationType="none"
         transparent={true}
         visible={statusModalVisible}
         onRequestClose={toggleStatusModal}
       >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
+        {/* <View style={styles.centeredView}>
+          <View style={styles.modalView}> */}
+            <TouchableOpacity 
+          style={styles.centeredView} 
+          activeOpacity={1} 
+          onPressOut={() => toggleStatusModal(false)}
+        >
+          <TouchableOpacity 
+            style={styles.modalView} 
+            activeOpacity={1} 
+            onPress={(e) => e.stopPropagation()}>
+
+           
             <View style={styles.modalHeader}>
-              <Text style={styles.modalText}>Pick-Up Status Option</Text>
+              <Text style={styles.modalText}>Drop-Off Status Option</Text>
               <TouchableOpacity onPress={toggleStatusModal}>
                 <Image style={styles.closeIcon} source={require('../assets/closeIcon.webp')} />
               </TouchableOpacity>
@@ -231,24 +378,24 @@ export default function DropoffTaskScreen() {
             {/* Success Switch */}
             <View style={styles.switchContainer}>
               <Switch
-                value={status === 'Success'}
+                value={tempStatus === 'Success'}
                 onValueChange={() => handleStatusChange('Success')}
                 trackColor={{ false: 'lightgray', true: colors.success }}
-                thumbColor={status === 'Success' ? colors.success : 'gray'}
+                thumbColor={tempStatus === 'Success' ? colors.primary : 'gray'}
               />
-              <Text style={styles.switchLabel}>Success</Text>
+              <Text style={[styles.switchLabel,{color:colors.primary}]}>Success</Text>
             </View>
 
             {/* Delayed Switch */}
             <View style={styles.switchContainer}>
               <View style={styles.statusRow}>
                 <Switch
-                  value={status === 'Delayed'}
+                  value={tempStatus === 'Delayed'}
                   onValueChange={() => handleStatusChange('Delayed')}
                   trackColor={{ false: 'lightgray', true: 'gray' }}
-                  thumbColor={status === 'Delayed' ? 'gray' : 'lightgray'}
+                  thumbColor={tempStatus === 'Delayed' ? 'lightgray' : 'gray'}
                 />
-                <Text style={styles.switchLabel}>Delayed</Text>
+                <Text style={[styles.switchLabel,{color:'lightgray'}]}>Delayed</Text>
                 <TouchableOpacity onPress={() => setIsDelayedExpanded(!isDelayedExpanded)}>
                   <Image
                     style={styles.arrowIcon}
@@ -271,12 +418,12 @@ export default function DropoffTaskScreen() {
             <View style={styles.switchContainer}>
               <View style={styles.statusRow}>
                 <Switch
-                  value={status === 'Failed'}
+                  value={tempStatus === 'Failed'}
                   onValueChange={() => handleStatusChange('Failed')}
-                  trackColor={{ false: 'lightgray', true: colors.failed }}
-                  thumbColor={status === 'Failed' ? colors.failed : 'gray'}
+                  trackColor={{ false: 'lightgray', true: '#FF00001A' }}
+                  thumbColor={tempStatus === 'Failed' ? 'red' : 'gray'}
                 />
-                <Text style={styles.switchLabel}>Failed</Text>
+                <Text style={[styles.switchLabel,{color:"red"}]}>Failed</Text>
                 <TouchableOpacity onPress={() => setIsFailedExpanded(!isFailedExpanded)}>
                   <Image
                     style={styles.arrowIcon}
@@ -295,12 +442,15 @@ export default function DropoffTaskScreen() {
               />
             )}
 
-            <TouchableOpacity style={styles.submitButton} onPress={toggleStatusModal}>
+            <TouchableOpacity style={styles.submitButton} onPress={handleSubmitStatus}>
               <Text style={styles.submitButtonText}>Submit</Text>
             </TouchableOpacity>
-          </View>
-        </View>
+          {/* </View>
+        </View> */}
+        </TouchableOpacity>
+        </TouchableOpacity>
       </Modal>
+
 
             <Modal
         animationType="none"
@@ -308,8 +458,19 @@ export default function DropoffTaskScreen() {
         visible={extraChargeModalVisible}
         onRequestClose={() => setExtraChargeModalVisible(!extraChargeModalVisible)}
       >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
+        {/* <View style={styles.centeredView}>
+          <View style={styles.modalView}> */}
+
+        <TouchableOpacity 
+          style={styles.centeredView} 
+          activeOpacity={1} 
+          onPressOut={() => setExtraChargeModalVisible(false)}
+        >
+          <TouchableOpacity 
+            style={styles.modalView} 
+            activeOpacity={1} 
+            onPress={(e) => e.stopPropagation()}>
+          
             <View style={styles.modalHeader}>
               <Text style={styles.modalText}>Request</Text>
               <TouchableOpacity onPress={() => setExtraChargeModalVisible(!extraChargeModalVisible)}>
@@ -324,8 +485,8 @@ export default function DropoffTaskScreen() {
         <Switch
           value={extraChargeTip}
           onValueChange={setExtraChargeTip}
-          trackColor={{ false: 'lightgray', true: 'green' }}
-          thumbColor={extraChargeTip ? 'green' : 'gray'}
+          trackColor={{ false: 'lightgray', true:  colors.success }}
+          thumbColor={extraChargeTip ? colors.primary : 'gray'}
         />
       </View>
 
@@ -335,6 +496,7 @@ export default function DropoffTaskScreen() {
         keyboardType="numeric"
         value={extraChargeAmount}
         onChangeText={setExtraChargeAmount}
+        editable={extraChargeTip} 
       />
 
       <View style={styles.switchContainer}>
@@ -342,8 +504,8 @@ export default function DropoffTaskScreen() {
         <Switch
           value={!!dateExtension}
           onValueChange={() => setDateExtension(dateExtension ? '' : new Date().toLocaleDateString())}
-          trackColor={{ false: 'lightgray', true: 'green' }}
-          thumbColor={dateExtension ? 'green' : 'gray'}
+          trackColor={{ false: 'lightgray', true: colors.success  }}
+          thumbColor={dateExtension ? colors.primary : 'gray'}
         />
       </View>
 
@@ -357,7 +519,7 @@ export default function DropoffTaskScreen() {
           value={dateExtension}
           onChangeText={setDateExtension}
         />
-        <TouchableOpacity style={styles.iconContainer}>
+        <TouchableOpacity style={styles.iconContainer} onPress={() => setShowDateFrom(true)}>
           <Image
             source={require('../assets/calenderIcon.webp')} // Replace with your icon's path
             style={styles.icon2}
@@ -367,6 +529,16 @@ export default function DropoffTaskScreen() {
       
       )}
 
+        <CalendarModal
+          visible={showDateFrom}
+          onClose={() => setShowDateFrom(false)}
+          onSelectDate={(selectedDate) => {
+            onChangeFromDate(selectedDate);
+            setShowDateFrom(false);
+          }}
+          selectedDate={dateFrom}
+        />
+
       <Text style={{fontSize: fontSizes.fontMediumPlus, padding: dimensions.paddingLevel3,color:colors.black,fontWeight:'600',}}>Description</Text>
       <TextInput
         style={styles.reasonInput}
@@ -375,19 +547,21 @@ export default function DropoffTaskScreen() {
         onChangeText={setDescription}
       />
 
-      <View style={{flexDirection:'row', justifyContent:'space-between'}}>
+       {descriptionError ? <Text style={styles.errorText}>{descriptionError}</Text> : null}
 
-      <TouchableOpacity style={styles.cancelButton} onPress={() => setExtraChargeModalVisible(false)}>
-        <Text style={styles.cancelButtonText}>Cancel</Text>
-      </TouchableOpacity>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <TouchableOpacity style={styles.cancelButton} onPress={() => setExtraChargeModalVisible(false)}>
+            <Text style={styles.cancelButtonText}>Cancel</Text>
+          </TouchableOpacity>
 
-      <TouchableOpacity style={styles.submitButton} onPress={() => setExtraChargeModalVisible(false)}>
-        <Text style={styles.submitButtonText}>Submit</Text>
-      </TouchableOpacity>
-
-      </View>
-    </View>
-  </View>
+          <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+            <Text style={styles.submitButtonText}>Submit</Text>
+          </TouchableOpacity>
+        </View>
+    {/* </View>
+  </View> */}
+  </TouchableOpacity>
+  </TouchableOpacity>
 </Modal>
 
           <Modal
@@ -398,8 +572,19 @@ export default function DropoffTaskScreen() {
         setModalVisible(!modalVisible);
       }}
     >
-  <View style={styles.centeredView}>
-    <View style={styles.modalView}>
+  {/* <View style={styles.centeredView}>
+    <View style={styles.modalView}> */}
+
+        <TouchableOpacity 
+          style={styles.centeredView} 
+          activeOpacity={1} 
+          onPressOut={() => setModalVisible(false)}
+        >
+          <TouchableOpacity 
+            style={styles.modalView} 
+            activeOpacity={1} 
+            onPress={(e) => e.stopPropagation()}>
+
       <View style={styles.modalHeader}>
         <Text style={styles.modalText}>Upload Delivery Photo</Text>
         <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
@@ -419,43 +604,12 @@ export default function DropoffTaskScreen() {
         <Text style={styles.textStyle}>Capture Photo</Text>
       </TouchableOpacity>
       </View>
-    </View>
-  </View>
+    {/* </View>
+  </View> */}
+  </TouchableOpacity>
+  </TouchableOpacity>
 </Modal>
 
-<Modal
-  animationType="none"
-  transparent={true}
-  visible={confirmModalVisible}
-  onRequestClose={() => setConfirmModalVisible(!confirmModalVisible)}
->
-  <View style={styles.centeredView}>
-    <View style={styles.modalView}>
-      <Text style={styles.modalText2}>Do you want to drop-off using Route manager?</Text>
-      
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 20 }}>
-      
-        <TouchableOpacity
-          style={styles.submitButton}
-          onPress={() => {
-            // Add your confirm pick-up logic here
-            setConfirmModalVisible(false);
-          }}
-        >
-          <Text style={styles.submitButtonText}>Yes</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.cancelButton}
-          onPress={() => setConfirmModalVisible(false)}
-        >
-          <Text style={styles.cancelButtonText}>No Drop-Off Now</Text>
-        </TouchableOpacity>
-
-      </View>
-    </View>
-  </View>
-</Modal>
 
     </View>
   );
@@ -583,6 +737,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginVertical: 20,
   },
+  clearSignatureText: {
+    color: 'red',
+    textAlign: 'center',
+    marginVertical: 5,
+  },
   photoBox: {
     height: 180,
     borderWidth: 1,
@@ -700,6 +859,16 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
+  // modalHeader: {
+  //   flexDirection: 'row',
+  //   justifyContent: 'space-between',
+  //   alignItems: 'center',
+  //   marginBottom: 20,
+  // },
+  // modalText: {
+  //   fontSize: fontSizes.fontMediumPlus,
+  //   fontWeight: '700',
+  // },
   closeIcon: {
     width: 15,
     height: 15,
@@ -721,8 +890,7 @@ const styles = StyleSheet.create({
   switchLabel: {
     fontSize: fontSizes.fontMediumPlus,
     marginLeft: 10,
-    color:colors.black,
-    fontWeight:'600',
+    fontWeight:'700',
     flex: 1, // Take up remaining space between switch and arrow
    
   },
@@ -799,6 +967,12 @@ const styles = StyleSheet.create({
   icon2: {
     width: 20,
     height: 20, // Adjust size as needed
+  },
+  errorText: {
+    color: 'red',
+    margin: 5,
+    fontSize: fontSizes.fontMidMedium,
+    marginLeft: 10,
   },
   
 });
