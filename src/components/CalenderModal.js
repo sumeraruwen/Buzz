@@ -543,23 +543,45 @@ const CalendarModal = ({
     }
   }, [selectedDate]);
 
+  // const handleDayPress = (day) => {
+  //   const date = new Date(day.dateString);
+  //   if (!isNaN(date.getTime())) {
+  //     setCurrentDate(day.dateString);
+  //   } else {
+  //     console.error('Invalid date:', day.dateString);
+  //   }
+  // };
+
+  // const handleTodayPress = () => {
+  //   const today = new Date().toISOString().split('T')[0];
+  //   setCurrentDate(today);
+  //   const todayDate = new Date();
+  //   setSelectedMonth(todayDate.getMonth());
+  //   setSelectedYear(todayDate.getFullYear());
+  //   setCalendarKey(calendarKey + 1); // Force rerender
+  // };
+
   const handleDayPress = (day) => {
     const date = new Date(day.dateString);
     if (!isNaN(date.getTime())) {
-      setCurrentDate(day.dateString);
+      // Set the time to noon (12:00 PM) to avoid timezone issues
+      date.setHours(12, 0, 0, 0);
+      setCurrentDate(date.toISOString().split('T')[0]);
     } else {
       console.error('Invalid date:', day.dateString);
     }
   };
 
   const handleTodayPress = () => {
-    const today = new Date().toISOString().split('T')[0];
-    setCurrentDate(today);
-    const todayDate = new Date();
-    setSelectedMonth(todayDate.getMonth());
-    setSelectedYear(todayDate.getFullYear());
+    const today = new Date();
+    // Set the time to noon (12:00 PM) to avoid timezone issues
+    today.setHours(12, 0, 0, 0);
+    setCurrentDate(today.toISOString().split('T')[0]);
+    setSelectedMonth(today.getMonth());
+    setSelectedYear(today.getFullYear());
     setCalendarKey(calendarKey + 1); // Force rerender
   };
+  
 
   // const handleSetPress = () => {
   //   onSelectDate(currentDate);

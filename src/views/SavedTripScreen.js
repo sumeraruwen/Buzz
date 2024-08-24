@@ -166,7 +166,7 @@ export default function SavedTripScreen() {
             <TouchableOpacity onPress={handleCloseDeleteModal} style={styles.noButton}>
               <Text style={styles.noText}>No</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={handleCloseDeleteModal} style={styles.yesButton}>
+            <TouchableOpacity  onPress={handleConfirmDeleteModal} style={styles.yesButton}>
               <Text style={styles.yesText}>Yes</Text>
             </TouchableOpacity>
           </View>
@@ -295,6 +295,15 @@ const [isAnyItemSelected, setIsAnyItemSelected] = useState(false);
     
     const handleCloseDeleteModal = () => {
       setDeleteModalVisible(false);
+      
+    };
+    const handleConfirmDeleteModal = () => {
+      setDeleteModalVisible(false);
+      setIsHeaderVisible(false);
+      setIsAnyItemSelected(false);
+      setSelectedTrips({});
+      setSelectedOrders({});
+      setSelectedCount(0);
     };
 
     const renderHeader = () => {

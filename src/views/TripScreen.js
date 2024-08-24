@@ -70,7 +70,7 @@ export default function TripScreen() {
     //const trimmedNameOrOrder = nameOrOrder.trim();
   
       const totalTrips = [...tripOrders, ...newTrips].length;
-      if (totalTrips >= 4) {
+      if (totalTrips >= 20) {
         setLimitReached(true);
         return;
       }

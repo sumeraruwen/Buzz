@@ -211,9 +211,21 @@ export default function HistoryScreen() {
     setShowDateTo(false);
   };
 
+  // const formatDate = (date) => {
+  //   return date instanceof Date && !isNaN(date) ? date.toLocaleDateString() : 'Invalid Date';
+  // };
+
   const formatDate = (date) => {
-    return date instanceof Date && !isNaN(date) ? date.toLocaleDateString() : 'Invalid Date';
+    if (date instanceof Date && !isNaN(date)) {
+      const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Get month and ensure it's 2 digits
+      const day = date.getDate().toString().padStart(2, '0'); // Get day and ensure it's 2 digits
+      const year = date.getFullYear(); // Get full year
+      return `${month}/${day}/${year}`; // Return date in MM/DD/YYYY format
+    } else {
+      return 'Invalid Date';
+    }
   };
+  
 
   const sampleImage1 = require('../assets/sampleImage.webp');
 
