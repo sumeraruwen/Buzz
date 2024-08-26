@@ -48,20 +48,77 @@ export default function PickupTaskScreen({navigation}) {
   const handleSave = () => {
     // handle save action here
   };
-  // const handleSignatureSave = (signature) => {
-  //   setSignatureData(signature);
+
+  // const onChangeFromDate = (selectedDate) => {
+  //   if (selectedDate instanceof Date && !isNaN(selectedDate)) {
+  //     const formattedDate = selectedDate.toLocaleDateString(); // Format the date as needed
+  //     setDateExtension(formattedDate);
+  //     setDateFrom(selectedDate);
+  //   } else {
+  //     console.error('Invalid date:', selectedDate);
+  //   }
+  //   setShowDateFrom(false);
+  // };
+
+  // const onChangeFromDate = (selectedDate) => {
+  //   if (selectedDate instanceof Date && !isNaN(selectedDate)) {
+  //     // Set the time to noon (12:00 PM) to avoid timezone issues
+  //     selectedDate.setHours(12, 0, 0, 0);
+  //     setDateFrom(selectedDate);
+  
+  //     // Format date to MM-DD-YYYY and set in the input field
+  //     const formattedDate = formatDate(selectedDate);
+  //     setDateExtension(formattedDate);
+  
+  //     setDateSelectedFrom(true); // Set date selected for "From"
+  //   } else {
+  //     console.error('Invalid date:', selectedDate);
+  //   }
+  //   setShowDateFrom(false);
   // };
 
   const onChangeFromDate = (selectedDate) => {
     if (selectedDate instanceof Date && !isNaN(selectedDate)) {
-      const formattedDate = selectedDate.toLocaleDateString(); // Format the date as needed
-      setDateExtension(formattedDate);
+      // Set the time to noon (12:00 PM) to avoid timezone issues
+      selectedDate.setHours(12, 0, 0, 0);
       setDateFrom(selectedDate);
+  
+      // Format date to MM-DD-YYYY and set in the input field
+      const formattedDate = formatDate(selectedDate);
+      setDateExtension(formattedDate);  // Update the TextInput with the formatted date
+  
+      setDateSelectedFrom(true); // Set date selected for "From"
     } else {
       console.error('Invalid date:', selectedDate);
     }
     setShowDateFrom(false);
   };
+  
+  
+
+  // const formatToMMDDYY = (date) => {
+  //   if (date instanceof Date && !isNaN(date)) {
+  //     const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Get month and ensure it's 2 digits
+  //     const day = date.getDate().toString().padStart(2, '0'); // Get day and ensure it's 2 digits
+  //     const year = date.getFullYear(); 
+  //       return `${month}/${day}/${year}`; // Return date in MM-DD-YY format
+  //   } else {
+  //     return 'Invalid Date';
+  //   }
+  // };
+
+  const formatDate = (date) => {
+    if (date instanceof Date && !isNaN(date)) {
+      const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Get month and ensure it's 2 digits
+      const day = date.getDate().toString().padStart(2, '0'); // Get day and ensure it's 2 digits
+      const year = date.getFullYear(); // Get full year
+      return `${month}/${day}/${year}`; // Return date in MM/DD/YYYY format
+    } else {
+      return 'Invalid Date';
+    }
+  };
+  
+  
 
   const handleSubmit = () => {
     if (!description) {
@@ -510,35 +567,63 @@ export default function PickupTaskScreen({navigation}) {
         />
       </View>
 
-      <Text style={styles.switchLabel}>Extra Charge/Tip</Text>
+      {/* <Text style={styles.switchLabel}>Extra Charge/Tip</Text>
       {dateExtension && (
 
-        <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input2}
-          placeholder="MM-DD-YY"
-          value={dateExtension}
-          onChangeText={setDateExtension}
-        />
-        <TouchableOpacity style={styles.iconContainer} onPress={() => setShowDateFrom(true)}>
-          <Image
-            source={require('../assets/calenderIcon.webp')} // Replace with your icon's path
-            style={styles.icon2}
-          />
-        </TouchableOpacity>
-      </View>
-      
-      )}
+<View style={styles.inputContainer}>
+<TextInput
+  style={styles.input2}
+  placeholder="MM-DD-YY"
+  value={dateExtension}
+  onChangeText={setDateExtension}
+/>
+<TouchableOpacity style={styles.iconContainer} onPress={() => setShowDateFrom(true)}>
+  <Image
+    source={require('../assets/calenderIcon.webp')} // Replace with your icon's path
+    style={styles.icon2}
+  />
+</TouchableOpacity>
+</View>
 
-        <CalendarModal
-          visible={showDateFrom}
-          onClose={() => setShowDateFrom(false)}
-          onSelectDate={(selectedDate) => {
-            onChangeFromDate(selectedDate);
-            setShowDateFrom(false);
-          }}
-          selectedDate={dateFrom}
-        />
+)}
+
+<CalendarModal
+  visible={showDateFrom}
+  onClose={() => setShowDateFrom(false)}
+  onSelectDate={(selectedDate) => {
+    onChangeFromDate(selectedDate);
+    setShowDateFrom(false);
+  }}
+  selectedDate={dateFrom}
+/> */}
+<Text style={styles.switchLabel}>Extra Charge/Tip</Text>
+{dateExtension && (
+  <View style={styles.inputContainer}>
+    <TextInput
+      style={styles.input2}
+      placeholder="MM-DD-YYYY"
+      value={dateExtension}
+      onChangeText={setDateExtension}
+    />
+    <TouchableOpacity style={styles.iconContainer} onPress={() => setShowDateFrom(true)}>
+      <Image
+        source={require('../assets/calenderIcon.webp')} // Replace with your icon's path
+        style={styles.icon2}
+      />
+    </TouchableOpacity>
+  </View>
+)}
+
+<CalendarModal
+  visible={showDateFrom}
+  onClose={() => setShowDateFrom(false)}
+  onSelectDate={(selectedDate) => {
+    onChangeFromDate(selectedDate); // Ensures the date is formatted and handled correctly
+    setShowDateFrom(false);
+  }}
+  selectedDate={dateFrom} // This will show the selected date when the modal opens
+/>
+
 
       <Text style={{fontSize: fontSizes.fontMediumPlus, padding: dimensions.paddingLevel3,color:colors.black,fontWeight:'600',}}>Description</Text>
       <TextInput

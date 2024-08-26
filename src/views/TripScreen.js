@@ -250,13 +250,30 @@ export default function TripScreen() {
         ))} */}
 
 
-        {[...tripOrders, ...newTrips].map((order, index) => (
+        {[...tripOrders, ...newTrips].map((order, index, array) => (
           <View key={index} style={styles.tripOrderContainer}>
             <View style={styles.timeline}>
-              <View style={styles.circle}>
-                <Text style={styles.circleText}>{order.id}</Text>
-              </View>
-              {index < tripOrders.length + newTrips.length && <View style={styles.verticalLine} />}
+              
+                <View style={styles.circle}>
+    <Text style={styles.circleText}>{order.id}</Text>
+  </View>
+  <View style={styles.pointer} />
+              {/* {index < tripOrders.length + newTrips.length && 
+              // <View style={styles.verticalLine} />
+              <View style={styles.verticalLineContainer}>
+          <View style={styles.verticalLine} />
+        </View>
+              } */}
+              {index < array.length && (
+        <View style={styles.verticalLineContainer}>
+          <View
+            style={[
+              styles.verticalLine,
+              index === array.length - 1 && styles.shortVerticalLine // Apply short line style if it's the second to last item
+            ]}
+          />
+        </View>
+      )}
             </View>
             <View style={styles.orderDetails}>
               <View style={styles.orderRow}>
@@ -610,14 +627,43 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+ 
   circleText: {
     color: colors.white,
     fontWeight: '700',
   },
+  pointer: {
+    width: 0,
+    height: 0,
+    borderLeftWidth: 8,
+    borderRightWidth: 8,
+    borderTopWidth: 10,
+    borderLeftColor: 'transparent',
+    borderRightColor: 'transparent',
+    borderTopColor: colors.primary,
+    marginTop: -3,  // Adjust this to make the pointer touch the circle
+  },
   verticalLine: {
     flex: 1,
     width: 2,
-    backgroundColor: colors.primary,
+    //height:80,
+    backgroundColor: "#A8D0C0"   ,
+    color:'transparent' ,
+  },
+  verticalLineContainer: {
+    width: 2,
+    flex: 1,
+    alignItems: 'center',
+  },
+  verticalLine: {
+    width: 2,
+    backgroundColor: "#A8D0C0", // Use lighter color for the line
+    height: 250,  // Adjust this height as needed
+    position: 'absolute',
+   // top: 30, // Adjust this based on the circle height and margin
+  },
+  shortVerticalLine: {
+    height: 230, // Shorter height for the last line
   },
   orderDetails: {
     flex: 1,

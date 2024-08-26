@@ -32,11 +32,11 @@ export default function SavedTripScreen() {
 
 
   const [tripDetails, setTripDetails] = useState({
-    '24/04/2024': [
+    '04/24/2024': [
       { id: 1, date: '02/26/24', upcoming: 5, uncompleted: 10, completed: 14, percentCompleted: '62%' },
       { id: 2, date: '02/26/24', upcoming: 3, uncompleted: 7, completed: 20, percentCompleted: '74%' },
     ],
-    '25/04/2024': [
+    '04/25/2024': [
       { id: 3, date: '02/26/24', upcoming: 3, uncompleted: 7, completed: 20, percentCompleted: '74%' },
       { id: 4, date: '02/26/24', upcoming: 4, uncompleted: 5, completed: 15, percentCompleted: '75%' },
     ],
