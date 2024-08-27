@@ -35,23 +35,12 @@ export default function HistoryScreen() {
     setShowDateTo(false);
   };
 
-
-  // const formatDate = (date) => {
-  //   if (date instanceof Date && !isNaN(date)) {
-  //     const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Get month and ensure it's 2 digits
-  //     const day = date.getDate().toString().padStart(2, '0'); // Get day and ensure it's 2 digits
-  //     const year = date.getFullYear(); // Get full year
-  //     return `${month}/${day}/${year}`; // Return date in MM/DD/YYYY format
-  //   } else {
-  //     return 'Invalid Date';
-  //   }
-  // };
   
   const formatDate = (date) => {
     if (date instanceof Date && !isNaN(date)) {
-      date.setDate(date.getDate() + 1); // Add one day to the selected date
+      date.setDate(date.getDate() + 1); 
       const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Get month and ensure it's 2 digits
-      const day = date.getDate().toString().padStart(2, '0'); // Get day and ensure it's 2 digits
+      const day = date.getDate().toString().padStart(2, '0'); 
       const year = date.getFullYear(); // Get full year
       return `${month}/${day}/${year}`; // Return date in MM/DD/YYYY format
     } else {

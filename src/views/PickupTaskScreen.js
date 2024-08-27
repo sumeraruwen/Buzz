@@ -56,19 +56,9 @@ export default function PickupTaskScreen({navigation}) {
   };
   
 
-  // const formatDate = (date) => {
-  //   if (date instanceof Date && !isNaN(date)) {
-  //     const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Get month and ensure it's 2 digits
-  //     const day = date.getDate().toString().padStart(2, '0'); // Get day and ensure it's 2 digits
-  //     const year = date.getFullYear(); // Get full year
-  //     return `${month}/${day}/${year}`; // Return date in MM/DD/YYYY format
-  //   } else {
-  //     return 'Invalid Date';
-  //   }
-  // };
   const formatDate = (date) => {
     if (date instanceof Date && !isNaN(date)) {
-      date.setDate(date.getDate() + 1); // Add one day to the selected date
+      date.setDate(date.getDate() + 1); 
       const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Get month and ensure it's 2 digits
       const day = date.getDate().toString().padStart(2, '0'); // Get day and ensure it's 2 digits
       const year = date.getFullYear(); // Get full year
@@ -474,16 +464,10 @@ export default function PickupTaskScreen({navigation}) {
 
       <View style={styles.switchContainer}>
         <Text style={styles.switchLabel}>Date Extension</Text>
-        {/* <Switch
-          value={!!dateExtension}
-          onValueChange={() => setDateExtension(dateExtension ? '' : new Date().toLocaleDateString())}
-          trackColor={{ false: 'lightgray', true: colors.success  }}
-          thumbColor={dateExtension ? colors.primary : 'gray'}
-        /> */}
+      
          <Switch
     value={!!dateExtension}
     onValueChange={() => 
-      // setDateExtension(dateExtension ? '' : moment().format('MM/DD/YYYY'))
       setDateExtension(dateExtension ? '' : moment().add(1, 'days').format('MM/DD/YYYY'))
     }
     trackColor={{ false: 'lightgray', true: colors.success }}
