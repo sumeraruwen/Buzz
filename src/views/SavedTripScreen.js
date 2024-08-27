@@ -194,6 +194,7 @@ export default function SavedTripScreen() {
         // Handle renaming the trip or order
         break;
       case 'Delete':
+        setDeleteModalVisible(true);
         // Handle deleting the trip or order
         break;
       default:
