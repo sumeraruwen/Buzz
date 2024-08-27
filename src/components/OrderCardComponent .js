@@ -155,7 +155,6 @@ const styles = StyleSheet.create({
   image: {
     width: 60,
     height: 60,
-    // borderRadius: 25,
   },
   date: {
     fontSize: fontSizes.fontMedium,
@@ -250,7 +249,6 @@ const styles = StyleSheet.create({
     width: '100%',
     marginBottom: '10%',
     position: 'relative',
-
   },
   arrowButton: {
     width: 30,

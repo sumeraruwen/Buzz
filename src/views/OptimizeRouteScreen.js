@@ -8,7 +8,6 @@ export default function OptimizeRouteScreen() {
   return (
     <View style={{ flex: 1 , backgroundColor:colors.white }}>
       <MainHeaderComponent title="Delivery Manager" />
-      {/* <Text>OptimizeRouteScreen</Text> */}
     </View>
   );
 }

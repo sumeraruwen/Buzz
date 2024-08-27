@@ -38,44 +38,46 @@ const CalendarModal = ({
   }, [selectedDate]);
 
 
-//   const handleDayPress = (day) => {
-//     const date = new Date(day.dateString);
-//     date.setUTCHours(6, 0, 0, 0); // Set time to midnight in UTC
-//     setCurrentDate(date.toISOString().split('T')[0]);
-// };
+  const handleDayPress = (day) => {
+    const date = new Date(day.dateString);
+    date.setUTCHours(6, 0, 0, 0); // Set time to midnight in UTC
+    setCurrentDate(date.toISOString().split('T')[0]);
+};
 
-// const handleTodayPress = () => {
-//     const today = new Date();
-//     today.setUTCHours(6, 0, 0, 0); // Set time to midnight in UTC
-//     setCurrentDate(today.toISOString().split('T')[0]);
-//     setSelectedMonth(today.getUTCMonth());
-//     setSelectedYear(today.getUTCFullYear());
-//     setCalendarKey(calendarKey + 1); // Force rerender
-// };
+const handleTodayPress = () => {
+    const today = new Date();
+    today.setUTCHours(6, 0, 0, 0); // Set time to midnight in UTC
+    setCurrentDate(today.toISOString().split('T')[0]);
+    setSelectedMonth(today.getUTCMonth());
+    setSelectedYear(today.getUTCFullYear());
+    setCalendarKey(calendarKey + 1); // Force rerender
+};
     
 // const handleDayPress = (day) => {
 //   setCurrentDate(day.dateString); // Use the date string directly from the calendar
 // };
 
-const handleDayPress = (day) => {
-  console.log("Day Pressed:", day); // Debugging: log the day object
-  if (day && day.dateString) {
-    setCurrentDate(day.dateString);
-  }
-};
 
 
-const handleTodayPress = () => {
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = String(today.getMonth() + 1).padStart(2, '0');
-  const day = String(today.getDate()).padStart(2, '0');
-  const todayString = `${year}-${month}-${day}`;
-  setCurrentDate(todayString);
-  setSelectedMonth(today.getMonth()); // Use local month
-  setSelectedYear(today.getFullYear()); // Use local year
-  setCalendarKey(calendarKey + 1); // Force rerender
-};
+// const handleDayPress = (day) => {
+//   console.log("Day Pressed:", day); // Debugging: log the day object
+//   if (day && day.dateString) {
+//     setCurrentDate(day.dateString);
+//   }
+// };
+
+
+// const handleTodayPress = () => {
+//   const today = new Date();
+//   const year = today.getFullYear();
+//   const month = String(today.getMonth() + 1).padStart(2, '0');
+//   const day = String(today.getDate()).padStart(2, '0');
+//   const todayString = `${year}-${month}-${day}`;
+//   setCurrentDate(todayString);
+//   setSelectedMonth(today.getMonth()); // Use local month
+//   setSelectedYear(today.getFullYear()); // Use local year
+//   setCalendarKey(calendarKey + 1); // Force rerender
+// };
 
 
   // const handleSetPress = () => {
@@ -92,9 +94,6 @@ const handleTodayPress = () => {
       console.error('Invalid date:', currentDate);
     }
   };
-
- 
-
 
   const handleMonthChange = (month) => {
     setSelectedMonth(month);
@@ -117,8 +116,7 @@ const handleTodayPress = () => {
       animationType="none"
       onRequestClose={onClose}
     >
-      {/* <View style={styles.modalContainer}>
-        <View style={styles.calendarContainer}> */}
+
          <TouchableOpacity 
           style={styles.modalContainer} 
           activeOpacity={1} 
@@ -206,8 +204,7 @@ const handleTodayPress = () => {
               </TouchableOpacity>
             </View>
           </View>
-        {/* </View>
-      </View> */}
+
       </TouchableOpacity>
       </TouchableOpacity>
     </Modal>

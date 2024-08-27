@@ -427,10 +427,6 @@ const [isAnyItemSelected, setIsAnyItemSelected] = useState(false);
                     />
                   </TouchableOpacity>
 
-                    {/* Checkmark icon for selected items */}
-                    {/* {selectedTrips[trip.id] && (
-                    <Image style={styles.checkIcon} source={require('../assets/tickIcon.webp')} />
-                  )} */}
                   {selectedTrips[trip.id] && (
                    <View style={styles.checkIcon}>
     <Image style={{ width: '90%', height: '90%', tintColor: 'white' }} source={require('../assets/tickIcon.webp')} />
@@ -438,7 +434,6 @@ const [isAnyItemSelected, setIsAnyItemSelected] = useState(false);
   )}
                   
                 </View>
-                {/* {index < tripDetails[date].length  && <View style={styles.horizontalLine} />} */}
                  {/* Add horizontal line after each trip card */}
                  {index < tripDetails[date].length && (
                   <View
@@ -456,129 +451,6 @@ const [isAnyItemSelected, setIsAnyItemSelected] = useState(false);
       </View>
     );
   };
-  
-  // const renderDeliveredOrders = () => {
-  //   const orders = deliveredOrders[orderStatus] || [];
-  //   return (
-  //     <View>
-  //       {orders.map((order) => {
-  //         // Determine button styles based on the part and button state
-  //        // let button1Style, button2Style, buttonText1Style, buttonText2Style;
-  //        let button1Style = styles.buttonDisabled, button2Style = styles.buttonDisabled, buttonText1Style = styles.buttonTextDisabled, buttonText2Style = styles.buttonTextDisabled;
-  //         switch (orderStatus) {
-  //           case 'Upcoming':
-  //             button1Style = styles.buttonUpcomingStart;
-  //             button2Style = styles.buttonUpcomingPending;
-  //             buttonText1Style = styles.buttonTextUpcomingStart;
-  //             buttonText2Style = styles.buttonTextUpcomingPending;
-  //             break;
-  //           case 'Active':
-  //             button1Style = order.button1 === 'Continue' ? styles.buttonActiveContinue : styles.buttonActiveEnRoute;
-  //             button2Style = order.button2 === 'Continue' ? styles.buttonActiveContinue : styles.buttonActiveEnRoute;
-  //             buttonText1Style = button1Style === styles.buttonActiveContinue ? styles.buttonTextActiveContinue : styles.buttonTextActiveEnRoute;
-  //             buttonText2Style = button2Style === styles.buttonActiveContinue ? styles.buttonTextActiveContinue : styles.buttonTextActiveEnRoute;
-  //             break;
-  //           case 'Completed':
-  //             button1Style = order.button1 === 'Start' ? styles.buttonCompletedStart : order.button1 === 'Success' ? styles.buttonCompletedSuccess : styles.buttonCompletedFailed;
-  //             button2Style = order.button2 === 'Start' ? styles.buttonCompletedStart : order.button2 === 'Success' ? styles.buttonCompletedSuccess : styles.buttonCompletedFailed;
-  //             buttonText1Style = button1Style === styles.buttonCompletedStart ? styles.buttonTextCompletedStart : button1Style === styles.buttonCompletedSuccess ? styles.buttonTextCompletedSuccess : styles.buttonTextCompletedFailed;
-  //             buttonText2Style = button2Style === styles.buttonCompletedStart ? styles.buttonTextCompletedStart : button2Style === styles.buttonCompletedSuccess ? styles.buttonTextCompletedSuccess : styles.buttonTextCompletedFailed;
-  //             break;
-  //           default:
-  //             button1Style = styles.buttonUpcomingStart; // Default fallback
-  //             button2Style = styles.buttonUpcomingPending; // Default fallback
-  //             buttonText1Style = styles.buttonTextUpcomingStart;
-  //             buttonText2Style = styles.buttonTextUpcomingPending;
-  //         }
-  
-  //         return (
-  //           <TouchableOpacity
-  //             key={order.id}
-  //             onLongPress={() => handleLongPressOrder2(order.id)}
-  //             onPress={() => handlePressOrder2(order.id)}
-  //             style={[
-  //               styles.deliveredOrderContainer,
-  //               selectedOrders[order.id] && styles.selectedCard, // Apply selected card style
-  //             ]}
-  //           >
-  //             <View style={{ flexDirection: 'row', paddingTop: 20, paddingBottom: 10 }}>
-  //               <Text style={styles.dateHeader}>Date: </Text>
-  //               <Text style={styles.dateHeader2}>{order.date}</Text>
-  //             </View>
-  
-  //             <View style={styles.orderDetails}>
-  //               <View style={styles.orderRow}>
-  //                 <Text
-  //                   style={[
-  //                     styles.orderName,
-  //                     selectedOrders[order.id] && styles.selectedTextColor, // Apply selected text color
-  //                   ]}
-  //                 >
-  //                   {order.name}
-  //                 </Text>
-  //                 <Image style={styles.iIcon} source={require('../assets/iIcon.webp')} />
-  //               </View>
-  //               <Text style={styles.orderText}>Pick-Up Address</Text>
-  //               <Text
-  //                 style={[
-  //                   styles.orderDetail,
-  //                   selectedOrders[order.id] && styles.selectedTextColor, // Apply selected text color
-  //                 ]}
-  //               >
-  //                 {order.pickUp}
-  //               </Text>
-  //               <View style={{ flexDirection: 'row', justifyContent: "space-between" }}>
-  //                 <Text style={styles.orderText}>Start Time</Text>
-  //                 <Text style={styles.orderText}>Category</Text>
-  //               </View>
-  
-  //               <View style={{ flexDirection: 'row', justifyContent: "space-between" }}>
-  //                 <Text
-  //                   style={[
-  //                     styles.orderDetail,
-  //                     selectedOrders[order.id] && styles.selectedTextColor, // Apply selected text color
-  //                   ]}
-  //                 >
-  //                   {order.phone}
-  //                 </Text>
-  //                 <Text
-  //                   style={[
-  //                     styles.orderDetail,
-  //                     selectedOrders[order.id] && styles.selectedTextColor, // Apply selected text color
-  //                   ]}
-  //                 >
-  //                   {order.category}
-  //                 </Text>
-  //               </View>
-  
-  //               <View style={styles.dottedLine} />
-  
-  //             <View style={styles.orderActions}>
-  //               <TouchableOpacity style={button1Style} disabled={selectedOrders[order.id]}>
-  //                 <Text style={[styles.buttonText, buttonText1Style]}>{order.button1}</Text>
-  //               </TouchableOpacity>
-  //               <View style={button2Style}>
-  //                 <Text style={[styles.buttonText, buttonText2Style]}>{order.button2}</Text>
-  //               </View>
-  //             </View>
-
-  
-  //               {/* Checkmark icon for selected items */}
-  //               {/* {selectedOrders[order.id] && (
-  //                 <Image style={styles.checkIcon} source={require('../assets/tickIcon.webp')} />
-  //               )} */}
-  //                {selectedOrders[order.id] && (
-  //                  <View style={styles.checkIcon}>
-  //   <Image style={{ width: '90%', height: '90%', tintColor: 'white' }} source={require('../assets/tickIcon.webp')} />
-  // </View>
-  // )}
-  //             </View>
-  //           </TouchableOpacity>
-  //         );
-  //       })}
-  //     </View>
-  //   );
-  // };
 
   const renderDeliveredOrders = () => {
     const orders = deliveredOrders[orderStatus] || [];
@@ -711,9 +583,6 @@ const [isAnyItemSelected, setIsAnyItemSelected] = useState(false);
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.white }}>
-       
-      {/* <MainHeaderComponent title="Saved Trip(s)" />
-      {renderHeader()} */}
 
         {/* Conditionally render MainHeaderComponent */}
   {!isAnyItemSelected && (
@@ -826,9 +695,6 @@ const [isAnyItemSelected, setIsAnyItemSelected] = useState(false);
         onRequestClose={closeModal}
       >
 
-        {/* <View style={styles.centeredView}>
-          <View style={styles.modalView}> */}
-
         <TouchableOpacity 
           style={styles.centeredView} 
           activeOpacity={1} 
@@ -919,8 +785,7 @@ const [isAnyItemSelected, setIsAnyItemSelected] = useState(false);
         visible={isRenameModalVisible}
         onRequestClose={handleCloseRenameModal}
       >
-        {/* <View style={styles.modalContainer}>
-          <View style={styles.modalContent}> */}
+
              <TouchableOpacity 
           style={styles.centeredView} 
           activeOpacity={1} 
@@ -930,15 +795,7 @@ const [isAnyItemSelected, setIsAnyItemSelected] = useState(false);
             style={styles.modalView} 
             activeOpacity={1} 
             onPress={(e) => e.stopPropagation()}>
-          {/* <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>Rename</Text>
-            <TouchableOpacity onPress={() => setRenameModalVisible(!isRenameModalVisible)}>
-              <Image
-                source={require('../assets/closeIcon.webp')}
-                style={styles.closeIcon}
-              />
-            </TouchableOpacity>
-          </View> */}
+        
             <View style={styles.modalHeader}>
               <Text style={styles.modalText}>Rename</Text>
               <TouchableOpacity onPress={() => setRenameModalVisible(!isRenameModalVisible)}>
@@ -1145,14 +1002,6 @@ const styles = StyleSheet.create({
     paddingHorizontal:4,
     alignContent:'center'
   },
-  // checkIcon: {
-  //   position: 'absolute',
-  //   left: '50%',
-  //   top: '60%',
-  //   transform: [{ translateX: -10 }, { translateY: 25 }], // Adjust these values to center the icon
-  //   width: 15,
-  //   height: 15,
-  // },
   checkIcon: {
     position: 'absolute',
     left: '50%',
@@ -1389,19 +1238,6 @@ buttonTextCompletedFailed: {
 selectedTextColor: {
   color: 'lightgray',
 },
-// buttonDisabled: {
-//   backgroundColor: 'red',
-//   width: '88%', // Fixed width to match other buttons
-//   borderColor: 'gray',
-//   borderWidth: 1,
-//   borderRadius: 5,
-//   paddingVertical: 20,
-//   alignItems: 'center',
-// },
-// buttonTextDisabled: {
-//   color: 'white',
-// },
-
 lineVerticalSelected: {
   backgroundColor: 'lightgray', // Change vertical line color to light gray for selected items
 },

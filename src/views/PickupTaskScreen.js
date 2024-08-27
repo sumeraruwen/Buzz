@@ -6,8 +6,8 @@ import HeaderComponent from '../components/HeaderComponent';
 import { colors, dimensions, fontSizes } from '../styles/constants';
 import { launchImageLibrary, launchCamera } from 'react-native-image-picker';
 import CalendarModal from '../components/CalenderModal';
-//import SignatureComponent from '../components/SignatureComponent';
 import SignatureScreen from 'react-native-signature-canvas';
+import moment from 'moment';
 
 export default function PickupTaskScreen({navigation}) {
   const [photoUri, setPhotoUri] = useState(null);
@@ -29,53 +29,14 @@ export default function PickupTaskScreen({navigation}) {
   const [showDateFrom, setShowDateFrom] = useState(false);
   const [dateSelectedFrom, setDateSelectedFrom] = useState(false);
   const [descriptionError, setDescriptionError] = useState('');
-  // const [signatureData, setSignatureData] = useState(null);
- // const [signature, setSignature] = useState(null); // State to store the signature
   const signatureRef = useRef(null); // Ref for the SignatureScreen
 
   const [signature, setSignature] = useState(null);
   const [scrollEnabled, setScrollEnabled] = useState(true);
 
-  // const handleSignatureOK = (signatureData) => {
-  //   setSignature(signatureData);
-  // };
-
-  // const handleSignatureClear = () => {
-  //   signatureRef.current.clearSignature();
-  //   setSignature(null);
-  // };
-
   const handleSave = () => {
     // handle save action here
   };
-
-  // const onChangeFromDate = (selectedDate) => {
-  //   if (selectedDate instanceof Date && !isNaN(selectedDate)) {
-  //     const formattedDate = selectedDate.toLocaleDateString(); // Format the date as needed
-  //     setDateExtension(formattedDate);
-  //     setDateFrom(selectedDate);
-  //   } else {
-  //     console.error('Invalid date:', selectedDate);
-  //   }
-  //   setShowDateFrom(false);
-  // };
-
-  // const onChangeFromDate = (selectedDate) => {
-  //   if (selectedDate instanceof Date && !isNaN(selectedDate)) {
-  //     // Set the time to noon (12:00 PM) to avoid timezone issues
-  //     selectedDate.setHours(12, 0, 0, 0);
-  //     setDateFrom(selectedDate);
-  
-  //     // Format date to MM-DD-YYYY and set in the input field
-  //     const formattedDate = formatDate(selectedDate);
-  //     setDateExtension(formattedDate);
-  
-  //     setDateSelectedFrom(true); // Set date selected for "From"
-  //   } else {
-  //     console.error('Invalid date:', selectedDate);
-  //   }
-  //   setShowDateFrom(false);
-  // };
 
   const onChangeFromDate = (selectedDate) => {
     if (selectedDate instanceof Date && !isNaN(selectedDate)) {
@@ -94,18 +55,6 @@ export default function PickupTaskScreen({navigation}) {
     setShowDateFrom(false);
   };
   
-  
-
-  // const formatToMMDDYY = (date) => {
-  //   if (date instanceof Date && !isNaN(date)) {
-  //     const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Get month and ensure it's 2 digits
-  //     const day = date.getDate().toString().padStart(2, '0'); // Get day and ensure it's 2 digits
-  //     const year = date.getFullYear(); 
-  //       return `${month}/${day}/${year}`; // Return date in MM-DD-YY format
-  //   } else {
-  //     return 'Invalid Date';
-  //   }
-  // };
 
   const formatDate = (date) => {
     if (date instanceof Date && !isNaN(date)) {
@@ -119,7 +68,6 @@ export default function PickupTaskScreen({navigation}) {
   };
   
   
-
   const handleSubmit = () => {
     if (!description) {
       setDescriptionError('Required field *'); // Show error if description is empty
@@ -324,35 +272,7 @@ export default function PickupTaskScreen({navigation}) {
         <View style={styles.dottedLine} />
 
         <Text style={styles.repText}>Rep. Signature</Text>
-        {/* <View style={styles.signatureBox}>
-  <SignatureScreen
-    ref={signatureRef}
-    onOK={handleSignatureOK}
-    onEmpty={handleSignatureEmpty}
-    autoClear={false}
-    descriptionText="Sign here"
-    clearText="Clear"
-    confirmText="Save"
-    penColor="black"
-    backgroundColor="white"
-    strokeWidth={4} // Adjust the stroke width for smoother lines
-    webStyle={`.m-signature-pad--footer { display: none; } .m-signature-pad { width: 100%; height: 100%; }`}
-  />
-  {signature && (
-    <TouchableOpacity onPress={handleSignatureClear}>
-      <Text style={styles.clearSignatureText}>Clear Signature</Text>
-    </TouchableOpacity>
-  )}
-</View> */}
-{/* <View
-      style={styles.signatureBox}
-      onTouchStart={() => {
-        setScrollEnabled(false);
-      }}
-      onTouchEnd={() => {
-        setScrollEnabled(true);
-      }}
-    > */}
+        
       <SignatureScreen
        style={styles.signatureBox}
         ref={signatureRef}
@@ -372,19 +292,8 @@ export default function PickupTaskScreen({navigation}) {
         showsVerticalScrollIndicator={false}
       />
       <View style={[styles.row, { marginTop: 4 }]}>
-        {/* <Pressable
-          onPress={handleSignatureClear}
-          style={{
-            backgroundColor: '#01ad8f',
-            paddingVertical: 2,
-            paddingHorizontal: 4,
-            borderRadius: 6,
-          }}
-        >
-          <Text style={{ fontWeight: '500', color: 'white' }}>Clear</Text>
-        </Pressable> */}
+
       </View>
-    {/* </View> */}
       
         <View style={styles.dottedLine} />
 
@@ -411,8 +320,7 @@ export default function PickupTaskScreen({navigation}) {
         visible={statusModalVisible}
         onRequestClose={toggleStatusModal}
       >
-        {/* <View style={styles.centeredView}>
-          <View style={styles.modalView}> */}
+
             <TouchableOpacity 
           style={styles.centeredView} 
           activeOpacity={1} 
@@ -503,8 +411,7 @@ export default function PickupTaskScreen({navigation}) {
             <TouchableOpacity style={styles.submitButton} onPress={handleSubmitStatus}>
               <Text style={styles.submitButtonText}>Submit</Text>
             </TouchableOpacity>
-          {/* </View>
-        </View> */}
+
         </TouchableOpacity>
         </TouchableOpacity>
       </Modal>
@@ -516,8 +423,6 @@ export default function PickupTaskScreen({navigation}) {
         visible={extraChargeModalVisible}
         onRequestClose={() => setExtraChargeModalVisible(!extraChargeModalVisible)}
       >
-        {/* <View style={styles.centeredView}>
-          <View style={styles.modalView}> */}
 
         <TouchableOpacity 
           style={styles.centeredView} 
@@ -559,50 +464,29 @@ export default function PickupTaskScreen({navigation}) {
 
       <View style={styles.switchContainer}>
         <Text style={styles.switchLabel}>Date Extension</Text>
-        <Switch
+        {/* <Switch
           value={!!dateExtension}
           onValueChange={() => setDateExtension(dateExtension ? '' : new Date().toLocaleDateString())}
           trackColor={{ false: 'lightgray', true: colors.success  }}
           thumbColor={dateExtension ? colors.primary : 'gray'}
-        />
+        /> */}
+         <Switch
+    value={!!dateExtension}
+    onValueChange={() => 
+      setDateExtension(dateExtension ? '' : moment().format('MM/DD/YYYY'))
+    }
+    trackColor={{ false: 'lightgray', true: colors.success }}
+    thumbColor={dateExtension ? colors.primary : 'gray'}
+  />
       </View>
 
-      {/* <Text style={styles.switchLabel}>Extra Charge/Tip</Text>
-      {dateExtension && (
-
-<View style={styles.inputContainer}>
-<TextInput
-  style={styles.input2}
-  placeholder="MM-DD-YY"
-  value={dateExtension}
-  onChangeText={setDateExtension}
-/>
-<TouchableOpacity style={styles.iconContainer} onPress={() => setShowDateFrom(true)}>
-  <Image
-    source={require('../assets/calenderIcon.webp')} // Replace with your icon's path
-    style={styles.icon2}
-  />
-</TouchableOpacity>
-</View>
-
-)}
-
-<CalendarModal
-  visible={showDateFrom}
-  onClose={() => setShowDateFrom(false)}
-  onSelectDate={(selectedDate) => {
-    onChangeFromDate(selectedDate);
-    setShowDateFrom(false);
-  }}
-  selectedDate={dateFrom}
-/> */}
 <Text style={styles.switchLabel}>Extra Charge/Tip</Text>
 {dateExtension && (
   <View style={styles.inputContainer}>
     <TextInput
       style={styles.input2}
       placeholder="MM-DD-YYYY"
-      value={dateExtension}
+      value={dateExtension || ''}
       onChangeText={setDateExtension}
     />
     <TouchableOpacity style={styles.iconContainer} onPress={() => setShowDateFrom(true)}>
@@ -624,7 +508,6 @@ export default function PickupTaskScreen({navigation}) {
   selectedDate={dateFrom} // This will show the selected date when the modal opens
 />
 
-
       <Text style={{fontSize: fontSizes.fontMediumPlus, padding: dimensions.paddingLevel3,color:colors.black,fontWeight:'600',}}>Description</Text>
       <TextInput
         style={styles.reasonInput}
@@ -644,8 +527,7 @@ export default function PickupTaskScreen({navigation}) {
             <Text style={styles.submitButtonText}>Submit</Text>
           </TouchableOpacity>
         </View>
-    {/* </View>
-  </View> */}
+
   </TouchableOpacity>
   </TouchableOpacity>
 </Modal>
@@ -658,8 +540,6 @@ export default function PickupTaskScreen({navigation}) {
         setModalVisible(!modalVisible);
       }}
     >
-  {/* <View style={styles.centeredView}>
-    <View style={styles.modalView}> */}
 
         <TouchableOpacity 
           style={styles.centeredView} 
@@ -690,8 +570,7 @@ export default function PickupTaskScreen({navigation}) {
         <Text style={styles.textStyle}>Capture Photo</Text>
       </TouchableOpacity>
       </View>
-    {/* </View>
-  </View> */}
+
   </TouchableOpacity>
   </TouchableOpacity>
 </Modal>
@@ -702,8 +581,6 @@ export default function PickupTaskScreen({navigation}) {
   visible={confirmModalVisible}
   onRequestClose={() => setConfirmModalVisible(!confirmModalVisible)}
 >
-  {/* <View style={styles.centeredView}>
-    <View style={styles.modalView}> */}
 
         <TouchableOpacity 
           style={styles.centeredView} 
@@ -737,8 +614,6 @@ export default function PickupTaskScreen({navigation}) {
         </TouchableOpacity>
 
       </View>
-    {/* </View>
-  </View> */}
   </TouchableOpacity>
   </TouchableOpacity>
 </Modal>
@@ -991,16 +866,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-  // modalHeader: {
-  //   flexDirection: 'row',
-  //   justifyContent: 'space-between',
-  //   alignItems: 'center',
-  //   marginBottom: 20,
-  // },
-  // modalText: {
-  //   fontSize: fontSizes.fontMediumPlus,
-  //   fontWeight: '700',
-  // },
+
   closeIcon: {
     width: 15,
     height: 15,
@@ -1036,7 +902,6 @@ const styles = StyleSheet.create({
     borderColor: 'lightgray',
     borderWidth: 1,
     borderRadius: 5,
-    //paddingHorizontal: 55,
     margin: 5,
   },
   submitButton: {

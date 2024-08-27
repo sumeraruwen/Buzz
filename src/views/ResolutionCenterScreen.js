@@ -137,8 +137,7 @@ export default function ResolutionCenterScreen({navigation}) {
             <Text style={styles.title}>Search Customer</Text>
           </TouchableOpacity>
         </ScrollView>
-        {/* </View> */}
-
+     
         <Text
           style={{
             fontSize: fontSizes.fontLarge,

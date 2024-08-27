@@ -205,50 +205,6 @@ export default function TripScreen() {
 
         <View style={styles.dottedLine} />
 
-        {/* {tripOrders.map((order, index) => (
-          <View key={index} style={styles.tripOrderContainer}>
-            <View style={styles.timeline}>
-              <View style={styles.circle}>
-                <Text style={styles.circleText}>{order.id}</Text>
-              </View>
-              {index < tripOrders.length  && <View style={styles.verticalLine} />}
-            </View>
-            <View style={styles.orderDetails}>
-              <View style={styles.orderRow}>
-                  <Text style={styles.orderName}>{order.name}</Text>
-                  <TouchableOpacity>
-                  <Image style={styles.iIcon} source={require('../assets/iIcon.webp')} />
-                  </TouchableOpacity>
-                </View>
-              <View style={styles.orderRow}>
-                  <Text style={styles.orderText}>Pick-Up Address</Text>
-                  <TouchableOpacity>
-                  <Image style={styles.iIcon} source={require('../assets/dragIcon.webp')} />
-                  </TouchableOpacity>
-                </View>
-              <View style={styles.orderRow}>
-                  <Text style={styles.orderDetail}>{order.pickUp}</Text>
-                  <TouchableOpacity>
-                  <Image style={styles.closeIcon2} source={require('../assets/closeIcon.webp')} />
-                  </TouchableOpacity>
-                </View>
-              <Text style={styles.orderText}>Drop-Off Address</Text>
-              <Text style={styles.orderDetail}>{order.dropOff}</Text>
-            
-              <View style={{flexDirection:'row',justifyContent:"space-between"}}>
-              <Text style={styles.orderText}>Phone</Text>
-              <Text style={styles.orderText}>Category</Text>
-              </View>
-
-              <View style={{flexDirection:'row',justifyContent:"space-between"}}>
-              <Text style={styles.orderDetail}>{order.phone}</Text>
-              <Text style={styles.orderDetail}>{order.category}</Text>
-              </View>
-            
-            </View>
-          </View>
-        ))} */}
-
 
         {[...tripOrders, ...newTrips].map((order, index, array) => (
           <View key={index} style={styles.tripOrderContainer}>
@@ -258,12 +214,7 @@ export default function TripScreen() {
     <Text style={styles.circleText}>{order.id}</Text>
   </View>
   <View style={styles.pointer} />
-              {/* {index < tripOrders.length + newTrips.length && 
-              // <View style={styles.verticalLine} />
-              <View style={styles.verticalLineContainer}>
-          <View style={styles.verticalLine} />
-        </View>
-              } */}
+
               {index < array.length && (
         <View style={styles.verticalLineContainer}>
           <View
@@ -323,8 +274,7 @@ export default function TripScreen() {
               setModalVisible(!modalVisible);
             }}
           >
-          {/* <View style={styles.modalContainer}>
-            <View style={styles.modalContent2}> */}
+
              <TouchableOpacity 
           style={styles.modalContainer} 
           activeOpacity={1} 
@@ -352,8 +302,7 @@ export default function TripScreen() {
                   <Text style={styles.modalButtonText2}>See Saved Trips</Text>
                 </TouchableOpacity>
               </View>
-            {/* </View>
-          </View> */}
+
           </TouchableOpacity>
           </TouchableOpacity>
         </Modal>
@@ -463,8 +412,7 @@ export default function TripScreen() {
         visible={limitReached}
         onRequestClose={() => setLimitReached(false)}
       >
-        {/* <View style={styles.modalContainer}>
-          <View style={styles.modalContent2}> */}
+
             <TouchableOpacity 
           style={styles.modalContainer} 
           activeOpacity={1} 
@@ -516,16 +464,6 @@ const styles = StyleSheet.create({
     marginTop: '5%',
     color: colors.black,
   },
-  // input: {
-  //   height: dimensions.heightLevel4,
-  //   borderColor: "lightgray",
-  //   borderWidth: 1,
-  //   borderRadius: 8,
-  //   paddingHorizontal: dimensions.paddingLevel2,
-  //   marginTop: '3%',
-  // },
-
-  //========
 
   inputWrapper: {
     position: 'relative',
@@ -546,7 +484,6 @@ const styles = StyleSheet.create({
     top: '50%',
    transform: [{ translateY: -12 }],
     flexDirection: 'row',
-
   },
   label2: {
     fontSize: fontSizes.fontMidMedium,
@@ -558,8 +495,6 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
   },
-
-  //========
   picker: {
     height: dimensions.heightLevel4,
     borderColor: "lightgray",
@@ -660,7 +595,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#A8D0C0", // Use lighter color for the line
     height: 250,  // Adjust this height as needed
     position: 'absolute',
-   // top: 30, // Adjust this based on the circle height and margin
   },
   shortVerticalLine: {
     height: 230, // Shorter height for the last line
@@ -726,12 +660,6 @@ const styles = StyleSheet.create({
     justifyContent:'center',
     alignItems: 'center',
   },
-  // closeButton: {
-  //   position: 'absolute',
-  //   top: 10,
-  //   right: 10,
-  //   padding: 10,
-  // },
   closeButton2: {
     position: 'absolute',
     top: 10,
@@ -744,7 +672,6 @@ const styles = StyleSheet.create({
     fontWeight: '700',
    marginTop:10,
    marginBottom:5,
-  // marginVertical: dimensions.paddingLevel3,
   },
   modalText2: {
     fontSize: fontSizes.fontMidMedium,
@@ -781,9 +708,7 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontSize: fontSizes.fontMidMedium,
     fontWeight: '700',
-  //  paddingVertical: dimensions.paddingLevel2,
     paddingHorizontal: dimensions.paddingLevel1,
-   // marginHorizontal: 5,
     alignItems: 'center',
   },
   closeIcon: {
@@ -798,7 +723,6 @@ const styles = StyleSheet.create({
   modalOption: {
     flexDirection: 'row',
     alignItems: 'center',
-   // justifyContent:'center',
     padding:dimensions.paddingLevel3,
   },
   icon: {
@@ -829,14 +753,12 @@ const styles = StyleSheet.create({
   modalNote: {
     color: colors.secondary,
     paddingLeft:dimensions.paddingLevel3,
-   // margin:3,
     marginBottom:8
   },
   orderRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    //marginTop: '5%',
   },
   iIcon: {
     width: 16,

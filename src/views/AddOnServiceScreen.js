@@ -89,25 +89,6 @@ export default function AddOnServiceScreen() {
     unloading: ['', '', '', '']
   });
 
-  // Function to handle switch toggling for Lifting/Loading/Unloading Help
-  // const handleLiftingSwitch = () => {
-  //   setIsLiftingEnabled((previousState) => {
-  //     const newLiftingState = !previousState;
-
-  //     // Automatically toggle the Loading Base Price, Rate Per Hour, and Rate Per Day switches when Lifting is enabled
-  //     if (newLiftingState) {
-  //       setIsLoadingBasePriceEnabled(true);
-  //       setIsLoadingHourEnabled(true);
-  //       setIsLoadingDayEnabled(true);
-  //     } else {
-  //       setIsLoadingBasePriceEnabled(false);
-  //       setIsLoadingHourEnabled(false);
-  //       setIsLoadingDayEnabled(false);
-  //     }
-
-  //     return newLiftingState;
-  //   });
-  // };
 
   const handleEquipmentRentalSwitch = () => {
     setIsEquipmentRentalEnabled((previousState) => !previousState);
@@ -165,73 +146,6 @@ export default function AddOnServiceScreen() {
       return !prev;
     });
   };
- 
-  // const renderEquipmentRow = (label, sectionKey) => (
-  //   <View key={sectionKey} style={styles.equipmentRow}>
-  //     <View style={styles.rowHeader}>
-  //       <Text style={styles.labelText}>{label}</Text>
-  //       <View style={styles.rowActions}>
-  //       <Switch
-  //           trackColor={{ false: colors.secondary, true: colors.primary }}
-  //           thumbColor={isRatePerDayEnabled ? colors.white : colors.white}
-  //           ios_backgroundColor={colors.secondary}
-  //           onValueChange={() => setIsRatePerDayEnabled((prevState) => !prevState)}
-  //           value={isRatePerDayEnabled}
-  //         />
-  //         <TouchableOpacity onPress={() => toggleSection(sectionKey)}>
-  //           <Image
-  //             source={
-  //               expandedSections[sectionKey]
-  //                 ? require('../assets/upArrow.webp') // Replace with your up arrow icon path
-  //                 : require('../assets/downArrow.webp') // Replace with your down arrow icon path
-  //             }
-  //             style={styles.arrowIcon}
-  //           />
-  //         </TouchableOpacity>
-  //       </View>
-  //     </View>
-  //     {expandedSections[sectionKey] && (
-  //       <View style={styles.expandedContent}>
-  //       <View style={styles.inputRow}>
-  //         <Text style={styles.inputLabel}>Base Price</Text>
-  //         <TextInput style={styles.textInput} keyboardType="numeric" placeholder="$"  editable={isBasePriceEnabled} />
-  //         <Switch
-  //           trackColor={{ false: colors.secondary, true: colors.primary }}
-  //           thumbColor={isBasePriceEnabled ? colors.white : colors.white}
-  //           ios_backgroundColor={colors.secondary}
-  //           onValueChange={() => setIsBasePriceEnabled((prevState) => !prevState)}
-  //           value={isBasePriceEnabled}
-           
-  //         />
-  //       </View>
-  //       <View style={styles.dottedLine} />
-  //       <View style={styles.inputRow}>
-  //         <Text style={styles.inputLabel}>Rate Per Hour</Text>
-  //         <TextInput style={styles.textInput} keyboardType="numeric" placeholder="$" editable={isRatePerHourEnabled}/>
-  //         <Switch
-  //           trackColor={{ false: colors.secondary, true: colors.primary }}
-  //           thumbColor={isRatePerHourEnabled ? colors.white : colors.white}
-  //           ios_backgroundColor={colors.secondary}
-  //           onValueChange={() => setIsRatePerHourEnabled((prevState) => !prevState)}
-  //           value={isRatePerHourEnabled}
-  //         />
-  //       </View>
-  //       <View style={styles.dottedLine} />
-  //       <View style={styles.inputRow}>
-  //         <Text style={styles.inputLabel}>Rate Per Day</Text>
-  //         <TextInput style={styles.textInput} keyboardType="numeric" placeholder="$"  editable={isRatePerDayEnabled} />
-  //         <Switch
-  //           trackColor={{ false: colors.secondary, true: colors.primary }}
-  //           thumbColor={isRatePerDayEnabled ? colors.white : colors.white}
-  //           ios_backgroundColor={colors.secondary}
-  //           onValueChange={() => setIsRatePerDayEnabled((prevState) => !prevState)}
-  //           value={isRatePerDayEnabled}
-  //         />
-  //       </View>
-  //     </View>
-  //     )}
-  //   </View>
-  // );
 
   const renderEquipmentRow = (label, sectionKey,isEnabled,setIsEnabled, basePriceEnabled, setBasePriceEnabled, ratePerHourEnabled, setRatePerHourEnabled, ratePerDayEnabled, setRatePerDayEnabled) => (
     <View key={sectionKey} style={styles.equipmentRow}>
@@ -646,26 +560,11 @@ export default function AddOnServiceScreen() {
             trackColor={{ false: colors.secondary, true: colors.primary }}
             thumbColor={isRatePerDayEnabled ? colors.white : colors.white}
             ios_backgroundColor={colors.secondary}
-            // onValueChange={handleEquipmentRentalSwitch}
-            // value={isEquipmentRentalEnabled}
             onValueChange={() => setIsEquipmentRentalEnabled((prevState) => !prevState)}
             value={isEquipmentRentalEnabled}
           />
         </View>
-        {/* <View style={styles.equipmentContainer}>
-          {renderEquipmentRow('4-Wheel Dolly', 'fourWheelDolly')}
-          {renderEquipmentRow('Appliance Dolly', 'applianceDolly')}
-          {renderEquipmentRow('Hand Truck Dolly', 'handTruckDolly')}
-          {renderEquipmentRow('Loading Ramp', 'loadingRamp')}
-          {renderEquipmentRow('Material Lift', 'materialLift')}
-        </View> */}
-        {/* <View style={styles.equipmentContainer}>
-    {renderEquipmentRow('4-Wheel Dolly', isFourWheelDollyEnabled, setIsFourWheelDollyEnabled, 'fourWheelDolly')}
-    {renderEquipmentRow('Appliance Dolly', isApplianceDollyEnabled, setIsApplianceDollyEnabled, 'applianceDolly')}
-    {renderEquipmentRow('Hand Truck Dolly', isHandTruckDollyEnabled, setIsHandTruckDollyEnabled, 'handTruckDolly')}
-    {renderEquipmentRow('Loading Ramp', isLoadingRampEnabled, setIsLoadingRampEnabled, 'loadingRamp')}
-    {renderEquipmentRow('Material Lift', isMaterialLiftEnabled, setIsMaterialLiftEnabled, 'materialLift')}
-</View> */}
+
 
 <View style={styles.equipmentContainer}>
     {renderEquipmentRow(
